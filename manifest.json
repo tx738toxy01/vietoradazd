@@ -1,0 +1,17 @@
+
+
+{
+  "name": "Bara meter",
+  "short_name": "Bara",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3237/3237466.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
