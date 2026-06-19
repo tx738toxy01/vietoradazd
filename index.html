@@ -194,6 +194,11 @@
         
         #btn-map-radar.active { border-color: #38bdf8; background: #e0f2fe; }
         [data-theme="dark"] #btn-map-radar.active { background: #0c4a6e; border-color: #0284c7; }
+        #btn-map-clouds.active { border-color: #94a3b8; background: #f1f5f9; }
+        [data-theme="dark"] #btn-map-clouds.active { background: #334155; border-color: #94a3b8; }
+        #btn-map-wind.active { border-color: #2dd4bf; background: #ccfbf1; }
+        [data-theme="dark"] #btn-map-wind.active { background: #115e59; border-color: #14b8a6; }
+        .map-dropdown-content { display: none; flex-direction: column; gap: 8px; position: absolute; top: 100%; left: 0; margin-top: 8px; }
 
         /* RÝCHLE VOĽBY MIEST (10 TLAČIDIEL) */
         .quick-locations-bar {
@@ -370,10 +375,19 @@
 <iframe id="windy-iframe" src=""></iframe>
 
 <div class="map-controls">
-    <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm')" title="Základná (OSM/Carto)">☀️</button>
-    <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark')" title="Tmavá">🌙</button>
-    <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo')" title="Turistická">⛰️</button>
-    <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite')" title="Satelitná">🛰️</button>
+    <!-- Tlačidlo 1: Roletka pre základné mapy -->
+    <div style="position: relative;">
+        <button class="map-btn" id="btn-map-base" onclick="handleBaseMapButtonClick()" title="Základné mapy">🗺️</button>
+        <div id="map-dropdown-content" class="map-dropdown-content">
+            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" title="Základná (OSM/Carto)">☀️</button>
+            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" title="Tmavá">🌙</button>
+            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" title="Turistická">⛰️</button>
+            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" title="Satelitná">🛰️</button>
+        </div>
+    </div>
+    <!-- Tlačidlo 2: Windy Oblačnosť -->
+    <button class="map-btn" id="btn-map-clouds" onclick="changeMapLayerQuick('clouds')" title="Oblačnosť (Windy)">☁️</button>
+    <button class="map-btn" id="btn-map-wind" onclick="changeMapLayerQuick('wind')" title="Vietor (Windy)">💨</button>
     <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar')" title="Zrážkový radar (Windy)">🌧️</button>
 </div>
 
@@ -393,6 +407,12 @@
             </button>
             <button class="settings-btn" onclick="toggleTheme()" title="Prepnúť režim">🌓</button>
             <button class="settings-btn" onclick="toggleModal()" data-i18n-title="settings_title" title="Nastavenia">⚙️</button>
+            <button class="settings-btn" onclick="closeApp()" title="Vypnúť aplikáciu">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;">
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                    <line x1="12" y1="2" x2="12" y2="12"></line>
+                </svg>
+            </button>
         </div>
     </div>
     
@@ -517,6 +537,8 @@
                 <option value="topo" data-i18n="map_topo">Turistická</option>
                 <option value="satellite" data-i18n="map_sat">Satelitná</option>
                 <option value="radar" data-i18n="map_radar">Zrážkový radar (Windy)</option>
+                <option value="clouds" data-i18n="map_clouds">Oblačnosť (Windy)</option>
+                <option value="wind" data-i18n="map_wind">Vietor (Windy)</option>
             </select>
         </div>
 
@@ -813,17 +835,21 @@
         const bottomWrapper = document.getElementById('bottom-wrapper');
         const leafletControls = document.querySelector('.leaflet-control-container');
 
-        if (mapId === 'radar') {
+        if (mapId === 'radar' || mapId === 'clouds' || mapId === 'wind') {
             windyIframe.style.display = 'block';
             const topHeight = document.querySelector('.top-panel').offsetHeight;
             windyIframe.style.top = topHeight + 'px';
-            windyIframe.style.height = `calc(100vh - ${topHeight}px)`;
+            windyIframe.style.height = (window.innerHeight - topHeight) + 'px';
 
             if (bottomWrapper) bottomWrapper.style.display = 'none';
             if (leafletControls) leafletControls.style.display = 'none';
             
             let lat = lastLat !== null ? lastLat : 48.1486; let lon = lastLon !== null ? lastLon : 17.1077;
-            windyIframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1&play=1`;
+            
+            // OPRAVA: Parametre pre animáciu pridáme len ak ide o radar
+            let extraParams = (mapId === 'radar') ? '&radarRange=-1&play=1' : '';
+            
+            windyIframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=${mapId}&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C${extraParams}`;
         } else {
             windyIframe.style.display = 'none';
             if (bottomWrapper && lastSearchedCity !== "") bottomWrapper.style.display = 'flex';
@@ -836,8 +862,40 @@
         updateQuickMapButtons(); if (fromUser) closeModal();
     }
 
-    function changeMapLayerQuick(layer) { document.getElementById('mapLayerSelect').value = layer; changeMapLayer(false); }
-    function updateQuickMapButtons() { document.querySelectorAll('.map-btn').forEach(btn => btn.classList.remove('active')); let activeBtn = document.getElementById('btn-map-' + (appSettings.map || 'osm')); if(activeBtn) activeBtn.classList.add('active'); }
+    // Pamäť pre poslednú zvolenú obyčajnú mapu (na začiatku zistí z nastavení, inak dá OSM)
+    let lastBaseMap = (typeof appSettings !== 'undefined' && appSettings.map !== 'radar' && appSettings.map !== 'clouds' && appSettings.map !== 'wind') ? appSettings.map : 'osm';
+
+    function changeMapLayerQuick(layer) { 
+        // Ak používateľ klikol na obyčajnú mapu, zapamätáme si ju ako poslednú aktívnu
+        if (layer !== 'radar' && layer !== 'clouds' && layer !== 'wind') { lastBaseMap = layer; }
+        document.getElementById('mapLayerSelect').value = layer; 
+        changeMapLayer(false); 
+    }
+
+    function handleBaseMapButtonClick() {
+        let currentMap = document.getElementById('mapLayerSelect').value;
+        let drp = document.getElementById('map-dropdown-content');
+        
+        if (currentMap === 'radar' || currentMap === 'clouds' || currentMap === 'wind') {
+            // Sme vo Windy mapách -> kliknutie nás okamžite vráti do poslednej obyčajnej mapy a roletku neotvorí
+            changeMapLayerQuick(lastBaseMap);
+            drp.style.display = 'none';
+        } else {
+            // Už sme v obyčajnej mape -> kliknutie normálne vyroluje / schová roletku
+            drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
+        }
+    }
+    function updateQuickMapButtons() { 
+        document.querySelectorAll('.map-btn').forEach(btn => btn.classList.remove('active')); 
+        let activeBtn = document.getElementById('btn-map-' + (appSettings.map || 'osm')); 
+        if(activeBtn) activeBtn.classList.add('active'); 
+        
+        // Zvýrazníme hlavné tlačidlo, ak sme v niektorej zo základných máp
+        if (appSettings.map !== 'radar' && appSettings.map !== 'clouds' && appSettings.map !== 'wind') {
+            let baseBtn = document.getElementById('btn-map-base');
+            if(baseBtn) baseBtn.classList.add('active');
+        }
+    }
 
     function applyTheme(themeVal) {
         if (themeVal === 'system') {
@@ -1009,10 +1067,10 @@
 
         window.addEventListener('resize', () => {
             if (window.innerWidth !== originalWidth) { originalWidth = window.innerWidth; originalHeight = window.innerHeight; document.body.style.height = originalHeight + 'px'; }
-            if (appSettings.map === 'radar') {
+            if (appSettings.map === 'radar' || appSettings.map === 'clouds' || appSettings.map === 'wind') {
                 const windyIframe = document.getElementById('windy-iframe');
                 const topHeight = document.querySelector('.top-panel').offsetHeight;
-                windyIframe.style.top = topHeight + 'px'; windyIframe.style.height = `calc(100vh - ${topHeight}px)`;
+                windyIframe.style.top = topHeight + 'px'; windyIframe.style.height = (window.innerHeight - topHeight) + 'px';
             }
         });
 
@@ -1260,6 +1318,7 @@
     function toggleModal() { const modal = document.getElementById('settingsModal'); modal.style.display = modal.style.display === "flex" ? "none" : "flex"; }
     function closeModal() { document.getElementById('settingsModal').style.display = "none"; }
     function windowOnClick(event) { if (event.target === document.getElementById('settingsModal')) toggleModal(); }
+    function closeApp() { window.close(); setTimeout(() => { showToast("⚠️ Prehliadač blokuje zatvorenie. Aplikáciu/kartu musíte zavrieť ručne."); }, 300); }
     function handleKeyPress(event) { if (event.key === 'Enter') { document.getElementById('cityInput').blur(); getWindData(false, false); } }
     
     let toastTimeout;
@@ -1284,8 +1343,12 @@
     
     function getWeatherBgColor(code, isNight) {
         if (isNight) return "#1e293b"; 
-        if (code >= 51 && code <= 99) return "#1d4ed8"; 
-        if (code >= 2 && code <= 48) return "#94a3b8"; 
+        if (code === 0 || code === 1) return "#fde047"; // Jasno, prevažne jasno (sýta žltá)
+        if (code === 2) return "#fef9c3"; // Polooblačno (veľmi slabá pastelová žltá)
+        if (code === 3) return "#94a3b8"; // Zamračené (sivá)
+        if (code === 45 || code === 48) return "#cbd5e1"; // Hmla (mliečna sivá)
+        if (code >= 71 && code <= 77 || code === 85 || code === 86) return "#f472b6"; // Sneh (ružová)
+        if (code >= 51 && code <= 99) return "#3b82f6"; // Dážď a búrky (modrá)
         return "#fde047"; 
     }
 
@@ -1321,7 +1384,25 @@
         if (rainMm <= stops[0].amount) return stops[0].color; if (rainMm >= stops[stops.length - 1].amount) return stops[stops.length - 1].color;
         for (let i = 0; i < stops.length - 1; i++) { if (rainMm >= stops[i].amount && rainMm <= stops[i + 1].amount) { return interpolateColor(stops[i].color, stops[i + 1].color, (rainMm - stops[i].amount) / (stops[i + 1].amount - stops[i].amount)); } }
     }
-
+function getTempBgColor(temp) {
+        const stops = [ 
+            { t: -10, c: "#8b5cf6" }, // fialová (tuhý mráz)
+            { t: 0, c: "#3b82f6" },   // modrá (mráz okolo nuly)
+            { t: 10, c: "#7dd3fc" },  // svetlomodrá (chladno)
+            { t: 15, c: "#4ade80" },  // zelená (jar)
+            { t: 20, c: "#fef08a" },  // slabožltá (príjemné teplo)
+            { t: 30, c: "#facc15" },  // žltá (teplo)
+            { t: 35, c: "#fb923c" },  // oranžová (horúco)
+            { t: 40, c: "#ef4444" }   // červená (extrémne horúčavy)
+        ];
+        if (temp <= stops[0].t) return stops[0].c; 
+        if (temp >= stops[stops.length - 1].t) return stops[stops.length - 1].c;
+        for (let i = 0; i < stops.length - 1; i++) { 
+            if (temp >= stops[i].t && temp <= stops[i + 1].t) { 
+                return interpolateColor(stops[i].c, stops[i + 1].c, (temp - stops[i].t) / (stops[i + 1].t - stops[i].t)); 
+            } 
+        }
+    }
     function getWindDesc(speed) {
         if (speed < 10) return t('w0'); if (speed < 20) return t('w1'); if (speed < 30) return t('w2'); if (speed < 40) return t('w3');
         if (speed < 55) return t('w4'); if (speed < 80) return t('w5'); if (speed < 100) return t('w6'); return t('w7');
@@ -1585,11 +1666,17 @@
                 const wTemp = Math.round(hourly.temperature_2m[i]); const wCode = hourly.weathercode[i];                
                 const isNight = (hourStrObj < 6 || hourStrObj >= 21);
                 
-                let nextSpeed = wSpeed; let nextGust = wGust; let nextRain = wRain; let nextIsNight = isNight; let nextCode = wCode;
+                // Tieto 3 riadky chýbali:
+                const actualIcon = getWeatherIcon(wCode, isNight);
+                const actualText = getWeatherText(wCode);
+                const rainTextColor = getRainTextColor(wRain);
+
+                let nextSpeed = wSpeed; let nextGust = wGust; let nextRain = wRain; let nextIsNight = isNight; let nextCode = wCode; let nextTemp = wTemp;
                 
                 if (i + 3 < hourly.time.length && hourly.windspeed_10m[i + 3] !== null && hourly.windspeed_10m[i + 3] !== undefined) {
                     nextSpeed = Math.round(hourly.windspeed_10m[i + 3]); nextGust = Math.round(hourly.windgusts_10m[i + 3]); nextRain = hourly.precipitation[i + 3];
                     let nextHourStrObj = new Date(hourly.time[i + 3]).getHours(); nextIsNight = (nextHourStrObj < 6 || nextHourStrObj >= 21); nextCode = hourly.weathercode[i + 3];
+                    nextTemp = Math.round(hourly.temperature_2m[i + 3]);
                 }
 
                 const colorSpeed1 = getWindColor(wSpeed); const colorSpeed2 = getWindColor(nextSpeed);
@@ -1597,17 +1684,20 @@
                 const isRaining = wRain > 0 || nextRain > 0;
                 const colorRain1 = wRain > 0 ? getRainColor(wRain) : "#ffffff"; const colorRain2 = nextRain > 0 ? getRainColor(nextRain) : "#ffffff";
 
+                // Pozadie pre Hodiny a Ikonu (oblačnosť, dážď, atď.)
                 const weatherBg1 = getWeatherBgColor(wCode, isNight); const weatherBg2 = getWeatherBgColor(nextCode, nextIsNight);
                 const weatherGradient = `background: linear-gradient(to right, ${weatherBg1}, ${weatherBg2});`;
                 
+                // Pozadie pre Teplotu
+                const tempBg1 = getTempBgColor(wTemp); const tempBg2 = getTempBgColor(nextTemp);
+                const tempGradient = `background: linear-gradient(to right, ${tempBg1}, ${tempBg2});`;
+
                 const isNightText = (hourStrObj >= 18 || hourStrObj <= 3); const textCol = isNightText ? '#ffffff' : '#000000';
 
+                // Návrat k dynamickej farbe čísiel teploty (modrá pre mráz, červená nad 31, inak čierna)
                 let tempCol;
-                if (wTemp <= 0) { tempCol = '#38bdf8'; } else if (wTemp >= 28) { tempCol = '#dc2626'; } else { tempCol = textCol; }
-                let tempShadow = (tempCol === '#ffffff') ? 'none' : '-1px -1px 0 rgba(255,255,255,0.6), 1px -1px 0 rgba(255,255,255,0.6), -1px 1px 0 rgba(255,255,255,0.6), 1px 1px 0 rgba(255,255,255,0.6)';
-
-                const rainTextColor = wRain > 0 ? getRainTextColor(wRain) : 'transparent';
-                const actualIcon = getWeatherIcon(wCode, isNight), actualText = getWeatherText(wCode);
+                if (wTemp <= 0) { tempCol = '#0284c7'; } else if (wTemp >= 31) { tempCol = '#dc2626'; } else { tempCol = '#000000'; }
+                let tempShadow = '-1px -1px 0 rgba(255,255,255,0.8), 1px -1px 0 rgba(255,255,255,0.8), -1px 1px 0 rgba(255,255,255,0.8), 1px 1px 0 rgba(255,255,255,0.8)';
 
                 let lineTopHtml = isCurrentBlock ? `<div class="now-line-top"></div>` : '';
                 let lineBotHtml = isCurrentBlock ? `<div class="now-line-bottom"></div>` : '';
@@ -1617,7 +1707,8 @@
 
                 hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: bold;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${lineTopHtml}${lineBotHtml}</td>`;
                 iconHtml += `<td class="icon-cell${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" title="${escapeHTML(actualText)}" onclick="showToast('${escapeHTML(actualText)}')"><span class="cell-content">${actualIcon}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; font-weight: bold; cursor: pointer;" onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: bold; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
+                // TU SME ZMENILI weatherGradient NA tempGradient
+                tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; font-weight: bold; cursor: pointer;" onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: bold; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
                 
                 if (isRaining) { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorRain1}, ${colorRain2}); cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: ${wRain.toFixed(1)} cm')"><span class="cell-content" style="color: ${rainTextColor}; font-weight: bold;">${wRain > 0 ? wRain.toFixed(1) : ''}</span>${lineTopHtml}${lineBotHtml}</td>`; } 
                 else { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background-color: #ffffff; cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: 0 cm')">${lineTopHtml}${lineBotHtml}</td>`; }
