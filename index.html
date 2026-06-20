@@ -315,7 +315,7 @@
         }
         .quick-btn.empty { color: var(--text-muted); font-size: 15px; font-weight: normal; border-style: dashed; font-family: sans-serif; }
 
-        .bottom-panel-wrapper { margin-top: auto; position: relative; z-index: 10; display: flex; flex-direction: column; }
+        .bottom-panel-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; }
         
         .panel-header {
             display: flex; justify-content: space-between; align-items: flex-end;
@@ -482,6 +482,21 @@
     <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar')" title="Zrážkový radar (Windy)">🌧️</button>
 </div>
 
+<div class="map-controls">
+    <div style="position: relative;">
+        <button class="map-btn" id="btn-map-base" onclick="handleBaseMapButtonClick()" title="Základné mapy">🗺️</button>
+        <div id="map-dropdown-content" class="map-dropdown-content">
+            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" title="Základná (OSM/Carto)">☀️</button>
+            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" title="Tmavá">🌙</button>
+            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" title="Turistická">⛰️</button>
+            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" title="Satelitná">🛰️</button>
+        </div>
+    </div>
+    <button class="map-btn" id="btn-map-clouds" onclick="changeMapLayerQuick('clouds')" title="Oblačnosť (Windy)">☁️</button>
+    <button class="map-btn" id="btn-map-wind" onclick="changeMapLayerQuick('wind')" title="Vietor (Windy)">💨</button>
+    <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar')" title="Zrážkový radar (Windy)">🌧️</button>
+</div>
+
 <div class="top-panel">
     <div class="header-container">
         <div class="header-title-wrapper">
@@ -490,13 +505,6 @@
         </div>
         <div class="header-buttons">
             <span id="network-status" class="status-icon" onclick="showNetworkToast()"></span>
-            <button class="settings-btn refresh-btn" onclick="getWindData(true, true)" data-i18n-title="refresh_btn" title="Obnoviť dáta">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M23 4v6h-6"></path>
-                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                </svg>
-            </button>
-            <button class="settings-btn" onclick="toggleTheme()" title="Prepnúť režim">🌓</button>
             <button class="settings-btn" onclick="toggleModal()" data-i18n-title="settings_title" title="Nastavenia">⚙️</button>
             <button class="settings-btn" onclick="closeApp()" title="Vypnúť aplikáciu">
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;">
@@ -514,6 +522,14 @@
             <button class="geo-input-btn" onmousedown="event.preventDefault(); document.getElementById('cityInput').blur(); triggerGeolocation(false);" title="Moja poloha">📍</button>
             <div id="dropdown-list" class="recent-dropdown"></div>
         </div>
+        
+        <button class="settings-btn refresh-btn" onclick="getWindData(true, true)" data-i18n-title="refresh_btn" title="Obnoviť dáta" style="flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 4v6h-6"></path>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+        </button>
+        
         <button class="action-btn" onclick="getWindData(false, false)" data-i18n="search_btn">Hľadať</button>
     </div>
 </div>
@@ -567,6 +583,21 @@
         </div>
 
         <div class="settings-section">
+            <h4 data-i18n="set_theme">Vzhľad</h4>
+            <select id="themeSelect" class="settings-select" onchange="changeTheme()">
+                <option value="system" data-i18n="theme_sys">Systémový</option>
+                <option value="light" data-i18n="theme_light">Svetlý</option>
+                <option value="dark" data-i18n="theme_dark">Tmavý</option>
+                <option value="black" data-i18n="theme_black">Amoled Čierny</option>
+                <option value="pastel-blue" data-i18n="theme_p_blue">Pastelový Modrý</option>
+                <option value="pastel-green" data-i18n="theme_p_green">Pastelový Zelený</option>
+                <option value="pastel-pink" data-i18n="theme_p_pink">Pastelový Ružový</option>
+                <option value="pastel-yellow" data-i18n="theme_p_yellow">Pastelový Žltý</option>
+                <option value="pastel-purple" data-i18n="theme_p_purple">Pastelový Fialový</option>
+            </select>
+        </div>
+
+        <div class="settings-section">
             <h4 data-i18n="set_startup">Miesto pri spustení</h4>
             <select id="startupSelect" class="settings-select" onchange="startupChanged()">
                 <option value="last" data-i18n="start_last">Posledné hľadané</option>
@@ -605,21 +636,6 @@
                 <input type="checkbox" id="weekdayShort" onchange="updateWeekdaySettings(this)">
                 <span data-i18n="set_weekday_short">Deň v týždni skratkou</span>
             </label>
-        </div>
-
-        <div class="settings-section">
-            <h4 data-i18n="set_theme">Vzhľad</h4>
-            <select id="themeSelect" class="settings-select" onchange="changeTheme()">
-                <option value="system" data-i18n="theme_sys">Systémový</option>
-                <option value="light" data-i18n="theme_light">Svetlý</option>
-                <option value="dark" data-i18n="theme_dark">Tmavý</option>
-                <option value="black" data-i18n="theme_black">Amoled Čierny</option>
-                <option value="pastel-blue" data-i18n="theme_p_blue">Pastelový Modrý</option>
-                <option value="pastel-green" data-i18n="theme_p_green">Pastelový Zelený</option>
-                <option value="pastel-pink" data-i18n="theme_p_pink">Pastelový Ružový</option>
-                <option value="pastel-yellow" data-i18n="theme_p_yellow">Pastelový Žltý</option>
-                <option value="pastel-purple" data-i18n="theme_p_purple">Pastelový Fialový</option>
-            </select>
         </div>
 
         <div class="settings-section">
