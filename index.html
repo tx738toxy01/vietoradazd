@@ -41,6 +41,97 @@
             --accent-color: #38bdf8;
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
+/* NOVÉ TÉMY */
+        [data-theme="black"] {
+            --bg-panel: rgba(0, 0, 0, 0.92);
+            --bg-solid: #000000;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #0f172a;
+            --hover-bg: #1e293b;
+            --table-header-bg: #000000;
+            --sticky-bg: #0f172a; 
+            --day-bg: #000000; 
+            --night-bg: #0f172a; 
+            --accent-color: #38bdf8;
+            --shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+        }
+        [data-theme="pastel-blue"] {
+            --bg-panel: rgba(240, 248, 255, 0.92);
+            --bg-solid: #f0f8ff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #bae6fd;
+            --input-bg: #e0f2fe;
+            --hover-bg: #e0f2fe;
+            --table-header-bg: #e0f2fe;
+            --sticky-bg: #bae6fd;
+            --day-bg: #f0f8ff;
+            --night-bg: #bae6fd;
+            --accent-color: #0284c7;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        [data-theme="pastel-green"] {
+            --bg-panel: rgba(240, 253, 244, 0.92);
+            --bg-solid: #f0fdf4;
+            --text-main: #064e3b;
+            --text-muted: #065f46;
+            --border-color: #bbf7d0;
+            --input-bg: #dcfce7;
+            --hover-bg: #dcfce7;
+            --table-header-bg: #dcfce7;
+            --sticky-bg: #bbf7d0;
+            --day-bg: #f0fdf4;
+            --night-bg: #bbf7d0;
+            --accent-color: #16a34a;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        [data-theme="pastel-pink"] {
+            --bg-panel: rgba(253, 242, 248, 0.92);
+            --bg-solid: #fdf2f8;
+            --text-main: #831843;
+            --text-muted: #9d174d;
+            --border-color: #fbcfe8;
+            --input-bg: #fce7f3;
+            --hover-bg: #fce7f3;
+            --table-header-bg: #fce7f3;
+            --sticky-bg: #fbcfe8;
+            --day-bg: #fdf2f8;
+            --night-bg: #fbcfe8;
+            --accent-color: #db2777;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        [data-theme="pastel-yellow"] {
+            --bg-panel: rgba(254, 252, 232, 0.92);
+            --bg-solid: #fefce8;
+            --text-main: #713f12;
+            --text-muted: #854d0e;
+            --border-color: #fef08a;
+            --input-bg: #fef9c3;
+            --hover-bg: #fef9c3;
+            --table-header-bg: #fef9c3;
+            --sticky-bg: #fef08a;
+            --day-bg: #fefce8;
+            --night-bg: #fef08a;
+            --accent-color: #ca8a04;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        [data-theme="pastel-purple"] {
+            --bg-panel: rgba(250, 245, 255, 0.92);
+            --bg-solid: #faf5ff;
+            --text-main: #581c87;
+            --text-muted: #6b21a8;
+            --border-color: #e9d5ff;
+            --input-bg: #f3e8ff;
+            --hover-bg: #f3e8ff;
+            --table-header-bg: #f3e8ff;
+            --sticky-bg: #e9d5ff;
+            --day-bg: #faf5ff;
+            --night-bg: #e9d5ff;
+            --accent-color: #9333ea;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -356,7 +447,7 @@
         }
 
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; }
-        .modal-content { background-color: var(--bg-solid); color: var(--text-main); padding: 25px; border-radius: 12px; width: 90%; max-width: 420px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
+        .modal-content { background-color: var(--bg-solid); color: var(--text-main); padding: 25px; border-radius: 12px; width: 90%; max-width: 420px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
         
         .settings-section { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
@@ -458,7 +549,23 @@
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
         <h3 style="margin-top: 0; margin-bottom: 20px;" data-i18n="settings_title">Nastavenia</h3>
-        
+
+        <div class="settings-section">
+            <h4 data-i18n="set_lang">Jazyk / Language</h4>
+            <select id="langSelect" class="settings-select" onchange="changeLanguage()">
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="fr">Français</option>
+                <option value="es">Español</option>
+                <option value="sk">Slovensky</option>
+                <option value="cs">Česky</option>
+                <option value="zh">中文 (Chinese)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="ja">日本語 (Japanese)</option>
+                <option value="ko">한국어 (Korean)</option>
+            </select>
+        </div>
+
         <div class="settings-section">
             <h4 data-i18n="set_startup">Miesto pri spustení</h4>
             <select id="startupSelect" class="settings-select" onchange="startupChanged()">
@@ -472,7 +579,7 @@
                 <div id="settings-dropdown-list" class="recent-dropdown" style="max-height: 200px;"></div>
             </div>
         </div>
-        
+
         <div class="settings-section">
             <h4 data-i18n="set_time_format">Formát času</h4>
             <select id="timeFormatSelect" class="settings-select" onchange="changeTimeFormat()">
@@ -482,31 +589,22 @@
         </div>
 
         <div class="settings-section">
-            <h4>Formát dátumu</h4>
+            <h4 data-i18n="set_date_format">Formát dátumu</h4>
             <select id="dateFormatSelect" class="settings-select" onchange="changeDateFormat()" style="margin-bottom: 8px;">
-                <option value="text">St 10. jún 2026</option>
+                <option value="text">10. jún 2026</option>
+                <option value="month_first">Jún 10. 2026</option>
                 <option value="d.m.y">10. 6. 2026</option>
                 <option value="y-m-d">2026-06-10</option>
                 <option value="m/d/y">06/10/2026</option>
             </select>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
-                <input type="checkbox" id="fullHeaderDay" onchange="updateFullHeaderDay(this.checked)">
-                Dátum v hlavičke celým slovom
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; margin-bottom: 6px;">
+                <input type="checkbox" id="weekdayFull" onchange="updateWeekdaySettings(this)">
+                <span data-i18n="set_weekday_full">Deň v týždni slovom</span>
             </label>
-        </div>
-
-        <div class="settings-section">
-            <h4 data-i18n="set_lang">Jazyk / Language</h4>
-            <select id="langSelect" class="settings-select" onchange="changeLanguage()">
-                <option value="sk">Slovensky</option>
-                <option value="cs">Česky</option>
-                <option value="en">English</option>
-                <option value="de">Deutsch</option>
-                <option value="fr">Français</option>
-                <option value="es">Español</option>
-                <option value="zh">中文 (Chinese)</option>
-                <option value="hi">हिन्दी (Hindi)</option>
-            </select>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" id="weekdayShort" onchange="updateWeekdaySettings(this)">
+                <span data-i18n="set_weekday_short">Deň v týždni skratkou</span>
+            </label>
         </div>
 
         <div class="settings-section">
@@ -515,6 +613,12 @@
                 <option value="system" data-i18n="theme_sys">Systémový</option>
                 <option value="light" data-i18n="theme_light">Svetlý</option>
                 <option value="dark" data-i18n="theme_dark">Tmavý</option>
+                <option value="black" data-i18n="theme_black">Amoled Čierny</option>
+                <option value="pastel-blue" data-i18n="theme_p_blue">Pastelový Modrý</option>
+                <option value="pastel-green" data-i18n="theme_p_green">Pastelový Zelený</option>
+                <option value="pastel-pink" data-i18n="theme_p_pink">Pastelový Ružový</option>
+                <option value="pastel-yellow" data-i18n="theme_p_yellow">Pastelový Žltý</option>
+                <option value="pastel-purple" data-i18n="theme_p_purple">Pastelový Fialový</option>
             </select>
         </div>
 
@@ -543,13 +647,15 @@
         </div>
 
         <div class="settings-section" style="border-bottom: none;">
-            <h4>Rýchle voľby (10 tlačidiel)</h4>
-            <button class="action-btn" onclick="resetQuickLocations()" style="width: 100%; background-color: #ef4444;">Vymazať rýchle voľby</button>
+            <h4 data-i18n="set_quick_title">Rýchle voľby</h4>
+            <button class="action-btn" onclick="resetQuickLocations()" style="width: 100%; background-color: #ef4444;" data-i18n="set_quick_clear">Vymazať rýchle voľby</button>
         </div>
 
-        <div>
-            <h4 data-i18n="set_legend">Legenda sily vetra</h4>
-            <table class="legend-table">
+        <details class="settings-section" style="border-bottom: none; margin-top: 15px;">
+            <summary style="cursor: pointer; font-weight: bold; font-size: 14px; outline: none; user-select: none; padding: 5px 0;">
+                <h4 data-i18n="set_legend" style="display: inline; margin: 0;">Legenda sily vetra</h4>
+            </summary>
+            <table class="legend-table" style="margin-top: 10px;">
                 <tr><td><div class="color-box" style="background-color: #ffffff;"></div></td><td>0 – 10 km/h</td><td data-i18n="w0">Slabý vánok</td></tr>
                 <tr><td><div class="color-box" style="background-color: #60a5fa;"></div></td><td>10 – 20 km/h</td><td data-i18n="w1">Mierny vietor</td></tr>
                 <tr><td><div class="color-box" style="background-color: #4ade80;"></div></td><td>20 – 30 km/h</td><td data-i18n="w2">Čerstvý vietor</td></tr>
@@ -559,7 +665,7 @@
                 <tr><td><div class="color-box" style="background-color: #c084fc;"></div></td><td>80 – 100 km/h</td><td data-i18n="w6">Víchrica</td></tr>
                 <tr><td><div class="color-box" style="background-color: #9333ea;"></div></td><td>> 100 km/h</td><td data-i18n="w7">Orkán</td></tr>
             </table>
-        </div>
+        </details>
     </div>
 </div>
 
@@ -579,7 +685,11 @@
             settings_title: "Nastavenia", set_lang: "Jazyk", set_theme: "Vzhľad", set_model: "Zdroj predpovede",
             set_map: "Mapový podklad", set_legend: "Legenda sily vetra", refresh_btn: "Obnoviť dáta",
             set_startup: "Miesto pri spustení", start_last: "Posledné hľadané", start_geo: "Geolokácia (Moja poloha)", start_custom: "Vlastné miesto...",
-            set_time_format: "Formát času a dátumu", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_time_format: "Formát času", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "Formát dátumu", set_weekday_full: "Deň v týždni slovom", set_weekday_short: "Deň v týždni skratkou",
+            set_quick_title: "Rýchle voľby", set_quick_clear: "Vymazať rýchle voľby",
+            msg_clear_quick: "Naozaj chceš vymazať všetky uložené rýchle voľby?", msg_quick_cleared: "Rýchle voľby vymazané",
+            msg_quick_saved: "Uložené", msg_quick_save_err: "Najprv vyhľadaj miesto na uloženie.", msg_quick_empty: "Prázdne. Podrž pre uloženie aktuálneho miesta.",
             theme_sys: "Systémový", theme_light: "Svetlý", theme_dark: "Tmavý",
             mod_auto: "Auto", map_osm: "Základná (OSM)", map_light: "Svetlá", map_dark: "Tmavá", map_topo: "Turistická", map_sat: "Satelitná", map_radar: "Zrážkový radar",
             w0: "Slabý vánok", w1: "Mierny vietor", w2: "Čerstvý vietor", w3: "Silný vietor", w4: "Veľmi silný", w5: "Víchor", w6: "Víchrica", w7: "Orkán",
@@ -594,7 +704,11 @@
             settings_title: "Settings", set_lang: "Language", set_theme: "Theme", set_model: "Forecast Model",
             set_map: "Map Layer", set_legend: "Wind Speed Legend", refresh_btn: "Refresh data",
             set_startup: "Startup Location", start_last: "Last searched", start_geo: "Geolocation", start_custom: "Custom city...",
-            set_time_format: "Time & Date Format", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_time_format: "Time Format", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "Date Format", set_weekday_full: "Full weekday name", set_weekday_short: "Short weekday name",
+            set_quick_title: "Quick Locations", set_quick_clear: "Clear quick locations",
+            msg_clear_quick: "Are you sure you want to clear all saved quick locations?", msg_quick_cleared: "Quick locations cleared",
+            msg_quick_saved: "Saved", msg_quick_save_err: "Search for a location first.", msg_quick_empty: "Empty. Hold to save current location.",
             theme_sys: "System", theme_light: "Light", theme_dark: "Dark",
             mod_auto: "Auto", map_osm: "Standard (OSM)", map_light: "Light", map_dark: "Dark", map_topo: "Topographic", map_sat: "Satellite", map_radar: "Precipitation Radar",
             w0: "Light air", w1: "Gentle breeze", w2: "Fresh breeze", w3: "Strong breeze", w4: "Gale", w5: "Strong gale", w6: "Storm", w7: "Hurricane",
@@ -607,7 +721,11 @@
             settings_title: "Nastavení", set_lang: "Jazyk", set_theme: "Vzhled", set_model: "Zdroj předpovědi",
             set_map: "Mapový podklad", set_legend: "Legenda síly větru", refresh_btn: "Obnovit data",
             set_startup: "Místo při spuštění", start_last: "Poslední hledané", start_geo: "Geolokace", start_custom: "Vlastní město...",
-            set_time_format: "Formát času a data", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_time_format: "Formát času", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "Formát data", set_weekday_full: "Den v týdnu slovem", set_weekday_short: "Den v týdnu zkratkou",
+            set_quick_title: "Rychlé volby", set_quick_clear: "Vymazat rychlé volby",
+            msg_clear_quick: "Opravdu chceš vymazat všechny uložené rychlé volby?", msg_quick_cleared: "Rychlé volby vymazány",
+            msg_quick_saved: "Uloženo", msg_quick_save_err: "Nejprve vyhledej místo k uložení.", msg_quick_empty: "Prázdné. Podrž pro uložení aktuálního místa.",
             theme_sys: "Systémový", theme_light: "Světlý", theme_dark: "Tmavý",
             mod_auto: "Auto", map_osm: "Základní (OSM)", map_light: "Světlá", map_dark: "Tmavá", map_topo: "Turistická", map_sat: "Satelitní", map_radar: "Srážkový radar",
             w0: "Slabý vánek", w1: "Mírný vítr", w2: "Čerstvý vítr", w3: "Silný vítr", w4: "Velmi silný", w5: "Vichřice", w6: "Silná vichřice", w7: "Orkán",
@@ -623,6 +741,10 @@
             set_map: "Karte", set_legend: "Windstärken", refresh_btn: "Aktualisieren",
             set_startup: "Startort", start_last: "Zuletzt gesucht", start_geo: "Standort", start_custom: "Eigener Ort...",
             set_time_format: "Zeitformat", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "Datumsformat", set_weekday_full: "Wochentag als Wort", set_weekday_short: "Wochentag abgekürzt",
+            set_quick_title: "Schnellzugriffe", set_quick_clear: "Schnellzugriffe löschen",
+            msg_clear_quick: "Möchten Sie wirklich alle Schnellzugriffe löschen?", msg_quick_cleared: "Schnellzugriffe gelöscht",
+            msg_quick_saved: "Gespeichert", msg_quick_save_err: "Suchen Sie zuerst einen Ort.", msg_quick_empty: "Leer. Halten, um zu speichern.",
             theme_sys: "System", theme_light: "Hell", theme_dark: "Dunkel",
             mod_auto: "Auto (Beste)", map_osm: "Standard (OSM)", map_light: "Hell", map_dark: "Dunkel", map_topo: "Topografisch", map_sat: "Satellit", map_radar: "Niederschlagsradar",
             w0: "Leichter Zug", w1: "Mäßige Brise", w2: "Frische Brise", w3: "Starker Wind", w4: "Stürmischer Wind", w5: "Sturm", w6: "Schwerer Sturm", w7: "Orkan",
@@ -636,6 +758,10 @@
             set_map: "Carte", set_legend: "Légende du vent", refresh_btn: "Actualiser",
             set_startup: "Lieu de démarrage", start_last: "Dernier recherché", start_geo: "Ma position", start_custom: "Ville personnalisée...",
             set_time_format: "Format de l'heure", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "Format de date", set_weekday_full: "Jour de la semaine", set_weekday_short: "Jour abrégé",
+            set_quick_title: "Lieux rapides", set_quick_clear: "Effacer les lieux rapides",
+            msg_clear_quick: "Voulez-vous vraiment effacer tous les lieux rapides ?", msg_quick_cleared: "Lieux rapides effacés",
+            msg_quick_saved: "Enregistré", msg_quick_save_err: "Recherchez d'abord un lieu.", msg_quick_empty: "Vide. Maintenez pour enregistrer.",
             theme_sys: "Système", theme_light: "Clair", theme_dark: "Sombre",
             mod_auto: "Auto", map_osm: "Standard", map_light: "Clair", map_dark: "Sombre", map_topo: "Topographique", map_sat: "Satellite", map_radar: "Radar de précipitations",
             w0: "Très légère", w1: "Jolie brise", w2: "Bonne brise", w3: "Vent fort", w4: "Coup de vent", w5: "Fort coup de vent", w6: "Tempête", w7: "Ouragan",
@@ -649,6 +775,10 @@
             set_map: "Mapa", set_legend: "Leyenda de Viento", refresh_btn: "Actualizar",
             set_startup: "Ubicación inicial", start_last: "Última búsqueda", start_geo: "Mi ubicación", start_custom: "Ciudad personalizada...",
             set_time_format: "Formato de hora", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "Formato de fecha", set_weekday_full: "Día completo", set_weekday_short: "Día abreviado",
+            set_quick_title: "Ubicaciones rápidas", set_quick_clear: "Borrar ubicaciones rápidas",
+            msg_clear_quick: "¿Quieres borrar todas las ubicaciones rápidas?", msg_quick_cleared: "Ubicaciones rápidas borradas",
+            msg_quick_saved: "Guardado", msg_quick_save_err: "Busca una ubicación primero.", msg_quick_empty: "Vacío. Mantén pulsado para guardar.",
             theme_sys: "Sistema", theme_light: "Claro", theme_dark: "Oscuro",
             mod_auto: "Auto", map_osm: "Estándar", map_light: "Claro", map_dark: "Oscuro", map_topo: "Topográfico", map_sat: "Satélite", map_radar: "Radar de precipitaciones",
             w0: "Brisa ligera", w1: "Brisa moderada", w2: "Brisa fresca", w3: "Viento fuerte", w4: "Vendaval", w5: "Temporal", w6: "Tormenta", w7: "Huracán",
@@ -662,6 +792,10 @@
             set_map: "地图", set_legend: "风力图例", refresh_btn: "刷新",
             set_startup: "启动位置", start_last: "最后搜索", start_geo: "定位", start_custom: "自定义城市...",
             set_time_format: "时间格式", tf_24: "24小时制", tf_12: "12小时制",
+            set_date_format: "日期格式", set_weekday_full: "星期全称", set_weekday_short: "星期缩写",
+            set_quick_title: "快捷位置", set_quick_clear: "清除快捷位置",
+            msg_clear_quick: "您确定要清除所有保存的快捷位置吗？", msg_quick_cleared: "快捷位置已清除",
+            msg_quick_saved: "已保存", msg_quick_save_err: "请先搜索一个位置。", msg_quick_empty: "空。长按保存当前位置。",
             theme_sys: "系统", theme_light: "浅色", theme_dark: "深色",
             mod_auto: "自动", map_osm: "标准 (OSM)", map_light: "浅色", map_dark: "深色", map_topo: "地形图", map_sat: "卫星图", map_radar: "降水雷达",
             w0: "微风", w1: "和风", w2: "清风", w3: "强风", w4: "疾风", w5: "狂风", w6: "暴风", w7: "飓风",
@@ -675,6 +809,10 @@
             set_map: "नक्शा", set_legend: "हवा की गति किंवदंती", refresh_btn: "रीफ्रेश करें",
             set_startup: "स्टार्टअप स्थान", start_last: "अंतिम खोज", start_geo: "मेरा स्थान", start_custom: "कस्टम शहर...",
             set_time_format: "समय प्रारूप", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
+            set_date_format: "दिनांक प्रारूप", set_weekday_full: "पूरा कार्यदिवस", set_weekday_short: "छोटा कार्यदिवस",
+            set_quick_title: "त्वरित स्थान", set_quick_clear: "त्वरित स्थान साफ़ करें",
+            msg_clear_quick: "क्या आप सभी त्वरित स्थानों को साफ़ करना चाहते हैं?", msg_quick_cleared: "त्वरित स्थान साफ़ किए गए",
+            msg_quick_saved: "सहेजा गया", msg_quick_save_err: "पहले कोई स्थान खोजें।", msg_quick_empty: "खाली। वर्तमान स्थान सहेजने के लिए दबाए रखें।",
             theme_sys: "सिस्टम", theme_light: "लाइट", theme_dark: "डार्क",
             mod_auto: "ऑटो", map_osm: "मानक", map_light: "लाइट", map_dark: "डार्क", map_topo: "स्थलाकृतिक", map_sat: "उपग्रह", map_radar: "वर्षा रडार",
             w0: "हल्की हवा", w1: "मध्यम हवा", w2: "ताजा हवा", w3: "तेज हवा", w4: "आंधी", w5: "तेज आंधी", w6: "तूफान", w7: "चक्रवात",
@@ -683,8 +821,98 @@
             c0: "साफ", c1: "मुख्यतः साफ", c2: "आंशिक बादल", c3: "बादल छाए रहेंगे", c45: "कोहरा", c51: "बूंदाबांदी", c61: "बारिश", c71: "बर्फ", c80: "बौछारें", c85: "बर्फ की बौछारें", c95: "आंधी-तूफान", lbl_now: "अब"
         }
     };
+// Doplňujúce preklady (vložené šikovnejšou metódou)
+    Object.assign(i18n.sk, {
+        msg_net_ok: "🌐 Pripojenie a server sú v poriadku.", msg_net_warn: "⚠️ Internet funguje, ale server počasia neodpovedá.", msg_net_off_mem: "🚫 Ste offline. Zobrazuje sa predpoveď z pamäte.", msg_close_block: "⚠️ Prehliadač blokuje zatvorenie. Zavrite ručne.", msg_refreshing: "🔄 Obnovujem dáta...", msg_search_off: "🚫 Ste offline. Pre hľadanie zapnite internet.", err_search_srv: "Chyba vyhľadávacieho servera. Skúste to o chvíľu.", err_meteo_srv: "⚠️ Chyba meteo-servera. Model možno nemá dáta.", err_no_data: "Dáta nedostupné. Skúste zmeniť zdroj na Auto.", reason_off: "Offline", reason_slow: "Pomalý server", msg_off_16d: "Zobrazujem uloženú 16-dňovú predpoveď.", msg_off_fallback: "nemám, vraciam na", msg_off_nodata: "a v pamäti nie sú žiadne dáta.", msg_data_refr: "✅ Dáta sú úspešne obnovené"
+    });
+    Object.assign(i18n.en, {
+        msg_net_ok: "🌐 Connection and server are OK.", msg_net_warn: "⚠️ Internet works, but weather server is unresponsive.", msg_net_off_mem: "🚫 Offline. Showing cached forecast.", msg_close_block: "⚠️ Browser blocked closing. Please close manually.", msg_refreshing: "🔄 Refreshing data...", msg_search_off: "🚫 Offline. Turn on internet to search.", err_search_srv: "Search server error. Try again later.", err_meteo_srv: "⚠️ Weather server error. Model may lack data.", err_no_data: "Data unavailable. Try changing source to Auto.", reason_off: "Offline", reason_slow: "Slow server", msg_off_16d: "Showing saved 16-day forecast.", msg_off_fallback: "not found, falling back to", msg_off_nodata: "and memory has no data.", msg_data_refr: "✅ Data refreshed successfully"
+    });
+    Object.assign(i18n.cs, {
+        msg_net_ok: "🌐 Připojení a server jsou v pořádku.", msg_net_warn: "⚠️ Internet funguje, ale meteo-server neodpovídá.", msg_net_off_mem: "🚫 Jste offline. Zobrazuji předpověď z paměti.", msg_close_block: "⚠️ Prohlížeč blokuje zavření. Zavřete ručně.", msg_refreshing: "🔄 Obnovuji data...", msg_search_off: "🚫 Jste offline. Pro hledání zapněte internet.", err_search_srv: "Chyba vyhledávacího serveru. Zkuste to za chvíli.", err_meteo_srv: "⚠️ Chyba meteo-serveru. Model možná nemá data.", err_no_data: "Data nedostupná. Zkuste změnit zdroj na Auto.", reason_off: "Offline", reason_slow: "Pomalý server", msg_off_16d: "Zobrazuji uloženou 16denní předpověď.", msg_off_fallback: "nemám, vracím na", msg_off_nodata: "a v paměti nejsou žádná data.", msg_data_refr: "✅ Data jsou úspěšně obnovena"
+    });
+Object.assign(i18n.sk, { masl: "m n. m." });
+    Object.assign(i18n.en, { masl: "m a.s.l." });
+    Object.assign(i18n.cs, { masl: "m n. m." });
+    Object.assign(i18n.de, { masl: "m ü. M." });
+    Object.assign(i18n.fr, { masl: "m d'alt." });
+    Object.assign(i18n.es, { masl: "m s. n. m." });
+    Object.assign(i18n.zh, { masl: "米 (海拔)" });
+    Object.assign(i18n.hi, { masl: "मी. समुद्र तल से" });
+Object.assign(i18n.de, {
+        msg_net_ok: "🌐 Verbindung und Server sind in Ordnung.", msg_net_warn: "⚠️ Internet funktioniert, aber Wetterserver antwortet nicht.", msg_net_off_mem: "🚫 Offline. Zeige gespeicherte Vorhersage.", msg_close_block: "⚠️ Browser blockiert Schließen. Bitte manuell schließen.", msg_refreshing: "🔄 Daten werden aktualisiert...", msg_search_off: "🚫 Offline. Für die Suche Internet einschalten.", err_search_srv: "Suchserver-Fehler. Versuchen Sie es später erneut.", err_meteo_srv: "⚠️ Wetterserver-Fehler. Modell hat evtl. keine Daten.", err_no_data: "Daten nicht verfügbar. Ändern Sie die Quelle auf Auto.", reason_off: "Offline", reason_slow: "Langsamer Server", msg_off_16d: "Zeige gespeicherte 16-Tage-Vorhersage.", msg_off_fallback: "nicht gefunden, wechsle zu", msg_off_nodata: "und es sind keine Daten gespeichert.", msg_data_refr: "✅ Daten erfolgreich aktualisiert"
+    });
 
-    const defaultSettings = { lang: 'sk', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'last', startupCustomCity: '', timeFormat: '24h', dateFormat: 'd.m.y', fullHeaderDay: false };
+    Object.assign(i18n.fr, {
+        msg_net_ok: "🌐 Connexion et serveur OK.", msg_net_warn: "⚠️ Internet fonctionne, mais le serveur météo ne répond pas.", msg_net_off_mem: "🚫 Hors ligne. Affichage des prévisions enregistrées.", msg_close_block: "⚠️ Le navigateur empêche la fermeture. Fermez manuellement.", msg_refreshing: "🔄 Actualisation des données...", msg_search_off: "🚫 Hors ligne. Activez Internet pour rechercher.", err_search_srv: "Erreur du serveur de recherche. Réessayez plus tard.", err_meteo_srv: "⚠️ Erreur du serveur météo. Modèle sans données.", err_no_data: "Données indisponibles. Essayez la source Auto.", reason_off: "Hors ligne", reason_slow: "Serveur lent", msg_off_16d: "Affichage des prévisions à 16 jours enregistrées.", msg_off_fallback: "introuvable, retour à", msg_off_nodata: "et aucune donnée en mémoire.", msg_data_refr: "✅ Données actualisées avec succès"
+    });
+
+    Object.assign(i18n.es, {
+        msg_net_ok: "🌐 Conexión y servidor OK.", msg_net_warn: "⚠️ Internet funciona, pero el servidor del clima no responde.", msg_net_off_mem: "🚫 Sin conexión. Mostrando pronóstico guardado.", msg_close_block: "⚠️ El navegador bloqueó el cierre. Cierra manualmente.", msg_refreshing: "🔄 Actualizando datos...", msg_search_off: "🚫 Sin conexión. Enciende Internet para buscar.", err_search_srv: "Error del servidor de búsqueda. Intenta más tarde.", err_meteo_srv: "⚠️ Error del servidor del clima. Modelo sin datos.", err_no_data: "Datos no disponibles. Cambia la fuente a Auto.", reason_off: "Desconectado", reason_slow: "Servidor lento", msg_off_16d: "Mostrando pronóstico de 16 días guardado.", msg_off_fallback: "no encontrado, volviendo a", msg_off_nodata: "y no hay datos en la memoria.", msg_data_refr: "✅ Datos actualizados correctamente"
+    });
+
+    Object.assign(i18n.zh, {
+        msg_net_ok: "🌐 连接和服务器正常。", msg_net_warn: "⚠️ 网络正常，但天气服务器无响应。", msg_net_off_mem: "🚫 离线。显示已保存的预报。", msg_close_block: "⚠️ 浏览器阻止关闭。请手动关闭。", msg_refreshing: "🔄 正在刷新数据...", msg_search_off: "🚫 离线。请打开网络进行搜索。", err_search_srv: "搜索服务器错误。请稍后再试。", err_meteo_srv: "⚠️ 天气服务器错误。模型可能没有数据。", err_no_data: "数据不可用。请尝试将来源更改为自动。", reason_off: "离线", reason_slow: "服务器缓慢", msg_off_16d: "显示已保存的 16 天预报。", msg_off_fallback: "未找到，退回到", msg_off_nodata: "并且内存中没有数据。", msg_data_refr: "✅ 数据刷新成功"
+    });
+
+    Object.assign(i18n.hi, {
+        msg_net_ok: "🌐 कनेक्शन और सर्वर ठीक हैं।", msg_net_warn: "⚠️ इंटरनेट काम कर रहा है, लेकिन मौसम सर्वर जवाब नहीं दे रहा है।", msg_net_off_mem: "🚫 ऑफ़लाइन। सहेजा गया पूर्वानुमान दिखा रहा है।", msg_close_block: "⚠️ ब्राउज़र ने बंद करने से रोका। कृपया मैन्युअल रूप से बंद करें।", msg_refreshing: "🔄 डेटा रीफ़्रेश किया जा रहा है...", msg_search_off: "🚫 ऑफ़लाइन। खोजने के लिए इंटरनेट चालू करें।", err_search_srv: "खोज सर्वर त्रुटि। बाद में फिर प्रयास करें।", err_meteo_srv: "⚠️ मौसम सर्वर त्रुटि। मॉडल में डेटा नहीं हो सकता है।", err_no_data: "डेटा उपलब्ध नहीं है। स्रोत को ऑटो में बदलें।", reason_off: "ऑफ़लाइन", reason_slow: "धीमा सर्वर", msg_off_16d: "सहेजा गया 16-दिन का पूर्वानुमान दिखा रहा है।", msg_off_fallback: "नहीं मिला, वापस जा रहे हैं", msg_off_nodata: "और मेमोरी में कोई डेटा नहीं है।", msg_data_refr: "✅ डेटा सफलतापूर्वक रीफ़्रेश हुआ"
+    });
+i18n.ja = {
+        app_title: "風と雨", search_ph: "場所を入力 (例: 東京)...", search_btn: "検索",
+        settings_title: "設定", set_lang: "言語 / Language", set_theme: "テーマ", set_model: "予報モデル",
+        set_map: "マップ", set_legend: "風速の凡例", refresh_btn: "更新",
+        set_startup: "起動時の場所", start_last: "最後に検索した場所", start_geo: "現在地", start_custom: "カスタム都市...",
+        set_time_format: "時刻の形式", tf_24: "24時間制", tf_12: "12時間制",
+        set_date_format: "日付の形式", set_weekday_full: "曜日（完全）", set_weekday_short: "曜日（略称）",
+        set_quick_title: "クイックロケーション", set_quick_clear: "クイックロケーションをクリア",
+        msg_clear_quick: "保存されているすべてのクイックロケーションをクリアしますか？", msg_quick_cleared: "クリアされました",
+        msg_quick_saved: "保存しました", msg_quick_save_err: "まず場所を検索してください。", msg_quick_empty: "空です。長押しで現在の場所を保存します。",
+        theme_sys: "システム", theme_light: "ライト", theme_dark: "ダーク",
+        mod_auto: "自動", map_osm: "標準 (OSM)", map_light: "ライト", map_dark: "ダーク", map_topo: "地形図", map_sat: "衛星写真", map_radar: "降水レーダー",
+        w0: "微風", w1: "そよ風", w2: "穏やかな風", w3: "強い風", w4: "非常に強い風", w5: "暴風", w6: "猛烈な風", w7: "台風",
+        t_date: "日付", t_hour: "時間", t_weat: "天気", t_temp: "気温 °C", t_rain: "降水量 cm", t_wind: "風速 km/h", t_gust: "突風 km/h", t_dir: "風向",
+        compass_n: "北", msg_locating: "位置情報を取得中...", msg_searching: "検索中...", msg_closest: "最寄りの場所を検索中...", err_notfound: "場所が見つかりません。", err_net: "ネットワークエラー。", err_gps: "位置情報が拒否されました。", wind_str: "風速", dir_str: "風向",
+        c0: "快晴", c1: "晴れ", c2: "晴れ時々曇り", c3: "曇り", c45: "霧", c51: "霧雨", c61: "雨", c71: "雪", c80: "にわか雨", c85: "にわか雪", c95: "雷雨", lbl_now: "現在",
+        days: ['日', '月', '火', '水', '木', '金', '土'],
+        months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        masl: "m (標高)",
+        msg_net_ok: "🌐 接続とサーバーは正常です。", msg_net_warn: "⚠️ インターネットは機能していますが、天気サーバーが応答しません。", msg_net_off_mem: "🚫 オフラインです。保存された予報を表示します。", msg_close_block: "⚠️ ブラウザが閉じるのをブロックしました。手動で閉じてください。", msg_refreshing: "🔄 データを更新中...", msg_search_off: "🚫 オフラインです。検索するにはインターネットをオンにしてください。", err_search_srv: "検索サーバーエラー。後でもう一度お試しください。", err_meteo_srv: "⚠️ 天気サーバーエラー。モデルにデータがない可能性があります。", err_no_data: "データが利用できません。ソースを自動に変更してください。", reason_off: "オフライン", reason_slow: "サーバーが遅い", msg_off_16d: "保存された16日間の予報を表示しています。", msg_off_fallback: "見つかりません、元に戻します:", msg_off_nodata: "メモリにデータがありません。", msg_data_refr: "✅ データが正常に更新されました"
+    };
+
+    i18n.ko = {
+        app_title: "바람과 비", search_ph: "위치 입력 (예: 서울)...", search_btn: "검색",
+        settings_title: "설정", set_lang: "언어 / Language", set_theme: "테마", set_model: "예보 모델",
+        set_map: "지도 레이어", set_legend: "풍속 범례", refresh_btn: "새로고침",
+        set_startup: "시작 위치", start_last: "최근 검색", start_geo: "내 위치", start_custom: "사용자 지정 도시...",
+        set_time_format: "시간 형식", tf_24: "24시간제", tf_12: "12시간제",
+        set_date_format: "날짜 형식", set_weekday_full: "요일 (전체)", set_weekday_short: "요일 (약어)",
+        set_quick_title: "빠른 위치", set_quick_clear: "빠른 위치 지우기",
+        msg_clear_quick: "저장된 모든 빠른 위치를 지우시겠습니까?", msg_quick_cleared: "지워짐",
+        msg_quick_saved: "저장됨", msg_quick_save_err: "먼저 위치를 검색하세요.", msg_quick_empty: "비어 있음. 현재 위치를 저장하려면 길게 누르세요.",
+        theme_sys: "시스템", theme_light: "라이트", theme_dark: "다크",
+        mod_auto: "자동", map_osm: "기본 (OSM)", map_light: "라이트", map_dark: "다크", map_topo: "지형도", map_sat: "위성", map_radar: "강수 레이더",
+        w0: "미풍", w1: "산들바람", w2: "건들바람", w3: "강한 바람", w4: "매우 강한 바람", w5: "돌풍", w6: "폭풍", w7: "태풍",
+        t_date: "날짜", t_hour: "시간", t_weat: "날씨", t_temp: "온도 °C", t_rain: "강수 cm", t_wind: "바람 km/h", t_gust: "돌풍 km/h", t_dir: "풍향",
+        compass_n: "북", msg_locating: "위치 확인 중...", msg_searching: "검색 중...", msg_closest: "가장 가까운 위치 찾는 중...", err_notfound: "위치를 찾을 수 없습니다.", err_net: "네트워크 오류.", err_gps: "위치 액세스가 거부되었습니다.", wind_str: "바람", dir_str: "풍향",
+        c0: "맑음", c1: "대체로 맑음", c2: "구름 조금", c3: "흐림", c45: "안개", c51: "이슬비", c61: "비", c71: "눈", c80: "소나기", c85: "소낙눈", c95: "뇌우", lbl_now: "현재",
+        days: ['일', '월', '화', '수', '목', '금', '토'],
+        months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        masl: "m (해발)",
+        msg_net_ok: "🌐 연결 및 서버가 정상입니다.", msg_net_warn: "⚠️ 인터넷은 작동하지만 날씨 서버가 응답하지 않습니다.", msg_net_off_mem: "🚫 오프라인. 저장된 예보를 표시합니다.", msg_close_block: "⚠️ 브라우저가 닫기를 차단했습니다. 수동으로 닫아주세요.", msg_refreshing: "🔄 데이터 새로고침 중...", msg_search_off: "🚫 오프라인. 검색하려면 인터넷을 켜세요.", err_search_srv: "검색 서버 오류. 나중에 다시 시도하세요.", err_meteo_srv: "⚠️ 날씨 서버 오류. 모델에 데이터가 없을 수 있습니다.", err_no_data: "데이터를 사용할 수 없습니다. 소스를 자동으로 변경해보세요.", reason_off: "오프라인", reason_slow: "느린 서버", msg_off_16d: "저장된 16일 예보를 표시합니다.", msg_off_fallback: "찾을 수 없음, 다음으로 돌아갑니다:", msg_off_nodata: "메모리에 데이터가 없습니다.", msg_data_refr: "✅ 데이터가 성공적으로 새로고침 되었습니다"
+    };
+Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelový Modrý", theme_p_green: "Pastelový Zelený", theme_p_pink: "Pastelový Ružový", theme_p_yellow: "Pastelový Žltý", theme_p_purple: "Pastelový Fialový" });
+    Object.assign(i18n.en, { theme_black: "AMOLED Black", theme_p_blue: "Pastel Blue", theme_p_green: "Pastel Green", theme_p_pink: "Pastel Pink", theme_p_yellow: "Pastel Yellow", theme_p_purple: "Pastel Purple" });
+    Object.assign(i18n.cs, { theme_black: "Amoled Černý", theme_p_blue: "Pastelový Modrý", theme_p_green: "Pastelový Zelený", theme_p_pink: "Pastelový Růžový", theme_p_yellow: "Pastelový Žlutý", theme_p_purple: "Pastelový Fialový" });
+    Object.assign(i18n.de, { theme_black: "Amoled Schwarz", theme_p_blue: "Pastellblau", theme_p_green: "Pastellgrün", theme_p_pink: "Pastellrosa", theme_p_yellow: "Pastellgelb", theme_p_purple: "Pastell-Lila" });
+    Object.assign(i18n.fr, { theme_black: "Noir Amoled", theme_p_blue: "Bleu Pastel", theme_p_green: "Vert Pastel", theme_p_pink: "Rose Pastel", theme_p_yellow: "Jaune Pastel", theme_p_purple: "Violet Pastel" });
+    Object.assign(i18n.es, { theme_black: "Negro Amoled", theme_p_blue: "Azul Pastel", theme_p_green: "Verde Pastel", theme_p_pink: "Rosa Pastel", theme_p_yellow: "Amarillo Pastel", theme_p_purple: "Púrpura Pastel" });
+    Object.assign(i18n.zh, { theme_black: "纯黑 (Amoled)", theme_p_blue: "柔和蓝", theme_p_green: "柔和绿", theme_p_pink: "柔和粉", theme_p_yellow: "柔和黄", theme_p_purple: "柔和紫" });
+    Object.assign(i18n.hi, { theme_black: "एमोलेड ब्लैक", theme_p_blue: "पेस्टल ब्लू", theme_p_green: "पेस्टल ग्रीन", theme_p_pink: "पेस्टल पिंक", theme_p_yellow: "पेस्टल येलो", theme_p_purple: "पेस्टल पर्पल" });
+    Object.assign(i18n.ja, { theme_black: "アモレッドブラック", theme_p_blue: "パステルブルー", theme_p_green: "パステルグリーン", theme_p_pink: "パステルピンク", theme_p_yellow: "パステルイエロー", theme_p_purple: "パステルパープル" });
+    Object.assign(i18n.ko, { theme_black: "아몰레드 블랙", theme_p_blue: "파스텔 블루", theme_p_green: "파스텔 그린", theme_p_pink: "파스텔 핑크", theme_p_yellow: "파스텔 옐로우", theme_p_purple: "파스텔 퍼플" });
+
+    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'd.m.y', weekdayFull: true, weekdayShort: false };
     
     // BEZPEČNÉ NAČÍTANIE PAMÄTE
     let appSettings;
@@ -704,7 +932,8 @@
         
         document.getElementById('timeFormatSelect').value = appSettings.timeFormat || '24h';
         document.getElementById('dateFormatSelect').value = appSettings.dateFormat || 'd.m.y';
-        document.getElementById('fullHeaderDay').checked = appSettings.fullHeaderDay || false;
+        document.getElementById('weekdayFull').checked = appSettings.weekdayFull || false;
+        document.getElementById('weekdayShort').checked = appSettings.weekdayShort || false;
         
         currentLang = appSettings.lang || 'sk';
         updateLanguage(); applyTheme(appSettings.theme || 'system');
@@ -743,45 +972,66 @@
     }
 
     function showNetworkToast() {
-        if (networkState === 'online') {
-            showToast("🌐 Pripojenie a server sú v poriadku.");
-        } else if (networkState === 'warning') {
-            showToast("⚠️ Internet funguje, ale server počasia neodpovedá.");
-        } else {
-            showToast("🚫 Ste offline. Zobrazuje sa predpoveď z pamäte.");
-        }
+        if (networkState === 'online') { showToast(t('msg_net_ok')); } 
+        else if (networkState === 'warning') { showToast(t('msg_net_warn')); } 
+        else { showToast(t('msg_net_off_mem')); }
     }
 
     window.addEventListener('online', () => setNetworkState('online'));
     window.addEventListener('offline', () => setNetworkState('offline'));
 
-    function updateFullHeaderDay(checked) {
-        appSettings.fullHeaderDay = checked;
+    function updateWeekdaySettings(element) {
+        if (element && element.id === 'weekdayFull' && element.checked) {
+            document.getElementById('weekdayShort').checked = false;
+        } else if (element && element.id === 'weekdayShort' && element.checked) {
+            document.getElementById('weekdayFull').checked = false;
+        }
+        appSettings.weekdayFull = document.getElementById('weekdayFull').checked;
+        appSettings.weekdayShort = document.getElementById('weekdayShort').checked;
         saveSettings();
         updateClock();
     }
 
     function updateClock() {
         const now = new Date();
-        const localeStr = currentLang === 'sk' || currentLang === 'cs' ? 'sk-SK' : (currentLang === 'de' ? 'de-DE' : (currentLang === 'fr' ? 'fr-FR' : (currentLang === 'es' ? 'es-ES' : 'en-US')));
+        const locales = { sk: 'sk-SK', cs: 'cs-CZ', en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', zh: 'zh-CN', hi: 'hi-IN', ja: 'ja-JP', ko: 'ko-KR' };
+        const localeStr = locales[currentLang] || 'en-US';
         
         const dateFormat = appSettings.dateFormat || 'd.m.y';
         let d = now.getDate(); let m = now.getMonth() + 1; let y = now.getFullYear(); let dateStr;
 
-        if (dateFormat === 'y-m-d') { dateStr = `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`; } 
-        else if (dateFormat === 'm/d/y') { dateStr = `${m}/${d}/${y}`; } 
+        let baseDateStr = "";
+        if (dateFormat === 'y-m-d') { baseDateStr = `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`; } 
+        else if (dateFormat === 'm/d/y') { baseDateStr = `${m}/${d}/${y}`; } 
         else if (dateFormat === 'text') {
-            let dayName;
-            if (appSettings.fullHeaderDay) {
+            if (currentLang === 'sk' || currentLang === 'cs') baseDateStr = `${d}. ${i18n[currentLang].months[now.getMonth()]} ${y}`;
+            else baseDateStr = now.toLocaleDateString(localeStr, { day: 'numeric', month: 'short', year: 'numeric' });
+        } 
+        else if (dateFormat === 'month_first') {
+            if (currentLang === 'sk' || currentLang === 'cs') {
+                let monthName = i18n[currentLang].months[now.getMonth()];
+                monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+                baseDateStr = `${monthName} ${d}. ${y}`;
+            } else {
+                baseDateStr = now.toLocaleDateString(localeStr, { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+        } 
+        else { baseDateStr = `${d}. ${m}. ${y}`; }
+
+        let dayPrefix = "";
+        if (appSettings.weekdayFull || appSettings.weekdayShort) {
+            let dayName = "";
+            if (appSettings.weekdayFull) {
                 dayName = now.toLocaleDateString(localeStr, { weekday: 'long' });
-                dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
             } else {
                 if (currentLang === 'sk' || currentLang === 'cs') dayName = i18n[currentLang].days[now.getDay()];
-                else { dayName = now.toLocaleDateString(localeStr, { weekday: 'short' }); dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1); }
+                else dayName = now.toLocaleDateString(localeStr, { weekday: 'short' });
             }
-            if (currentLang === 'sk' || currentLang === 'cs') dateStr = `${dayName} ${d}. ${i18n[currentLang].months[now.getMonth()]} ${y}`;
-            else dateStr = `${dayName}, ${now.toLocaleDateString(localeStr, { day: 'numeric', month: 'short', year: 'numeric' })}`;
-        } else { dateStr = `${d}. ${m}. ${y}`; }
+            dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+            dayPrefix = `${dayName} `; 
+        }
+
+        dateStr = dayPrefix + baseDateStr;
         
         const timeFormat = appSettings.timeFormat || '24h';
         const timeStr = now.toLocaleTimeString(localeStr, { hour12: timeFormat === '12h' });
@@ -948,7 +1198,6 @@
         quickLocations.forEach((loc, index) => {
             const btn = document.createElement('div');
             
-            // Zistíme, či je toto tlačidlo práve aktívne nakliknuté
             let isActive = false;
             if (loc && lastLat !== null && lastLon !== null) {
                 if (Math.abs(loc.lat - lastLat) < 0.02 && Math.abs(loc.lon - lastLon) < 0.02) isActive = true;
@@ -959,7 +1208,6 @@
             
             let pressTimer = null; let isDragging = false;
             
-            // Dlhé podržanie (Uloženie)
             const startPress = (e) => {
                 isDragging = false;
                 pressTimer = setTimeout(() => {
@@ -967,24 +1215,22 @@
                     if (lastSearchedCity && lastLat !== null && lastLon !== null) {
                         quickLocations[index] = { name: lastSearchedCity, lat: lastLat, lon: lastLon, elevation: lastElevation, county: lastCounty, country: lastCountry };
                         saveQuickLocations(); renderQuickLocations();
-                        showToast(`✅ Uložené: ${lastSearchedCity}`);
-                        if (navigator.vibrate) navigator.vibrate(50); // Zavybruje na mobile
-                    } else { showToast("⚠️ Najprv vyhľadaj miesto na uloženie."); }
+                        showToast(`✅ ${t('msg_quick_saved')}: ${lastSearchedCity}`);
+                        if (navigator.vibrate) navigator.vibrate(50);
+                    } else { showToast(`⚠️ ${t('msg_quick_save_err')}`); }
                 }, 600);
             };
             
-            // Krátky ťuk (Načítanie)
             const cancelPress = (e) => {
                 if (pressTimer !== null) {
                     clearTimeout(pressTimer); pressTimer = null;
                     if (!isDragging) {
                         if (loc) { fetchAndRenderWeather(loc.lat, loc.lon, loc.name, loc.county, loc.country, loc.elevation, false, false); } 
-                        else { showToast("ℹ️ Prázdne. Podrž pre uloženie aktuálneho miesta."); }
+                        else { showToast(`ℹ️ ${t('msg_quick_empty')}`); }
                     }
                 }
             };
 
-            // Dotykové a myšové eventy
             btn.addEventListener('touchstart', startPress, {passive: true});
             btn.addEventListener('touchmove', () => { isDragging = true; if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }, {passive: true});
             btn.addEventListener('touchend', (e) => { if (!isDragging && e.cancelable) e.preventDefault(); cancelPress(e); });
@@ -998,8 +1244,8 @@
     }
 
     function resetQuickLocations() {
-        if(confirm("Naozaj chceš vymazať všetkých 10 uložených rýchlych volieb?")) {
-            quickLocations = new Array(10).fill(null); saveQuickLocations(); renderQuickLocations(); showToast("🗑️ Rýchle voľby vymazané"); closeModal();
+        if(confirm(t('msg_clear_quick'))) {
+            quickLocations = new Array(10).fill(null); saveQuickLocations(); renderQuickLocations(); showToast(`🗑️ ${t('msg_quick_cleared')}`); closeModal();
         }
     }
 
@@ -1041,7 +1287,7 @@
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const lat = position.coords.latitude; const lon = position.coords.longitude;
                 try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=${currentLang}`);
                     const data = await res.json();
                     const city = data.address.city || data.address.town || data.address.village || "Moja poloha";
                     let cCode = data.address.country_code ? data.address.country_code.toUpperCase() : "";
@@ -1093,7 +1339,7 @@
             document.getElementById('result-text').innerHTML = `📍 ${t('msg_closest')}`;
 
             try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=${currentLang}`);
                 const data = await res.json();
                 let placeName = "";
                 const badClasses = ['historic', 'highway', 'building', 'amenity', 'shop', 'man_made', 'power', 'leisure'];
@@ -1101,7 +1347,7 @@
                 if (!placeName && data && data.address) { placeName = data.address.peak || data.address.city || data.address.town || data.address.village || data.address.hamlet || ""; }
 
                 if (placeName) {
-                    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(placeName)}&count=100&language=sk`);
+                    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(placeName)}&count=100&language=${currentLang}`);
                     const geoData = await geoResponse.json();
                     if (geoData.results && geoData.results.length > 0) {
                         let closestPlace = null; let minDistance = 3; 
@@ -1170,7 +1416,7 @@
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(async () => {
             try {
-                const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=100`);
+                const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=100&language=${currentLang}`);
                 const data = await response.json(); let results = data.results || [];
                 if (lastLat !== null && lastLon !== null && results.length > 0) { results.sort((a, b) => getDistance(lastLat, lastLon, a.latitude, a.longitude) - getDistance(lastLat, lastLon, b.latitude, b.longitude)); }
                 renderSuggestions(results);
@@ -1251,7 +1497,7 @@
         clearTimeout(searchSettingsTimeout);
         searchSettingsTimeout = setTimeout(async () => {
             try {
-                const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=100`);
+                const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=100&language=${currentLang}`);
                 const data = await response.json(); let results = data.results || [];
                 if (lastLat !== null && lastLon !== null && results.length > 0) { results.sort((a, b) => getDistance(lastLat, lastLon, a.latitude, a.longitude) - getDistance(lastLat, lastLon, b.latitude, b.longitude)); }
                 renderSettingsSuggestions(results);
@@ -1318,7 +1564,7 @@
     function toggleModal() { const modal = document.getElementById('settingsModal'); modal.style.display = modal.style.display === "flex" ? "none" : "flex"; }
     function closeModal() { document.getElementById('settingsModal').style.display = "none"; }
     function windowOnClick(event) { if (event.target === document.getElementById('settingsModal')) toggleModal(); }
-    function closeApp() { window.close(); setTimeout(() => { showToast("⚠️ Prehliadač blokuje zatvorenie. Aplikáciu/kartu musíte zavrieť ručne."); }, 300); }
+    function closeApp() { window.close(); setTimeout(() => { showToast(t('msg_close_block')); }, 300); }
     function handleKeyPress(event) { if (event.key === 'Enter') { document.getElementById('cityInput').blur(); getWindData(false, false); } }
     
     let toastTimeout;
@@ -1335,21 +1581,30 @@
         if (code >= 85 && code <= 86) return t('c85'); if (code >= 95 && code <= 99) return t('c95'); return '?';
     }
     function getWeatherIcon(code, isNight) {
-        if (code === 0) return isNight ? '🌙' : '☀️'; if (code === 1 || code === 2) return isNight ? '☁️' : '⛅'; 
-        if (code === 3) return '☁️'; if (code === 45 || code === 48) return '🌫️'; if (code >= 51 && code <= 57) return '🌦️'; 
-        if (code >= 61 && code <= 67) return '🌧️'; if (code >= 71 && code <= 77) return '🌨️'; 
-        if (code >= 80 && code <= 82) return '🌧️'; if (code >= 85 && code <= 86) return '🌨️'; if (code >= 95 && code <= 99) return '⛈️'; return '❓';
+        if (code === 0) return isNight ? '🌙' : '☀️'; 
+        if (code === 1) return isNight ? '☁️' : '🌤️'; // Prevažne jasno
+        if (code === 2) return isNight ? '☁️' : '⛅'; // Polooblačno
+        if (code === 3) return '☁️'; 
+        if (code === 45 || code === 48) return '🌫️'; 
+        if (code >= 51 && code <= 57) return '🌦️'; 
+        if (code >= 61 && code <= 67) return '🌧️'; 
+        if (code >= 71 && code <= 77) return '🌨️'; 
+        if (code >= 80 && code <= 82) return '🌧️'; 
+        if (code >= 85 && code <= 86) return '🌨️'; 
+        if (code >= 95 && code <= 99) return '⛈️'; 
+        return '❓';
     }
     
     function getWeatherBgColor(code, isNight) {
         if (isNight) return "#1e293b"; 
-        if (code === 0 || code === 1) return "#fde047"; // Jasno, prevažne jasno (sýta žltá)
-        if (code === 2) return "#fef9c3"; // Polooblačno (veľmi slabá pastelová žltá)
+        if (code === 0) return "#facc15"; // Jasno (silno žltá)
+        if (code === 1) return "#fde047"; // Prevažne jasno (žltá)
+        if (code === 2) return "#fef9c3"; // Polooblačno (jemná žltá)
         if (code === 3) return "#94a3b8"; // Zamračené (sivá)
         if (code === 45 || code === 48) return "#cbd5e1"; // Hmla (mliečna sivá)
         if (code >= 71 && code <= 77 || code === 85 || code === 86) return "#f472b6"; // Sneh (ružová)
         if (code >= 51 && code <= 99) return "#3b82f6"; // Dážď a búrky (modrá)
-        return "#fde047"; 
+        return "#facc15"; 
     }
 
     function interpolateColor(color1, color2, factor) {
@@ -1410,9 +1665,7 @@ function getTempBgColor(temp) {
 
     async function getWindData(isRefresh = false, forceAutoScroll = false) {
 
-        if (isRefresh) {
-            showToast("🔄 Obnovujem dáta...");
-        }
+        if (isRefresh) { showToast(t('msg_refreshing')); }
         
         let rawInput = document.getElementById('cityInput').value.trim();
         let cityInput = rawInput.includes(' - ') ? rawInput.split(' - ')[0].trim() : rawInput;
@@ -1435,7 +1688,7 @@ function getTempBgColor(temp) {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityInput)}&count=100`, { signal: controller.signal });
+                const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityInput)}&count=100&language=${currentLang}`, { signal: controller.signal });
                 clearTimeout(timeoutId);
 
                 const geoData = await geoResponse.json();
@@ -1452,15 +1705,14 @@ function getTempBgColor(temp) {
                 addToRecent(loc.name, subtitleText, loc.latitude, loc.longitude, loc.elevation, loc.admin2 || loc.admin1 || "", loc.country || "");
                 await fetchAndRenderWeather(loc.latitude, loc.longitude, loc.name, loc.admin2 || loc.admin1 || "", loc.country || "", loc.elevation !== undefined ? loc.elevation : "?", false, forceAutoScroll);
             } catch (error) { 
-                // Overíme, či je problém v internete alebo serveri
                 if (!navigator.onLine) {
                     setNetworkState('offline'); 
                     document.getElementById('result-text').innerHTML = `<span style='color: #ef4444;'>${escapeHTML(t('err_net'))}</span>`; 
-                    showToast("🚫 Ste offline. Pre hľadanie zapnite internet.");
+                    showToast(t('msg_search_off'));
                 } else {
                     setNetworkState('warning');
-                    document.getElementById('result-text').innerHTML = `<span style='color: #eab308;'>Chyba vyhľadávacieho servera. Skúste to o chvíľu.</span>`; 
-                    showToast("⚠️ Internet funguje, ale server neodpovedá.");
+                    document.getElementById('result-text').innerHTML = `<span style='color: #eab308;'>${escapeHTML(t('err_search_srv'))}</span>`; 
+                    showToast(t('msg_net_warn'));
                 }
             }
         } else {
@@ -1525,59 +1777,41 @@ function getTempBgColor(temp) {
                     } catch(e) { }
                 }
             } catch (networkError) {
-                
                 let isOffline = !navigator.onLine;
+                if (isOffline) { setNetworkState('offline'); } else { setNetworkState('warning'); }
 
-                // Nastavenie správnej ikonky (červená vs žltá)
-                if (isOffline) {
-                    setNetworkState('offline');
-                } else {
-                    setNetworkState('warning'); // Internet je, ale API zlyhalo alebo nastal Timeout
-                }
-
-                // Ak model nemá pre dané miesto vôbec dáta (API 400/500 error), chceme hneď skončiť a neotravovať s Offline pamäťou
                 if (networkError.message === "API_ERROR") {
-                    showToast("⚠️ Chyba meteo-servera. Model možno nemá dáta pre dané miesto.");
-                    document.getElementById('result-text').innerHTML = `<span style='color: #eab308;'>Dáta nedostupné. Skúste zmeniť zdroj na Auto.</span>`;
+                    showToast(t('err_meteo_srv'));
+                    document.getElementById('result-text').innerHTML = `<span style='color: #eab308;'>${escapeHTML(t('err_no_data'))}</span>`;
                     return; 
                 }
                 
-                // Ale inak (Ak je Offline alebo Pomalý Server) - záchranný režim
                 let cachedRaw = null;
                 try { cachedRaw = localStorage.getItem('weatherCache'); } catch(e) {}
                 
                 if (cachedRaw) {
                     const cached = JSON.parse(cachedRaw);
-                    
-                    appSettings.model = 'best_match';
-                    saveSettings();
-                    document.getElementById('modelSelect').value = 'best_match';
-                    updateQuickModelButtons();
-
-                    let reason = isOffline ? "Offline" : "Pomalý server";
+                    appSettings.model = 'best_match'; saveSettings(); document.getElementById('modelSelect').value = 'best_match'; updateQuickModelButtons();
+                    let reason = isOffline ? t('reason_off') : t('reason_slow');
 
                     if (Math.abs(cached.lat - lat) < 0.05 && Math.abs(cached.lon - lon) < 0.05) {
                         weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
-                        showToast(`⚠️ ${reason}. Zobrazujem uloženú 16-dňovú predpoveď.`);
+                        showToast(`⚠️ ${reason}. ${t('msg_off_16d')}`);
                     } else {
                         let wantedName = foundName; 
-                        
                         weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
-                        
                         lastSearchedCity = foundName; lastLat = lat; lastLon = lon; lastElevation = elevation; lastCounty = county; lastCountry = country;
                         renderQuickLocations();
-
                         if(currentMarker) map.removeLayer(currentMarker);
                         currentMarker = L.marker([lat, lon]).addTo(map);
-
                         if (appSettings.map === 'radar') {
                             document.getElementById('windy-iframe').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1&play=1`;
                         }
-                        showToast(`⚠️ ${reason}. "${wantedName}" nemám, vraciam na: ${foundName} (Auto)`);
+                        showToast(`⚠️ ${reason}. "${wantedName}" ${t('msg_off_fallback')}: ${foundName} (Auto)`);
                     }
                 } else {
-                    let reason = isOffline ? "Ste offline" : "Server počasia neodpovedá";
-                    showToast(`🚫 ${reason} a v pamäti nie sú žiadne dáta.`);
+                    let reason = isOffline ? t('reason_off') : t('reason_slow');
+                    showToast(`🚫 ${reason} ${t('msg_off_nodata')}`);
                     throw networkError; 
                 }
             }
@@ -1592,7 +1826,7 @@ function getTempBgColor(temp) {
 
             resultText.innerHTML = `
                 <span style="font-weight: bold; font-size: 1.1rem; color: var(--text-main);">📍 ${escapeHTML(foundName)}</span><br>
-                <span style="font-size: 0.85em; color: var(--text-muted);">${escapeHTML(locationDetails)}</span> | ⛰️ ${escapeHTML(elevation)} m n. m.<br>
+                <span style="font-size: 0.85em; color: var(--text-muted);">${escapeHTML(locationDetails)}</span> | ⛰️ ${escapeHTML(elevation)} ${t('masl')}<br>
                 ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeed)} km/h</strong> | ${escapeHTML(t('dir_str'))}: <strong>${escapeHTML(currentDirection)}°</strong>
             `;
 
@@ -1618,7 +1852,8 @@ function getTempBgColor(temp) {
             let dirHtml = `<tr><td>${t('t_dir')}</td>`;
 
             let currentDayStr = null, currentDayCount = 0;
-            const localeStr = currentLang === 'sk' || currentLang === 'cs' ? 'sk-SK' : (currentLang === 'de' ? 'de-DE' : (currentLang === 'fr' ? 'fr-FR' : (currentLang === 'es' ? 'es-ES' : 'en-US')));
+            const locales = { sk: 'sk-SK', cs: 'cs-CZ', en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', zh: 'zh-CN', hi: 'hi-IN', ja: 'ja-JP', ko: 'ko-KR' };
+            const localeStr = locales[currentLang] || 'en-US';
             const timeFormat = appSettings.timeFormat || '24h';
 
             let currentBlockIndex = -1; let percentageOffset = 0; let currentT1 = 0; let currentT2 = 0;
@@ -1747,7 +1982,7 @@ function getTempBgColor(temp) {
 
             // SPRÁVA O ÚSPECHU
             if (isRefresh) {
-                showToast("✅ Dáta sú úspešne obnovené");
+                showToast(t('msg_data_refr'));
             }
 
         } catch (error) { 
