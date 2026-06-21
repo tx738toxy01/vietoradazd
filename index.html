@@ -482,21 +482,6 @@
     <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar')" title="Zrážkový radar (Windy)">🌧️</button>
 </div>
 
-<div class="map-controls">
-    <div style="position: relative;">
-        <button class="map-btn" id="btn-map-base" onclick="handleBaseMapButtonClick()" title="Základné mapy">🗺️</button>
-        <div id="map-dropdown-content" class="map-dropdown-content">
-            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" title="Základná (OSM/Carto)">☀️</button>
-            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" title="Tmavá">🌙</button>
-            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" title="Turistická">⛰️</button>
-            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" title="Satelitná">🛰️</button>
-        </div>
-    </div>
-    <button class="map-btn" id="btn-map-clouds" onclick="changeMapLayerQuick('clouds')" title="Oblačnosť (Windy)">☁️</button>
-    <button class="map-btn" id="btn-map-wind" onclick="changeMapLayerQuick('wind')" title="Vietor (Windy)">💨</button>
-    <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar')" title="Zrážkový radar (Windy)">🌧️</button>
-</div>
-
 <div class="top-panel">
     <div class="header-container">
         <div class="header-title-wrapper">
@@ -656,9 +641,6 @@
                 <option value="dark" data-i18n="map_dark">Tmavá</option>
                 <option value="topo" data-i18n="map_topo">Turistická</option>
                 <option value="satellite" data-i18n="map_sat">Satelitná</option>
-                <option value="radar" data-i18n="map_radar">Zrážkový radar (Windy)</option>
-                <option value="clouds" data-i18n="map_clouds">Oblačnosť (Windy)</option>
-                <option value="wind" data-i18n="map_wind">Vietor (Windy)</option>
             </select>
         </div>
 
@@ -928,30 +910,34 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
     Object.assign(i18n.ja, { theme_black: "アモレッドブラック", theme_p_blue: "パステルブルー", theme_p_green: "パステルグリーン", theme_p_pink: "パステルピンク", theme_p_yellow: "パステルイエロー", theme_p_purple: "パステルパープル" });
     Object.assign(i18n.ko, { theme_black: "아몰레드 블랙", theme_p_blue: "파스텔 블루", theme_p_green: "파스텔 그린", theme_p_pink: "파스텔 핑크", theme_p_yellow: "파스텔 옐로우", theme_p_purple: "파스텔 퍼플" });
 
-    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'd.m.y', weekdayFull: true, weekdayShort: false };
+    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false };
     
     // BEZPEČNÉ NAČÍTANIE PAMÄTE
     let appSettings;
     try { appSettings = JSON.parse(localStorage.getItem('weatherAppSettings')) || defaultSettings; } catch(e) { appSettings = defaultSettings; }
-    let currentLang = appSettings.lang || 'sk';
+    let currentLang = appSettings.lang || 'en';
 
     function saveSettings() { try { localStorage.setItem('weatherAppSettings', JSON.stringify(appSettings)); } catch(e) {} }
 
     function initSettings() {
-        document.getElementById('langSelect').value = appSettings.lang || 'sk';
+        if (['radar', 'clouds', 'wind'].includes(appSettings.map)) {
+            appSettings.map = 'osm';
+            saveSettings();
+        }
+        document.getElementById('langSelect').value = appSettings.lang || 'en';
         document.getElementById('themeSelect').value = appSettings.theme || 'system';
         document.getElementById('modelSelect').value = appSettings.model || 'best_match';
         document.getElementById('mapLayerSelect').value = appSettings.map || 'osm';
         
-        document.getElementById('startupSelect').value = appSettings.startupMode || 'last';
+        document.getElementById('startupSelect').value = appSettings.startupMode || 'geo';
         document.getElementById('startupCustomCityWrapper').style.display = (appSettings.startupMode === 'custom') ? 'block' : 'none';
         
         document.getElementById('timeFormatSelect').value = appSettings.timeFormat || '24h';
-        document.getElementById('dateFormatSelect').value = appSettings.dateFormat || 'd.m.y';
+        document.getElementById('dateFormatSelect').value = appSettings.dateFormat || 'month_first';
         document.getElementById('weekdayFull').checked = appSettings.weekdayFull || false;
         document.getElementById('weekdayShort').checked = appSettings.weekdayShort || false;
         
-        currentLang = appSettings.lang || 'sk';
+        currentLang = appSettings.lang || 'en';
         updateLanguage(); applyTheme(appSettings.theme || 'system');
         updateQuickModelButtons(); updateQuickMapButtons();
     }
@@ -1094,28 +1080,42 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
 
     let currentTileLayer = null;
 
-    function changeMapLayer(fromUser = false) {
-        appSettings.map = document.getElementById('mapLayerSelect').value; saveSettings();
-        const mapId = appSettings.map;
+    let lastBaseMap = (typeof appSettings !== 'undefined' && appSettings.map !== 'radar' && appSettings.map !== 'wind') ? appSettings.map : 'osm';
+    let currentCloudLayer = null; 
+    let isCloudActive = true; 
+
+    function changeMapLayer(fromUser = false, layer = null) {
+        let mapId = layer || document.getElementById('mapLayerSelect').value;
+        
+        if (mapId !== 'radar' && mapId !== 'wind') {
+            appSettings.map = mapId;
+            saveSettings();
+            if (document.getElementById('mapLayerSelect')) {
+                document.getElementById('mapLayerSelect').value = mapId;
+            }
+        }
+
         const windyIframe = document.getElementById('windy-iframe');
         const bottomWrapper = document.getElementById('bottom-wrapper');
         const leafletControls = document.querySelector('.leaflet-control-container');
-
-        if (mapId === 'radar' || mapId === 'clouds' || mapId === 'wind') {
+        
+        if (mapId === 'radar' || mapId === 'wind') {
             windyIframe.style.display = 'block';
             const topHeight = document.querySelector('.top-panel').offsetHeight;
             windyIframe.style.top = topHeight + 'px';
             windyIframe.style.height = (window.innerHeight - topHeight) + 'px';
-
             if (bottomWrapper) bottomWrapper.style.display = 'none';
             if (leafletControls) leafletControls.style.display = 'none';
             
-            let lat = lastLat !== null ? lastLat : 48.1486; let lon = lastLon !== null ? lastLon : 17.1077;
-            
-            // OPRAVA: Parametre pre animáciu pridáme len ak ide o radar
+            let lat = lastLat !== null ? lastLat : 48.1486;
+            let lon = lastLon !== null ? lastLon : 17.1077;
             let extraParams = (mapId === 'radar') ? '&radarRange=-1&play=1' : '';
-            
             windyIframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=${mapId}&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C${extraParams}`;
+            
+            if (currentCloudLayer) map.removeLayer(currentCloudLayer);
+            let cloudBtn = document.getElementById('btn-map-clouds');
+            if (cloudBtn) cloudBtn.classList.remove('active');
+
         } else {
             windyIframe.style.display = 'none';
             if (bottomWrapper && lastSearchedCity !== "") bottomWrapper.style.display = 'flex';
@@ -1124,42 +1124,91 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
             const config = mapLayers[mapId];
             if (currentTileLayer) map.removeLayer(currentTileLayer);
             currentTileLayer = L.tileLayer(config.url, { attribution: config.attribution, maxZoom: config.maxZoom }).addTo(map);
+
+            if (isCloudActive) {
+                if (currentCloudLayer) map.removeLayer(currentCloudLayer);
+                
+                let cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
+                    opacity: 0.7, transparent: true, attribution: '&copy; OpenWeatherMap'
+                });
+                let rainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
+                    opacity: 0.9, transparent: true
+                });
+                
+                currentCloudLayer = L.layerGroup([cloudsLayer, rainLayer]).addTo(map);
+                
+                let cloudBtn = document.getElementById('btn-map-clouds');
+                if (cloudBtn) cloudBtn.classList.add('active');
+            }
         }
-        updateQuickMapButtons(); if (fromUser) closeModal();
+        updateQuickMapButtons(mapId); 
+        if (fromUser) closeModal();
     }
 
-    // Pamäť pre poslednú zvolenú obyčajnú mapu (na začiatku zistí z nastavení, inak dá OSM)
-    let lastBaseMap = (typeof appSettings !== 'undefined' && appSettings.map !== 'radar' && appSettings.map !== 'clouds' && appSettings.map !== 'wind') ? appSettings.map : 'osm';
+    async function changeMapLayerQuick(layer) { 
+        if (layer === 'clouds') {
+            isCloudActive = !isCloudActive; 
+            const windyIframe = document.getElementById('windy-iframe');
+            
+            if (windyIframe && windyIframe.style.display === 'block') {
+                changeMapLayer(false, lastBaseMap);
+                return; 
+            }
 
-    function changeMapLayerQuick(layer) { 
-        // Ak používateľ klikol na obyčajnú mapu, zapamätáme si ju ako poslednú aktívnu
-        if (layer !== 'radar' && layer !== 'clouds' && layer !== 'wind') { lastBaseMap = layer; }
-        document.getElementById('mapLayerSelect').value = layer; 
-        changeMapLayer(false); 
+            let cloudBtn = document.getElementById('btn-map-clouds');
+
+            if (isCloudActive) {
+                let cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
+                    opacity: 0.7, transparent: true, attribution: '&copy; OpenWeatherMap'
+                });
+                let rainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
+                    opacity: 0.9, transparent: true
+                });
+                currentCloudLayer = L.layerGroup([cloudsLayer, rainLayer]).addTo(map);
+                if (cloudBtn) cloudBtn.classList.add('active');
+            } else {
+                if (currentCloudLayer) map.removeLayer(currentCloudLayer);
+                currentCloudLayer = null;
+                if (cloudBtn) cloudBtn.classList.remove('active');
+            }
+            return; 
+        }
+
+        if (layer !== 'radar' && layer !== 'wind') { 
+            lastBaseMap = layer;
+        }
+        changeMapLayer(false, layer);
     }
 
     function handleBaseMapButtonClick() {
-        let currentMap = document.getElementById('mapLayerSelect').value;
+        const windyIframe = document.getElementById('windy-iframe');
         let drp = document.getElementById('map-dropdown-content');
-        
-        if (currentMap === 'radar' || currentMap === 'clouds' || currentMap === 'wind') {
-            // Sme vo Windy mapách -> kliknutie nás okamžite vráti do poslednej obyčajnej mapy a roletku neotvorí
+        if (windyIframe && windyIframe.style.display === 'block') {
             changeMapLayerQuick(lastBaseMap);
-            drp.style.display = 'none';
+            if(drp) drp.style.display = 'none';
         } else {
-            // Už sme v obyčajnej mape -> kliknutie normálne vyroluje / schová roletku
-            drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
+            if(drp) drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
         }
     }
-    function updateQuickMapButtons() { 
-        document.querySelectorAll('.map-btn').forEach(btn => btn.classList.remove('active')); 
-        let activeBtn = document.getElementById('btn-map-' + (appSettings.map || 'osm')); 
-        if(activeBtn) activeBtn.classList.add('active'); 
+
+    function updateQuickMapButtons(activeLayer = null) { 
+        let currentLayer = activeLayer || appSettings.map || 'osm';
         
-        // Zvýrazníme hlavné tlačidlo, ak sme v niektorej zo základných máp
-        if (appSettings.map !== 'radar' && appSettings.map !== 'clouds' && appSettings.map !== 'wind') {
+        document.querySelectorAll('.map-btn').forEach(btn => {
+            if (btn.id !== 'btn-map-clouds') btn.classList.remove('active');
+        });
+        
+        let activeBtn = document.getElementById('btn-map-' + currentLayer); 
+        if (activeBtn && currentLayer !== 'clouds') activeBtn.classList.add('active');
+        
+        if (currentLayer !== 'radar' && currentLayer !== 'wind') {
             let baseBtn = document.getElementById('btn-map-base');
-            if(baseBtn) baseBtn.classList.add('active');
+            if (baseBtn) baseBtn.classList.add('active');
+        }
+        
+        let cloudBtn = document.getElementById('btn-map-clouds');
+        if (cloudBtn && isCloudActive && currentLayer !== 'radar' && currentLayer !== 'wind') {
+            cloudBtn.classList.add('active');
         }
     }
 
@@ -1437,7 +1486,7 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
                 if (lastLat !== null && lastLon !== null && results.length > 0) { results.sort((a, b) => getDistance(lastLat, lastLon, a.latitude, a.longitude) - getDistance(lastLat, lastLon, b.latitude, b.longitude)); }
                 renderSuggestions(results);
             } catch (e) { }
-        }, 300);
+        }, 600);
     }
 
     function renderSuggestions(results) {
@@ -1518,7 +1567,7 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
                 if (lastLat !== null && lastLon !== null && results.length > 0) { results.sort((a, b) => getDistance(lastLat, lastLon, a.latitude, a.longitude) - getDistance(lastLat, lastLon, b.latitude, b.longitude)); }
                 renderSettingsSuggestions(results);
             } catch (e) { }
-        }, 300);
+        }, 600);
     }
 
     function renderSettingsSuggestions(results) {
