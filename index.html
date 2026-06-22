@@ -1546,7 +1546,20 @@ function updateThemeLabels() {
                 if (pressTimer !== null) {
                     clearTimeout(pressTimer); pressTimer = null;
                     if (!isDragging) {
-                        if (loc) { fetchAndRenderWeather(loc.lat, loc.lon, loc.name, loc.county, loc.country, loc.elevation, false, false); } 
+                        if (loc) { 
+                            // 1. Vytvoríme pekný podnázov pre zoznam histórie (Kraj, Štát | ⛰️ výška)
+                            let details = []; 
+                            if (loc.county) details.push(loc.county); 
+                            if (loc.country) details.push(loc.country);
+                            let elevText = (loc.elevation !== undefined && loc.elevation !== "?") ? ` | ⛰️ ${loc.elevation} m` : '';
+                            let subtitleText = details.join(', ') + elevText;
+                            
+                            // 2. Zapíšeme mesto do histórie hľadaní
+                            addToRecent(loc.name, subtitleText, loc.lat, loc.lon, loc.elevation, loc.county, loc.country);
+                            
+                            // 3. Stiahneme a vykreslíme počasie
+                            fetchAndRenderWeather(loc.lat, loc.lon, loc.name, loc.county, loc.country, loc.elevation, false, false); 
+                        } 
                         else { showToast(`ℹ️ ${t('msg_quick_empty')}`); }
                     }
                 }
