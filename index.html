@@ -466,20 +466,67 @@
 <iframe id="windy-iframe" src=""></iframe>
 
 <div class="map-controls">
-    <!-- Tlačidlo 1: Roletka pre základné mapy -->
     <div style="position: relative;">
-        <button class="map-btn" id="btn-map-base" onclick="handleBaseMapButtonClick()" title="Základné mapy">🗺️</button>
+        <button class="map-btn" id="btn-map-base" onclick="handleBaseMapButtonClick()" title="Základné mapy" style="display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <div id="map-dropdown-content" class="map-dropdown-content">
-            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" title="Základná (OSM/Carto)">☀️</button>
-            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" title="Tmavá">🌙</button>
-            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" title="Turistická">⛰️</button>
-            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" title="Satelitná">🛰️</button>
+            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" title="Základná (OSM/Carto)" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" title="Tmavá" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" title="Turistická" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2L8 3z"></path></svg>
+            </button>
+            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" title="Satelitná" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </button>
         </div>
     </div>
-    <!-- Tlačidlo 2: Windy Oblačnosť -->
-    <button class="map-btn" id="btn-map-clouds" onclick="changeMapLayerQuick('clouds')" title="Oblačnosť (Windy)">☁️</button>
-    <button class="map-btn" id="btn-map-wind" onclick="changeMapLayerQuick('wind')" title="Vietor (Windy)">💨</button>
-    <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar')" title="Zrážkový radar (Windy)">🌧️</button>
+
+    <div style="position: relative;">
+        <button class="map-btn" id="btn-owm-base" onclick="toggleOwmDropdown()" title="Vrstvy počasia" style="display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 12 12 17 22 12"></polyline><polyline points="2 17 12 22 22 17"></polyline></svg>
+        </button>
+        <div id="owm-dropdown-content" class="map-dropdown-content" style="width: 210px; padding: 12px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow);">
+            <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;" data-i18n="owm_layers">Vrstvy</div>
+            
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 10px; cursor: pointer; color: var(--text-main);">
+                <input type="checkbox" id="chk-owm-clouds" checked onchange="updateOwmLayers()">
+                <span data-i18n="owm_clouds">Oblačnosť</span>
+            </label>
+            
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 15px; cursor: pointer; color: var(--text-main);">
+                <input type="checkbox" id="chk-owm-rain" checked onchange="updateOwmLayers()">
+                <span data-i18n="owm_rain">Zrážky</span>
+            </label>
+
+            <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;" data-i18n="owm_opacity">Priehľadnosť</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="range" id="owm-opacity-slider" min="0" max="100" value="70" style="flex-grow: 1; cursor: pointer;" oninput="updateOwmOpacity()">
+                <input type="number" id="owm-opacity-number" min="0" max="100" value="70" style="width: 48px; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 13px; text-align: center;" oninput="updateOwmOpacityFromNumber()">
+            </div>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <button class="map-btn" id="btn-windy-base" onclick="toggleWindyDropdown()" title="Windy vrstvy" style="display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 18 12 9 16 18 20 6"></polyline></svg>
+        </button>
+        <div id="windy-dropdown-content" class="map-dropdown-content">
+            <button class="map-btn" id="btn-map-clouds" onclick="changeMapLayerQuick('clouds'); this.parentElement.style.display='none'" title="Oblačnosť (Windy)" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+            </button>
+            <button class="map-btn" id="btn-map-wind" onclick="changeMapLayerQuick('wind'); this.parentElement.style.display='none'" title="Vietor (Windy)" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
+            </button>
+            <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar'); this.parentElement.style.display='none'" title="Zrážkový radar (Windy)" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
+            </button>
+        </div>
+    </div>
 </div>
 
 <div class="top-panel">
@@ -490,9 +537,13 @@
         </div>
         <div class="header-buttons">
             <span id="network-status" class="status-icon" onclick="showNetworkToast()"></span>
-            <button class="settings-btn" onclick="toggleModal()" data-i18n-title="settings_title" title="Nastavenia">⚙️</button>
+            
+            <button class="settings-btn" onclick="toggleModal()" data-i18n-title="settings_title" title="Nastavenia">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+            
             <button class="settings-btn" onclick="closeApp()" title="Vypnúť aplikáciu">
-                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;">
                     <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
                     <line x1="12" y1="2" x2="12" y2="12"></line>
                 </svg>
@@ -509,7 +560,7 @@
         </div>
         
         <button class="settings-btn refresh-btn" onclick="getWindData(true, true)" data-i18n-title="refresh_btn" title="Obnoviť dáta" style="flex-shrink: 0;">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 4v6h-6"></path>
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
             </svg>
@@ -571,14 +622,20 @@
             <h4 data-i18n="set_theme">Vzhľad</h4>
             <select id="themeSelect" class="settings-select" onchange="changeTheme()">
                 <option value="system" data-i18n="theme_sys">Systémový</option>
-                <option value="light" data-i18n="theme_light">Svetlý</option>
-                <option value="dark" data-i18n="theme_dark">Tmavý</option>
-                <option value="black" data-i18n="theme_black">Amoled Čierny</option>
-                <option value="pastel-blue" data-i18n="theme_p_blue">Pastelový Modrý</option>
-                <option value="pastel-green" data-i18n="theme_p_green">Pastelový Zelený</option>
-                <option value="pastel-pink" data-i18n="theme_p_pink">Pastelový Ružový</option>
-                <option value="pastel-yellow" data-i18n="theme_p_yellow">Pastelový Žltý</option>
-                <option value="pastel-purple" data-i18n="theme_p_purple">Pastelový Fialový</option>
+                
+                <optgroup label="Svetlé motívy" data-i18n-label="theme_group_light">
+                    <option value="light" data-i18n="theme_light">Základný Svetlý</option>
+                    <option value="pastel-blue" data-i18n="theme_p_blue">Pastelový Modrý</option>
+                    <option value="pastel-green" data-i18n="theme_p_green">Pastelový Zelený</option>
+                    <option value="pastel-pink" data-i18n="theme_p_pink">Pastelový Ružový</option>
+                    <option value="pastel-yellow" data-i18n="theme_p_yellow">Pastelový Žltý</option>
+                    <option value="pastel-purple" data-i18n="theme_p_purple">Pastelový Fialový</option>
+                </optgroup>
+
+                <optgroup label="Tmavé motívy" data-i18n-label="theme_group_dark">
+                    <option value="dark" data-i18n="theme_dark">Tmavý (Sivý)</option>
+                    <option value="black" data-i18n="theme_black">Amoled Čierny</option>
+                </optgroup>
             </select>
         </div>
 
@@ -899,24 +956,25 @@ i18n.ja = {
         masl: "m (해발)",
         msg_net_ok: "🌐 연결 및 서버가 정상입니다.", msg_net_warn: "⚠️ 인터넷은 작동하지만 날씨 서버가 응답하지 않습니다.", msg_net_off_mem: "🚫 오프라인. 저장된 예보를 표시합니다.", msg_close_block: "⚠️ 브라우저가 닫기를 차단했습니다. 수동으로 닫아주세요.", msg_refreshing: "🔄 데이터 새로고침 중...", msg_search_off: "🚫 오프라인. 검색하려면 인터넷을 켜세요.", err_search_srv: "검색 서버 오류. 나중에 다시 시도하세요.", err_meteo_srv: "⚠️ 날씨 서버 오류. 모델에 데이터가 없을 수 있습니다.", err_no_data: "데이터를 사용할 수 없습니다. 소스를 자동으로 변경해보세요.", reason_off: "오프라인", reason_slow: "느린 서버", msg_off_16d: "저장된 16일 예보를 표시합니다.", msg_off_fallback: "찾을 수 없음, 다음으로 돌아갑니다:", msg_off_nodata: "메모리에 데이터가 없습니다.", msg_data_refr: "✅ 데이터가 성공적으로 새로고침 되었습니다"
     };
-Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelový Modrý", theme_p_green: "Pastelový Zelený", theme_p_pink: "Pastelový Ružový", theme_p_yellow: "Pastelový Žltý", theme_p_purple: "Pastelový Fialový" });
-    Object.assign(i18n.en, { theme_black: "AMOLED Black", theme_p_blue: "Pastel Blue", theme_p_green: "Pastel Green", theme_p_pink: "Pastel Pink", theme_p_yellow: "Pastel Yellow", theme_p_purple: "Pastel Purple" });
-    Object.assign(i18n.cs, { theme_black: "Amoled Černý", theme_p_blue: "Pastelový Modrý", theme_p_green: "Pastelový Zelený", theme_p_pink: "Pastelový Růžový", theme_p_yellow: "Pastelový Žlutý", theme_p_purple: "Pastelový Fialový" });
-    Object.assign(i18n.de, { theme_black: "Amoled Schwarz", theme_p_blue: "Pastellblau", theme_p_green: "Pastellgrün", theme_p_pink: "Pastellrosa", theme_p_yellow: "Pastellgelb", theme_p_purple: "Pastell-Lila" });
-    Object.assign(i18n.fr, { theme_black: "Noir Amoled", theme_p_blue: "Bleu Pastel", theme_p_green: "Vert Pastel", theme_p_pink: "Rose Pastel", theme_p_yellow: "Jaune Pastel", theme_p_purple: "Violet Pastel" });
-    Object.assign(i18n.es, { theme_black: "Negro Amoled", theme_p_blue: "Azul Pastel", theme_p_green: "Verde Pastel", theme_p_pink: "Rosa Pastel", theme_p_yellow: "Amarillo Pastel", theme_p_purple: "Púrpura Pastel" });
-    Object.assign(i18n.zh, { theme_black: "纯黑 (Amoled)", theme_p_blue: "柔和蓝", theme_p_green: "柔和绿", theme_p_pink: "柔和粉", theme_p_yellow: "柔和黄", theme_p_purple: "柔和紫" });
-    Object.assign(i18n.hi, { theme_black: "एमोलेड ब्लैक", theme_p_blue: "पेस्टल ब्लू", theme_p_green: "पेस्टल ग्रीन", theme_p_pink: "पेस्टल पिंक", theme_p_yellow: "पेस्टल येलो", theme_p_purple: "पेस्टल पर्पल" });
-    Object.assign(i18n.ja, { theme_black: "アモレッドブラック", theme_p_blue: "パステルブルー", theme_p_green: "パステルグリーン", theme_p_pink: "パステルピンク", theme_p_yellow: "パステルイエロー", theme_p_purple: "パステルパープル" });
-    Object.assign(i18n.ko, { theme_black: "아몰레드 블랙", theme_p_blue: "파스텔 블루", theme_p_green: "파스텔 그린", theme_p_pink: "파스텔 핑크", theme_p_yellow: "파스텔 옐로우", theme_p_purple: "파스텔 퍼플" });
+Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark: "Tmavé motívy", theme_black: "Amoled Čierny", theme_p_blue: "Pastelový Modrý", theme_p_green: "Pastelový Zelený", theme_p_pink: "Pastelový Ružový", theme_p_yellow: "Pastelový Žltý", theme_p_purple: "Pastelový Fialový" });
+    Object.assign(i18n.en, { theme_group_light: "Light Themes", theme_group_dark: "Dark Themes", theme_black: "AMOLED Black", theme_p_blue: "Pastel Blue", theme_p_green: "Pastel Green", theme_p_pink: "Pastel Pink", theme_p_yellow: "Pastel Yellow", theme_p_purple: "Pastel Purple" });
+    Object.assign(i18n.cs, { theme_group_light: "Světlé motivy", theme_group_dark: "Tmavé motivy", theme_black: "Amoled Černý", theme_p_blue: "Pastelový Modrý", theme_p_green: "Pastelový Zelený", theme_p_pink: "Pastelový Růžový", theme_p_yellow: "Pastelový Žlutý", theme_p_purple: "Pastelový Fialový" });
+    Object.assign(i18n.de, { theme_group_light: "Helle Designs", theme_group_dark: "Dunkle Designs", theme_black: "Amoled Schwarz", theme_p_blue: "Pastellblau", theme_p_green: "Pastellgrün", theme_p_pink: "Pastellrosa", theme_p_yellow: "Pastellgelb", theme_p_purple: "Pastell-Lila" });
+    Object.assign(i18n.fr, { theme_group_light: "Thèmes clairs", theme_group_dark: "Thèmes sombres", theme_black: "Noir Amoled", theme_p_blue: "Bleu Pastel", theme_p_green: "Vert Pastel", theme_p_pink: "Rose Pastel", theme_p_yellow: "Jaune Pastel", theme_p_purple: "Violet Pastel" });
+    Object.assign(i18n.es, { theme_group_light: "Temas claros", theme_group_dark: "Temas oscuros", theme_black: "Negro Amoled", theme_p_blue: "Azul Pastel", theme_p_green: "Verde Pastel", theme_p_pink: "Rosa Pastel", theme_p_yellow: "Amarillo Pastel", theme_p_purple: "Púrpura Pastel" });
+    Object.assign(i18n.zh, { theme_group_light: "浅色主题", theme_group_dark: "深色主题", theme_black: "纯黑 (Amoled)", theme_p_blue: "柔和蓝", theme_p_green: "柔和绿", theme_p_pink: "柔和粉", theme_p_yellow: "柔和黄", theme_p_purple: "柔和紫" });
+    Object.assign(i18n.hi, { theme_group_light: "हल्के थीम", theme_group_dark: "गहरे थीम", theme_black: "एमोलेड ब्लैक", theme_p_blue: "पेस्टल ब्लू", theme_p_green: "पेस्टल ग्रीन", theme_p_pink: "पेस्टल पिंक", theme_p_yellow: "पेस्टल येलो", theme_p_purple: "पेस्टल पर्पल" });
+    Object.assign(i18n.ja, { theme_group_light: "ライトテーマ", theme_group_dark: "ダークテーマ", theme_black: "アモレッドブラック", theme_p_blue: "パステルブルー", theme_p_green: "パステルグリーン", theme_p_pink: "パステルピンク", theme_p_yellow: "パステルイエロー", theme_p_purple: "パステルパープル" });
+    Object.assign(i18n.ko, { theme_group_light: "라이트 테마", theme_group_dark: "다크 테마", theme_black: "아몰레드 블랙", theme_p_blue: "파스텔 블루", theme_p_green: "파스텔 그린", theme_p_pink: "파스텔 핑크", theme_p_yellow: "파스텔 옐로우", theme_p_purple: "파스텔 퍼플" });
 
-    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false };
+    // Pridali sme predvolené hodnoty pre OWM: oblaky ZAPNUTÉ, dážď ZAPNUTÝ, priehľadnosť 75%
+    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false, owmClouds: true, owmRain: true, owmOpacity: 75 };
     
     // BEZPEČNÉ NAČÍTANIE PAMÄTE
     let appSettings;
-    try { appSettings = JSON.parse(localStorage.getItem('weatherAppSettings')) || defaultSettings; } catch(e) { appSettings = defaultSettings; }
+    try { appSettings = JSON.parse(localStorage.getItem('weatherAppSettings')) || defaultSettings;
+    } catch(e) { appSettings = defaultSettings; }
     let currentLang = appSettings.lang || 'en';
-
     function saveSettings() { try { localStorage.setItem('weatherAppSettings', JSON.stringify(appSettings)); } catch(e) {} }
 
     function initSettings() {
@@ -924,6 +982,12 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
             appSettings.map = 'osm';
             saveSettings();
         }
+
+        // Ak spúšťaš novú verziu prvýkrát, nastaví týchto 75%
+        if (appSettings.owmClouds === undefined) appSettings.owmClouds = true;
+        if (appSettings.owmRain === undefined) appSettings.owmRain = true;
+        if (appSettings.owmOpacity === undefined) appSettings.owmOpacity = 75;
+
         document.getElementById('langSelect').value = appSettings.lang || 'en';
         document.getElementById('themeSelect').value = appSettings.theme || 'system';
         document.getElementById('modelSelect').value = appSettings.model || 'best_match';
@@ -937,25 +1001,66 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
         document.getElementById('weekdayFull').checked = appSettings.weekdayFull || false;
         document.getElementById('weekdayShort').checked = appSettings.weekdayShort || false;
         
+        // Načítanie pamäte pre tvoje OWM roletky a jazdec pri štarte
+        let chkClouds = document.getElementById('chk-owm-clouds');
+        if (chkClouds) chkClouds.checked = appSettings.owmClouds;
+        
+        let chkRain = document.getElementById('chk-owm-rain');
+        if (chkRain) chkRain.checked = appSettings.owmRain;
+        
+        let sliOpacity = document.getElementById('owm-opacity-slider');
+        let numOpacity = document.getElementById('owm-opacity-number');
+        if (sliOpacity && numOpacity) {
+            sliOpacity.value = appSettings.owmOpacity;
+            numOpacity.value = appSettings.owmOpacity;
+        }
+
         currentLang = appSettings.lang || 'en';
         updateLanguage(); applyTheme(appSettings.theme || 'system');
-        updateQuickModelButtons(); updateQuickMapButtons();
+        updateQuickModelButtons();
+        updateQuickMapButtons();
     }
 
     function t(key) { return i18n[currentLang][key] || key; }
+
+function updateThemeLabels() {
+        const themeSelect = document.getElementById('themeSelect');
+        if (!themeSelect) return;
+        
+        Array.from(themeSelect.options).forEach(opt => {
+            const i18nKey = opt.getAttribute('data-i18n');
+            if (i18nKey) opt.textContent = t(i18nKey);
+        });
+
+        if (appSettings.theme === 'system') {
+            const lightSub = appSettings.lightSubTheme || 'light';
+            const darkSub = appSettings.darkSubTheme || 'dark';
+            
+            // Aplikácia si sama zistí správne slovo pre daný jazyk (napr. System, Système...)
+            const sysText = t('theme_sys'); 
+            
+            const lightOpt = themeSelect.querySelector(`option[value="${lightSub}"]`);
+            if (lightOpt) lightOpt.textContent += ` (☀️ ${sysText})`;
+            
+            const darkOpt = themeSelect.querySelector(`option[value="${darkSub}"]`);
+            if (darkOpt) darkOpt.textContent += ` (🌙 ${sysText})`;
+        }
+    }
 
     function updateLanguage() {
         document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.getAttribute("data-i18n")); });
         document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.getAttribute("data-i18n-ph")); });
         document.querySelectorAll("[data-i18n-title]").forEach(el => { el.title = t(el.getAttribute("data-i18n-title")); });
+        document.querySelectorAll("[data-i18n-label]").forEach(el => { el.label = t(el.getAttribute("data-i18n-label")); });
         document.getElementById('compass').setAttribute("data-north", t('compass_n'));
-        updateClock();
+        if (typeof updateClock === 'function') updateClock();
+        updateThemeLabels();
     }
 
-    // 3-STAVOVÉ IKONKY SIETE
-    const iconOnline = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48 0a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>`;
-    const iconWarning = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"></line><path d="M8.46 8.46a6 6 0 0 0 8.49 8.49M16.24 7.76a6 6 0 0 1 2.12 3.53M19.07 4.93a10 10 0 0 1 2.83 5.66M4.93 4.93a10 10 0 0 0 0 14.14"></path><circle cx="12" cy="12" r="2"></circle></svg>`;
-    const iconOffline = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"></line><path d="M8.46 8.46a6 6 0 0 0 8.49 8.49M16.24 7.76a6 6 0 0 1 2.12 3.53M19.07 4.93a10 10 0 0 1 2.83 5.66M4.93 4.93a10 10 0 0 0 0 14.14"></path><circle cx="12" cy="12" r="2"></circle></svg>`;
+    // 3-STAVOVÉ IKONKY SIETE (Zjemnené, stroke-width 2)
+    const iconOnline = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48 0a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>`;
+    const iconWarning = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"></line><path d="M8.46 8.46a6 6 0 0 0 8.49 8.49M16.24 7.76a6 6 0 0 1 2.12 3.53M19.07 4.93a10 10 0 0 1 2.83 5.66M4.93 4.93a10 10 0 0 0 0 14.14"></path><circle cx="12" cy="12" r="2"></circle></svg>`;
+    const iconOffline = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"></line><path d="M8.46 8.46a6 6 0 0 0 8.49 8.49M16.24 7.76a6 6 0 0 1 2.12 3.53M19.07 4.93a10 10 0 0 1 2.83 5.66M4.93 4.93a10 10 0 0 0 0 14.14"></path><circle cx="12" cy="12" r="2"></circle></svg>`;
 
     let networkState = navigator.onLine ? 'online' : 'offline';
 
@@ -1066,7 +1171,23 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
     function changeTimeFormat() { appSettings.timeFormat = document.getElementById('timeFormatSelect').value; saveSettings(); updateClock(); if (lastSearchedCity !== "") { getWindData(true, false); } closeModal(); }
     function changeDateFormat() { appSettings.dateFormat = document.getElementById('dateFormatSelect').value; saveSettings(); updateClock(); closeModal(); }
     function changeLanguage() { appSettings.lang = document.getElementById('langSelect').value; saveSettings(); currentLang = appSettings.lang; updateLanguage(); if (lastSearchedCity !== "") { getWindData(true, false); } closeModal(); }
-    function changeTheme() { appSettings.theme = document.getElementById('themeSelect').value; saveSettings(); applyTheme(appSettings.theme); closeModal(); }
+
+    function changeTheme() { 
+        let val = document.getElementById('themeSelect').value;
+        
+        if (val !== 'system') {
+            const lightThemes = ['light', 'pastel-blue', 'pastel-green', 'pastel-pink', 'pastel-yellow', 'pastel-purple'];
+            const darkThemes = ['dark', 'black'];
+            
+            if (lightThemes.includes(val)) appSettings.lightSubTheme = val;
+            if (darkThemes.includes(val)) appSettings.darkSubTheme = val;
+        }
+
+        appSettings.theme = val; 
+        saveSettings(); 
+        applyTheme(val); 
+        updateThemeLabels();
+    }
     function modelChanged() { appSettings.model = document.getElementById('modelSelect').value; saveSettings(); updateQuickModelButtons(); if (lastSearchedCity !== "") { getWindData(true, false); } closeModal(); }
     function quickModelChange(model) { document.getElementById('modelSelect').value = model; modelChanged(); }
     function updateQuickModelButtons() { document.querySelectorAll('.model-btn-q').forEach(btn => btn.classList.remove('active')); let activeBtn = document.getElementById('btn-mod-' + (appSettings.model || 'best_match')); if(activeBtn) activeBtn.classList.add('active'); }
@@ -1080,26 +1201,160 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
 
     let currentTileLayer = null;
 
-    let lastBaseMap = (typeof appSettings !== 'undefined' && appSettings.map !== 'radar' && appSettings.map !== 'wind') ? appSettings.map : 'osm';
-    let currentCloudLayer = null; 
-    let isCloudActive = true; 
+// Preklady pre OWM vrstvy
+    Object.assign(i18n.sk, { owm_layers: "Vrstvy", owm_clouds: "Oblačnosť", owm_rain: "Zrážky", owm_opacity: "Priehľadnosť" });
+    Object.assign(i18n.cs, { owm_layers: "Vrstvy", owm_clouds: "Oblačnost", owm_rain: "Srážky", owm_opacity: "Průhlednost" });
+    Object.assign(i18n.en, { owm_layers: "Layers", owm_clouds: "Clouds", owm_rain: "Rain", owm_opacity: "Opacity" });
+    Object.assign(i18n.de, { owm_layers: "Ebenen", owm_clouds: "Wolken", owm_rain: "Regen", owm_opacity: "Deckkraft" });
+    Object.assign(i18n.fr, { owm_layers: "Couches", owm_clouds: "Nuages", owm_rain: "Pluie", owm_opacity: "Opacité" });
+    Object.assign(i18n.es, { owm_layers: "Capas", owm_clouds: "Nubes", owm_rain: "Lluvia", owm_opacity: "Opacidad" });
+    Object.assign(i18n.zh, { owm_layers: "图层", owm_clouds: "云层", owm_rain: "降雨", owm_opacity: "不透明度" });
+    Object.assign(i18n.hi, { owm_layers: "परतें", owm_clouds: "बादल", owm_rain: "बारिश", owm_opacity: "अस्पष्टता" });
+    Object.assign(i18n.ja, { owm_layers: "レイヤー", owm_clouds: "雲", owm_rain: "雨", owm_opacity: "不透明度" });
+    Object.assign(i18n.ko, { owm_layers: "레이어", owm_clouds: "구름", owm_rain: "비", owm_opacity: "불투명도" });
+
+    let lastBaseMap = (typeof appSettings !== 'undefined' && !['radar', 'clouds', 'wind'].includes(appSettings.map)) ? appSettings.map : 'osm';
+    
+    // Naše nové oddelené vrstvy
+    let owmCloudsLayer = null; 
+    let owmRainLayer = null;
+
+    function toggleWindyDropdown() {
+        let drp = document.getElementById('windy-dropdown-content');
+        drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
+        document.getElementById('owm-dropdown-content').style.display = 'none';
+        document.getElementById('map-dropdown-content').style.display = 'none';
+    }
+
+    function toggleOwmDropdown() {
+        let drp = document.getElementById('owm-dropdown-content');
+        drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
+        document.getElementById('windy-dropdown-content').style.display = 'none';
+        document.getElementById('map-dropdown-content').style.display = 'none';
+    }
+
+    function handleBaseMapButtonClick() {
+        const windyIframe = document.getElementById('windy-iframe');
+        let drp = document.getElementById('map-dropdown-content');
+        
+        // Ak je momentálne zobrazená Windy mapa, prvé kliknutie len prepne späť na normálnu mapu
+        if (windyIframe && windyIframe.style.display === 'block') {
+            changeMapLayerQuick(lastBaseMap);
+            drp.style.display = 'none';
+            document.getElementById('windy-dropdown-content').style.display = 'none';
+            document.getElementById('owm-dropdown-content').style.display = 'none';
+            return;
+        }
+
+        // Ak už sme na normálnej mape, otvorí alebo zatvorí roletku
+        drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
+        document.getElementById('windy-dropdown-content').style.display = 'none';
+        document.getElementById('owm-dropdown-content').style.display = 'none';
+    }
+
+    function updateOwmOpacity() {
+        let val = document.getElementById('owm-opacity-slider').value;
+        document.getElementById('owm-opacity-number').value = val;
+        
+        // Zápis do pamäte pri pohybe jazdcom
+        appSettings.owmOpacity = parseInt(val);
+        saveSettings();
+        
+        applyOwmOpacity(val / 100);
+    }
+
+    function updateOwmOpacityFromNumber() {
+        let val = document.getElementById('owm-opacity-number').value;
+        if (val < 0) val = 0; if (val > 100) val = 100;
+        document.getElementById('owm-opacity-slider').value = val;
+        
+        // Zápis do pamäte pri prepísaní čísla
+        appSettings.owmOpacity = parseInt(val);
+        saveSettings();
+        
+        applyOwmOpacity(val / 100);
+    }
+
+    function applyOwmOpacity(opacityValue) {
+        if (owmCloudsLayer) owmCloudsLayer.setOpacity(opacityValue);
+        if (owmRainLayer) owmRainLayer.setOpacity(Math.min(1.0, opacityValue + 0.15));
+    }
+
+    function updateOwmLayers() {
+        let showClouds = document.getElementById('chk-owm-clouds').checked;
+        let showRain = document.getElementById('chk-owm-rain').checked;
+        let opacityVal = document.getElementById('owm-opacity-slider').value / 100;
+        
+        // Zápis do pamäte pri zaškrtnutí mrakov a dažďa
+        appSettings.owmClouds = showClouds;
+        appSettings.owmRain = showRain;
+        saveSettings();
+
+        // Ak máme zapnuté Windy, OWM sa do mapy nevkladá
+        let mapId = document.getElementById('mapLayerSelect') ? document.getElementById('mapLayerSelect').value : appSettings.map;
+        if (['radar', 'wind', 'clouds'].includes(mapId)) {
+            if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
+            if (owmRainLayer) { map.removeLayer(owmRainLayer); owmRainLayer = null; }
+            return;
+        }
+
+        // Správa vrstvy: Oblačnosť
+        if (showClouds) {
+            if (!owmCloudsLayer) {
+                owmCloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', { 
+                    transparent: true, attribution: '&copy; OpenWeatherMap', zIndex: 10 
+                }).addTo(map);
+            }
+            owmCloudsLayer.setOpacity(opacityVal);
+        } else {
+            if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
+        }
+
+        // Správa vrstvy: Dážď
+        if (showRain) {
+            if (!owmRainLayer) {
+                owmRainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', { 
+                    transparent: true, zIndex: 11 
+                }).addTo(map);
+            }
+            owmRainLayer.setOpacity(Math.min(1.0, opacityVal + 0.15));
+        } else {
+            if (owmRainLayer) { map.removeLayer(owmRainLayer); owmRainLayer = null; }
+        }
+
+        // Odfarbí alebo zafarbí hlavné tlačidlo obláčika
+        let owmBtn = document.getElementById('btn-owm-base');
+        if (owmBtn) {
+            if (showClouds || showRain) owmBtn.classList.add('active');
+            else owmBtn.classList.remove('active');
+        }
+    }
+
+    async function changeMapLayerQuick(layer) { 
+        if (['osm', 'dark', 'topo', 'satellite'].includes(layer)) {
+            lastBaseMap = layer;
+            changeMapLayer(false, layer);
+            return;
+        }
+        if (['clouds', 'wind', 'radar'].includes(layer)) {
+            changeMapLayer(false, layer);
+        }
+    }
 
     function changeMapLayer(fromUser = false, layer = null) {
-        let mapId = layer || document.getElementById('mapLayerSelect').value;
+        let mapId = layer || (document.getElementById('mapLayerSelect') ? document.getElementById('mapLayerSelect').value : appSettings.map);
         
-        if (mapId !== 'radar' && mapId !== 'wind') {
+        if (!['radar', 'wind', 'clouds'].includes(mapId)) {
             appSettings.map = mapId;
             saveSettings();
-            if (document.getElementById('mapLayerSelect')) {
-                document.getElementById('mapLayerSelect').value = mapId;
-            }
+            if (document.getElementById('mapLayerSelect')) document.getElementById('mapLayerSelect').value = mapId;
         }
 
         const windyIframe = document.getElementById('windy-iframe');
         const bottomWrapper = document.getElementById('bottom-wrapper');
         const leafletControls = document.querySelector('.leaflet-control-container');
         
-        if (mapId === 'radar' || mapId === 'wind') {
+        if (['radar', 'wind', 'clouds'].includes(mapId)) {
             windyIframe.style.display = 'block';
             const topHeight = document.querySelector('.top-panel').offsetHeight;
             windyIframe.style.top = topHeight + 'px';
@@ -1112,10 +1367,9 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
             let extraParams = (mapId === 'radar') ? '&radarRange=-1&play=1' : '';
             windyIframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=${mapId}&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C${extraParams}`;
             
-            if (currentCloudLayer) map.removeLayer(currentCloudLayer);
-            let cloudBtn = document.getElementById('btn-map-clouds');
-            if (cloudBtn) cloudBtn.classList.remove('active');
-
+            // Pri prepnutí na Windy natvrdo vypneme OWM mraky z mapy
+            if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
+            if (owmRainLayer) { map.removeLayer(owmRainLayer); owmRainLayer = null; }
         } else {
             windyIframe.style.display = 'none';
             if (bottomWrapper && lastSearchedCity !== "") bottomWrapper.style.display = 'flex';
@@ -1125,101 +1379,62 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
             if (currentTileLayer) map.removeLayer(currentTileLayer);
             currentTileLayer = L.tileLayer(config.url, { attribution: config.attribution, maxZoom: config.maxZoom }).addTo(map);
 
-            if (isCloudActive) {
-                if (currentCloudLayer) map.removeLayer(currentCloudLayer);
-                
-                let cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
-                    opacity: 0.7, transparent: true, attribution: '&copy; OpenWeatherMap'
-                });
-                let rainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
-                    opacity: 0.9, transparent: true
-                });
-                
-                currentCloudLayer = L.layerGroup([cloudsLayer, rainLayer]).addTo(map);
-                
-                let cloudBtn = document.getElementById('btn-map-clouds');
-                if (cloudBtn) cloudBtn.classList.add('active');
-            }
+            // Zistí, čo má zaškrtnuté a nahodí vrstvy späť
+            updateOwmLayers();
         }
         updateQuickMapButtons(mapId); 
         if (fromUser) closeModal();
-    }
-
-    async function changeMapLayerQuick(layer) { 
-        if (layer === 'clouds') {
-            isCloudActive = !isCloudActive; 
-            const windyIframe = document.getElementById('windy-iframe');
-            
-            if (windyIframe && windyIframe.style.display === 'block') {
-                changeMapLayer(false, lastBaseMap);
-                return; 
-            }
-
-            let cloudBtn = document.getElementById('btn-map-clouds');
-
-            if (isCloudActive) {
-                let cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
-                    opacity: 0.7, transparent: true, attribution: '&copy; OpenWeatherMap'
-                });
-                let rainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', {
-                    opacity: 0.9, transparent: true
-                });
-                currentCloudLayer = L.layerGroup([cloudsLayer, rainLayer]).addTo(map);
-                if (cloudBtn) cloudBtn.classList.add('active');
-            } else {
-                if (currentCloudLayer) map.removeLayer(currentCloudLayer);
-                currentCloudLayer = null;
-                if (cloudBtn) cloudBtn.classList.remove('active');
-            }
-            return; 
-        }
-
-        if (layer !== 'radar' && layer !== 'wind') { 
-            lastBaseMap = layer;
-        }
-        changeMapLayer(false, layer);
-    }
-
-    function handleBaseMapButtonClick() {
-        const windyIframe = document.getElementById('windy-iframe');
-        let drp = document.getElementById('map-dropdown-content');
-        if (windyIframe && windyIframe.style.display === 'block') {
-            changeMapLayerQuick(lastBaseMap);
-            if(drp) drp.style.display = 'none';
-        } else {
-            if(drp) drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
-        }
     }
 
     function updateQuickMapButtons(activeLayer = null) { 
         let currentLayer = activeLayer || appSettings.map || 'osm';
         
         document.querySelectorAll('.map-btn').forEach(btn => {
-            if (btn.id !== 'btn-map-clouds') btn.classList.remove('active');
+            if (btn.id !== 'btn-owm-base') btn.classList.remove('active');
         });
         
         let activeBtn = document.getElementById('btn-map-' + currentLayer); 
-        if (activeBtn && currentLayer !== 'clouds') activeBtn.classList.add('active');
+        if (activeBtn) activeBtn.classList.add('active');
         
-        if (currentLayer !== 'radar' && currentLayer !== 'wind') {
-            let baseBtn = document.getElementById('btn-map-base');
-            if (baseBtn) baseBtn.classList.add('active');
+        let baseBtn = document.getElementById('btn-map-base');
+        
+        // Dynamická zmena ikonky (minimalistické SVG namiesto Emojis)
+        const baseIcons = { 
+            'osm': `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`, 
+            'dark': `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`, 
+            'topo': `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2L8 3z"></path></svg>`, 
+            'satellite': `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>` 
+        };
+        
+        if (baseBtn && baseIcons[lastBaseMap]) {
+            // Používame innerHTML namiesto textContent, pretože vkladáme HTML kód pre SVG
+            baseBtn.innerHTML = baseIcons[lastBaseMap];
         }
         
-        let cloudBtn = document.getElementById('btn-map-clouds');
-        if (cloudBtn && isCloudActive && currentLayer !== 'radar' && currentLayer !== 'wind') {
-            cloudBtn.classList.add('active');
+        if (!['radar', 'wind', 'clouds'].includes(currentLayer)) {
+            if (baseBtn) baseBtn.classList.add('active');
+        } else {
+            let windyBtn = document.getElementById('btn-windy-base');
+            if (windyBtn) windyBtn.classList.add('active');
         }
     }
 
+    // Aby sa nové preklady prejavili ihneď po načítaní
+    setTimeout(updateLanguage, 500);
     function applyTheme(themeVal) {
         if (themeVal === 'system') {
             const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        } else { document.documentElement.setAttribute('data-theme', themeVal); }
+            // Aplikácia vytiahne z pamäte tvoj naposledy vybratý podmotív, inak použije základný
+            const activeTheme = isDark ? (appSettings.darkSubTheme || 'dark') : (appSettings.lightSubTheme || 'light');
+            document.documentElement.setAttribute('data-theme', activeTheme);
+        } else { 
+            document.documentElement.setAttribute('data-theme', themeVal); 
+        }
     }
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { if (document.getElementById('themeSelect').value === 'system') applyTheme('system'); });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { 
+        if (appSettings.theme === 'system') applyTheme('system'); 
+    });
 
     let isAutoScrolling = false; let lastScroll = 0; let stickyOffset = 0;
     
@@ -1395,6 +1610,17 @@ Object.assign(i18n.sk, { theme_black: "Amoled Čierny", theme_p_blue: "Pastelov�
         L.control.zoom({ position: 'topright' }).addTo(map);
 
         map.on('click', async function(e) {
+            // OCHRANA: Ak je otvorená akákoľvek roletka, kliknutie na mapu ju len zatvorí a zabráni hľadaniu
+            const mapDrp = document.getElementById('map-dropdown-content');
+            const owmDrp = document.getElementById('owm-dropdown-content');
+            const windyDrp = document.getElementById('windy-dropdown-content');
+            
+            if ((mapDrp && mapDrp.style.display === 'flex') || 
+                (owmDrp && owmDrp.style.display === 'flex') || 
+                (windyDrp && windyDrp.style.display === 'flex')) {
+                return; // Preruší funkciu hľadania, takže sa nič nestane (iba sa zatvoria roletky)
+            }
+
             const lat = e.latlng.lat; const lon = e.latlng.lng;
             document.getElementById('quick-locations-bar').style.display = 'flex';
             document.getElementById('panel-header').style.display = 'flex';
@@ -2054,6 +2280,25 @@ function getTempBgColor(temp) {
             // Tu to zostáva, v prípade ak úplne na konci po vykreslení spadne nejaký vnútorný vizuálny javascript
         }
     }
+// Kliknutie kdekoľvek mimo roletiek ich automaticky zavrie
+    document.addEventListener('click', function(event) {
+        const mapDrp = document.getElementById('map-dropdown-content');
+        const owmDrp = document.getElementById('owm-dropdown-content');
+        const windyDrp = document.getElementById('windy-dropdown-content');
+
+        // Zavrie základné mapy
+        if (mapDrp && mapDrp.style.display === 'flex' && !mapDrp.contains(event.target) && !event.target.closest('#btn-map-base')) {
+            mapDrp.style.display = 'none';
+        }
+        // Zavrie nové OWM vrstvy
+        if (owmDrp && owmDrp.style.display === 'flex' && !owmDrp.contains(event.target) && !event.target.closest('#btn-owm-base')) {
+            owmDrp.style.display = 'none';
+        }
+        // Zavrie Windy mapy
+        if (windyDrp && windyDrp.style.display === 'flex' && !windyDrp.contains(event.target) && !event.target.closest('#btn-windy-base')) {
+            windyDrp.style.display = 'none';
+        }
+    });
 </script>
 
 </body>
