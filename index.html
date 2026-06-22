@@ -470,27 +470,26 @@
         <button class="map-btn" id="btn-map-base" onclick="handleBaseMapButtonClick()" title="Základné mapy" style="display:flex; align-items:center; justify-content:center;">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
         </button>
-        <div id="map-dropdown-content" class="map-dropdown-content">
-            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" title="Základná (OSM/Carto)" style="display:flex; align-items:center; justify-content:center;">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <div id="map-dropdown-content" class="map-dropdown-content" style="width: 230px; padding: 12px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow);">
+            <button class="map-btn" id="btn-map-osm" onclick="changeMapLayerQuick('osm'); this.parentElement.style.display='none'" style="display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%; border:none; box-shadow:none; padding:8px 10px; font-size:14px; margin-bottom:4px;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <span data-i18n="map_osm">Základná (OSM)</span>
             </button>
-            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" title="Tmavá" style="display:flex; align-items:center; justify-content:center;">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <button class="map-btn" id="btn-map-dark" onclick="changeMapLayerQuick('dark'); this.parentElement.style.display='none'" style="display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%; border:none; box-shadow:none; padding:8px 10px; font-size:14px; margin-bottom:4px;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <span data-i18n="map_dark">Tmavá</span>
             </button>
-            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" title="Turistická" style="display:flex; align-items:center; justify-content:center;">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2L8 3z"></path></svg>
+            <button class="map-btn" id="btn-map-topo" onclick="changeMapLayerQuick('topo'); this.parentElement.style.display='none'" style="display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%; border:none; box-shadow:none; padding:8px 10px; font-size:14px; margin-bottom:4px;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2L8 3z"></path></svg>
+                <span data-i18n="map_topo">Turistická</span>
             </button>
-            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" title="Satelitná" style="display:flex; align-items:center; justify-content:center;">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <button class="map-btn" id="btn-map-satellite" onclick="changeMapLayerQuick('satellite'); this.parentElement.style.display='none'" style="display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%; border:none; box-shadow:none; padding:8px 10px; font-size:14px; margin-bottom:4px;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span data-i18n="map_sat">Satelitná</span>
             </button>
-        </div>
-    </div>
-
-    <div style="position: relative;">
-        <button class="map-btn" id="btn-owm-base" onclick="toggleOwmDropdown()" title="Vrstvy počasia" style="display:flex; align-items:center; justify-content:center;">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 12 12 17 22 12"></polyline><polyline points="2 17 12 22 22 17"></polyline></svg>
-        </button>
-        <div id="owm-dropdown-content" class="map-dropdown-content" style="width: 210px; padding: 12px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow);">
+            
+            <div style="height: 1px; background: var(--border-color); margin: 6px 0 12px 0;"></div>
+            
             <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;" data-i18n="owm_layers">Vrstvy</div>
             
             <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 10px; cursor: pointer; color: var(--text-main);">
@@ -699,6 +698,26 @@
                 <option value="topo" data-i18n="map_topo">Turistická</option>
                 <option value="satellite" data-i18n="map_sat">Satelitná</option>
             </select>
+            
+            <div style="margin-top: 15px; padding: 12px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px;">
+                <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;" data-i18n="owm_layers">Vrstvy</div>
+                
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 10px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" id="chk-owm-clouds-set" checked onchange="syncSettingsToMap()">
+                    <span data-i18n="owm_clouds">Oblačnosť</span>
+                </label>
+                
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 15px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" id="chk-owm-rain-set" checked onchange="syncSettingsToMap()">
+                    <span data-i18n="owm_rain">Zrážky</span>
+                </label>
+
+                <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;" data-i18n="owm_opacity">Priehľadnosť</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="range" id="owm-opacity-slider-set" min="0" max="100" value="70" style="flex-grow: 1; cursor: pointer;" oninput="syncSettingsOpacity()">
+                    <input type="number" id="owm-opacity-number-set" min="0" max="100" value="70" style="width: 48px; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-solid); color: var(--text-main); font-size: 13px; text-align: center;" oninput="syncSettingsOpacityFromNumber()">
+                </div>
+            </div>
         </div>
 
         <div class="settings-section" style="border-bottom: none;">
@@ -1001,19 +1020,17 @@ Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark:
         document.getElementById('weekdayFull').checked = appSettings.weekdayFull || false;
         document.getElementById('weekdayShort').checked = appSettings.weekdayShort || false;
         
-        // Načítanie pamäte pre tvoje OWM roletky a jazdec pri štarte
-        let chkClouds = document.getElementById('chk-owm-clouds');
-        if (chkClouds) chkClouds.checked = appSettings.owmClouds;
+        // --- OWM HODNOTY PRE OBIDVE ROLETKY ---
+        if (document.getElementById('chk-owm-clouds')) document.getElementById('chk-owm-clouds').checked = appSettings.owmClouds;
+        if (document.getElementById('chk-owm-clouds-set')) document.getElementById('chk-owm-clouds-set').checked = appSettings.owmClouds;
         
-        let chkRain = document.getElementById('chk-owm-rain');
-        if (chkRain) chkRain.checked = appSettings.owmRain;
+        if (document.getElementById('chk-owm-rain')) document.getElementById('chk-owm-rain').checked = appSettings.owmRain;
+        if (document.getElementById('chk-owm-rain-set')) document.getElementById('chk-owm-rain-set').checked = appSettings.owmRain;
         
-        let sliOpacity = document.getElementById('owm-opacity-slider');
-        let numOpacity = document.getElementById('owm-opacity-number');
-        if (sliOpacity && numOpacity) {
-            sliOpacity.value = appSettings.owmOpacity;
-            numOpacity.value = appSettings.owmOpacity;
-        }
+        if (document.getElementById('owm-opacity-slider')) document.getElementById('owm-opacity-slider').value = appSettings.owmOpacity;
+        if (document.getElementById('owm-opacity-slider-set')) document.getElementById('owm-opacity-slider-set').value = appSettings.owmOpacity;
+        if (document.getElementById('owm-opacity-number')) document.getElementById('owm-opacity-number').value = appSettings.owmOpacity;
+        if (document.getElementById('owm-opacity-number-set')) document.getElementById('owm-opacity-number-set').value = appSettings.owmOpacity;
 
         currentLang = appSettings.lang || 'en';
         updateLanguage(); applyTheme(appSettings.theme || 'system');
@@ -1222,14 +1239,6 @@ function updateThemeLabels() {
     function toggleWindyDropdown() {
         let drp = document.getElementById('windy-dropdown-content');
         drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
-        document.getElementById('owm-dropdown-content').style.display = 'none';
-        document.getElementById('map-dropdown-content').style.display = 'none';
-    }
-
-    function toggleOwmDropdown() {
-        let drp = document.getElementById('owm-dropdown-content');
-        drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
-        document.getElementById('windy-dropdown-content').style.display = 'none';
         document.getElementById('map-dropdown-content').style.display = 'none';
     }
 
@@ -1237,29 +1246,69 @@ function updateThemeLabels() {
         const windyIframe = document.getElementById('windy-iframe');
         let drp = document.getElementById('map-dropdown-content');
         
-        // Ak je momentálne zobrazená Windy mapa, prvé kliknutie len prepne späť na normálnu mapu
         if (windyIframe && windyIframe.style.display === 'block') {
             changeMapLayerQuick(lastBaseMap);
             drp.style.display = 'none';
             document.getElementById('windy-dropdown-content').style.display = 'none';
-            document.getElementById('owm-dropdown-content').style.display = 'none';
             return;
         }
 
-        // Ak už sme na normálnej mape, otvorí alebo zatvorí roletku
         drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
         document.getElementById('windy-dropdown-content').style.display = 'none';
-        document.getElementById('owm-dropdown-content').style.display = 'none';
+    }
+
+    // --- SYNCHRONIZÁCIA NASTAVENÍ A MAPY ---
+    function syncSettingsToMap() {
+        let showClouds = document.getElementById('chk-owm-clouds-set').checked;
+        let showRain = document.getElementById('chk-owm-rain-set').checked;
+        
+        if (document.getElementById('chk-owm-clouds')) document.getElementById('chk-owm-clouds').checked = showClouds;
+        if (document.getElementById('chk-owm-rain')) document.getElementById('chk-owm-rain').checked = showRain;
+        updateOwmLayers();
+    }
+
+    function syncMapToSettings() {
+        let showClouds = document.getElementById('chk-owm-clouds').checked;
+        let showRain = document.getElementById('chk-owm-rain').checked;
+        
+        if (document.getElementById('chk-owm-clouds-set')) document.getElementById('chk-owm-clouds-set').checked = showClouds;
+        if (document.getElementById('chk-owm-rain-set')) document.getElementById('chk-owm-rain-set').checked = showRain;
+    }
+
+    function syncSettingsOpacity() {
+        let val = document.getElementById('owm-opacity-slider-set').value;
+        document.getElementById('owm-opacity-number-set').value = val;
+        
+        if (document.getElementById('owm-opacity-slider')) document.getElementById('owm-opacity-slider').value = val;
+        if (document.getElementById('owm-opacity-number')) document.getElementById('owm-opacity-number').value = val;
+        
+        appSettings.owmOpacity = parseInt(val);
+        saveSettings();
+        applyOwmOpacity(val / 100);
+    }
+
+    function syncSettingsOpacityFromNumber() {
+        let val = document.getElementById('owm-opacity-number-set').value;
+        if (val < 0) val = 0; if (val > 100) val = 100;
+        document.getElementById('owm-opacity-slider-set').value = val;
+        
+        if (document.getElementById('owm-opacity-slider')) document.getElementById('owm-opacity-slider').value = val;
+        if (document.getElementById('owm-opacity-number')) document.getElementById('owm-opacity-number').value = val;
+        
+        appSettings.owmOpacity = parseInt(val);
+        saveSettings();
+        applyOwmOpacity(val / 100);
     }
 
     function updateOwmOpacity() {
         let val = document.getElementById('owm-opacity-slider').value;
         document.getElementById('owm-opacity-number').value = val;
         
-        // Zápis do pamäte pri pohybe jazdcom
+        if (document.getElementById('owm-opacity-slider-set')) document.getElementById('owm-opacity-slider-set').value = val;
+        if (document.getElementById('owm-opacity-number-set')) document.getElementById('owm-opacity-number-set').value = val;
+        
         appSettings.owmOpacity = parseInt(val);
         saveSettings();
-        
         applyOwmOpacity(val / 100);
     }
 
@@ -1268,10 +1317,11 @@ function updateThemeLabels() {
         if (val < 0) val = 0; if (val > 100) val = 100;
         document.getElementById('owm-opacity-slider').value = val;
         
-        // Zápis do pamäte pri prepísaní čísla
+        if (document.getElementById('owm-opacity-slider-set')) document.getElementById('owm-opacity-slider-set').value = val;
+        if (document.getElementById('owm-opacity-number-set')) document.getElementById('owm-opacity-number-set').value = val;
+        
         appSettings.owmOpacity = parseInt(val);
         saveSettings();
-        
         applyOwmOpacity(val / 100);
     }
 
@@ -1285,12 +1335,12 @@ function updateThemeLabels() {
         let showRain = document.getElementById('chk-owm-rain').checked;
         let opacityVal = document.getElementById('owm-opacity-slider').value / 100;
         
-        // Zápis do pamäte pri zaškrtnutí mrakov a dažďa
+        syncMapToSettings(); // Udržujeme synchronizované obe miesta
+
         appSettings.owmClouds = showClouds;
         appSettings.owmRain = showRain;
         saveSettings();
 
-        // Ak máme zapnuté Windy, OWM sa do mapy nevkladá
         let mapId = document.getElementById('mapLayerSelect') ? document.getElementById('mapLayerSelect').value : appSettings.map;
         if (['radar', 'wind', 'clouds'].includes(mapId)) {
             if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
@@ -1298,7 +1348,6 @@ function updateThemeLabels() {
             return;
         }
 
-        // Správa vrstvy: Oblačnosť
         if (showClouds) {
             if (!owmCloudsLayer) {
                 owmCloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', { 
@@ -1310,7 +1359,6 @@ function updateThemeLabels() {
             if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
         }
 
-        // Správa vrstvy: Dážď
         if (showRain) {
             if (!owmRainLayer) {
                 owmRainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', { 
@@ -1320,13 +1368,6 @@ function updateThemeLabels() {
             owmRainLayer.setOpacity(Math.min(1.0, opacityVal + 0.15));
         } else {
             if (owmRainLayer) { map.removeLayer(owmRainLayer); owmRainLayer = null; }
-        }
-
-        // Odfarbí alebo zafarbí hlavné tlačidlo obláčika
-        let owmBtn = document.getElementById('btn-owm-base');
-        if (owmBtn) {
-            if (showClouds || showRain) owmBtn.classList.add('active');
-            else owmBtn.classList.remove('active');
         }
     }
 
@@ -1612,11 +1653,9 @@ function updateThemeLabels() {
         map.on('click', async function(e) {
             // OCHRANA: Ak je otvorená akákoľvek roletka, kliknutie na mapu ju len zatvorí a zabráni hľadaniu
             const mapDrp = document.getElementById('map-dropdown-content');
-            const owmDrp = document.getElementById('owm-dropdown-content');
             const windyDrp = document.getElementById('windy-dropdown-content');
             
             if ((mapDrp && mapDrp.style.display === 'flex') || 
-                (owmDrp && owmDrp.style.display === 'flex') || 
                 (windyDrp && windyDrp.style.display === 'flex')) {
                 return; // Preruší funkciu hľadania, takže sa nič nestane (iba sa zatvoria roletky)
             }
@@ -2283,18 +2322,11 @@ function getTempBgColor(temp) {
 // Kliknutie kdekoľvek mimo roletiek ich automaticky zavrie
     document.addEventListener('click', function(event) {
         const mapDrp = document.getElementById('map-dropdown-content');
-        const owmDrp = document.getElementById('owm-dropdown-content');
         const windyDrp = document.getElementById('windy-dropdown-content');
 
-        // Zavrie základné mapy
         if (mapDrp && mapDrp.style.display === 'flex' && !mapDrp.contains(event.target) && !event.target.closest('#btn-map-base')) {
             mapDrp.style.display = 'none';
         }
-        // Zavrie nové OWM vrstvy
-        if (owmDrp && owmDrp.style.display === 'flex' && !owmDrp.contains(event.target) && !event.target.closest('#btn-owm-base')) {
-            owmDrp.style.display = 'none';
-        }
-        // Zavrie Windy mapy
         if (windyDrp && windyDrp.style.display === 'flex' && !windyDrp.contains(event.target) && !event.target.closest('#btn-windy-base')) {
             windyDrp.style.display = 'none';
         }
