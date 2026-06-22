@@ -569,7 +569,7 @@
     
     <div class="controls">
         <div class="search-wrapper">
-            <input type="text" id="cityInput" data-i18n-ph="search_ph" placeholder="Zadaj miesto (napr. Chopok)..." 
+            <input type="text" id="cityInput" data-i18n-ph="search_ph" placeholder="Zadaj miesto (napr. Chopok)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                    onkeypress="handleKeyPress(event)" oninput="handleInput()" onfocus="this.value=''; showDropdown()" onblur="hideDropdown()">
             <button class="geo-input-btn" onmousedown="event.preventDefault(); document.getElementById('cityInput').blur(); triggerGeolocation(false);" title="Moja poloha">📍</button>
             <div id="dropdown-list" class="recent-dropdown"></div>
@@ -618,7 +618,7 @@
         <span class="close-btn" onclick="document.getElementById('liveModal').style.display='none'">&times;</span>
         <h3 style="margin-top: 0; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
             <span class="live-btn" style="animation: none; cursor: default; margin:0;">LIVE</span> 
-            <span data-i18n="lbl_current_state">Aktuálny stav</span>
+            <span><span data-i18n="lbl_current_state">Aktuálny stav</span> pre:</span>
         </h3>
         <div id="live-modal-content" style="margin-top: 20px;">
             </div>
@@ -675,7 +675,7 @@
                 <option value="custom" data-i18n="start_custom">Vlastné miesto...</option>
             </select>
             <div class="search-wrapper" id="startupCustomCityWrapper" style="display:none; margin-top: 8px;">
-                <input type="text" id="startupCustomCity" class="settings-input" placeholder="Zadaj miesto (napr. Chopok)..."
+                <input type="text" id="startupCustomCity" class="settings-input" placeholder="Zadaj miesto (napr. Chopok)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                        onkeypress="if(event.key==='Enter') this.blur();" oninput="handleSettingsInput()" onfocus="this.value=''; showSettingsDropdown()" onblur="hideSettingsDropdown()">
                 <div id="settings-dropdown-list" class="recent-dropdown" style="max-height: 200px;"></div>
             </div>
@@ -1727,13 +1727,19 @@ function updateThemeLabels() {
         L.control.zoom({ position: 'topright' }).addTo(map);
 
         map.on('click', async function(e) {
-            // OCHRANA: Ak je otvorená akákoľvek roletka, kliknutie na mapu ju len zatvorí a zabráni hľadaniu
+            // OCHRANA: Ak je otvorená roletka máp alebo práve VYHĽADÁVAME miesto, kliknutie na mapu iba zatvorí roletky
             const mapDrp = document.getElementById('map-dropdown-content');
             const windyDrp = document.getElementById('windy-dropdown-content');
             
-            if ((mapDrp && mapDrp.style.display === 'flex') || 
+            // Podmienka document.body.classList.contains('searching') zistí, či je aktívne horné vyhľadávanie
+            if (document.body.classList.contains('searching') || 
+                (mapDrp && mapDrp.style.display === 'flex') || 
                 (windyDrp && windyDrp.style.display === 'flex')) {
-                return; // Preruší funkciu hľadania, takže sa nič nestane (iba sa zatvoria roletky)
+                
+                // Uistíme sa, že klávesnica na mobile zmizne a pole stratí aktívny stav
+                document.getElementById('cityInput').blur();
+                
+                return; // Prerušíme funkciu - mapa nebude reagovať na klik a nezačne hľadať nové súradnice
             }
 
             const lat = e.latlng.lat; const lon = e.latlng.lng;
@@ -1986,23 +1992,42 @@ function updateThemeLabels() {
         if (code >= 71 && code <= 77) return t('c71'); if (code >= 80 && code <= 82) return t('c80');
         if (code >= 85 && code <= 86) return t('c85'); if (code >= 95 && code <= 99) return t('c95'); return '?';
     }
+    
     function getWeatherIcon(code, isNight) {
         if (code === 0) return isNight ? '🌙' : '☀️'; 
-        if (code === 1) return isNight ? '☁️' : '🌤️'; // Prevažne jasno
-        if (code === 2) return isNight ? '☁️' : '⛅'; // Polooblačno
-        if (code === 3) return '☁️'; 
+        if (code === 1) return isNight ? '☁️' : '🌤️';
+        if (code === 2) return isNight ? '☁️' : '⛅';
+        if (code === 3) return '☁️';
         if (code === 45 || code === 48) return '🌫️'; 
-        if (code >= 51 && code <= 57) return '🌦️'; 
+        if (code >= 51 && code <= 57) return '🌦️';
         if (code >= 61 && code <= 67) return '🌧️'; 
-        if (code >= 71 && code <= 77) return '🌨️'; 
+        if (code >= 71 && code <= 77) return '🌨️';
         if (code >= 80 && code <= 82) return '🌧️'; 
-        if (code >= 85 && code <= 86) return '🌨️'; 
-        if (code >= 95 && code <= 99) return '⛈️'; 
+        if (code >= 85 && code <= 86) return '🌨️';
+        if (code === 95) return '⛈️'; // Bežná búrka
+        if (code === 96 || code === 99) return '⚠️'; // Extrémna búrka / krúpy
         return '❓';
     }
-    
+
+function getWeatherIcon(code, isNight) {
+        if (code === 0) return isNight ? '🌙' : '☀️'; 
+        if (code === 1) return isNight ? '☁️' : '🌤️';
+        if (code === 2) return isNight ? '☁️' : '⛅';
+        if (code === 3) return '☁️';
+        if (code === 45 || code === 48) return '🌫️'; 
+        if (code >= 51 && code <= 57) return '🌦️';
+        if (code >= 61 && code <= 67) return '🌧️'; 
+        if (code >= 71 && code <= 77) return '🌨️';
+        if (code >= 80 && code <= 82) return '🌧️'; 
+        if (code >= 85 && code <= 86) return '🌨️';
+        if (code === 95) return '⛈️'; // Bežná búrka
+        if (code === 96 || code === 99) return '⚠️'; // Extrémna búrka / krúpy
+        return '❓';
+    }
+
+    // TÁTO FUNKCIA NÁM CHÝBALA (Farba pozadia oblohy v tabuľke)
     function getWeatherBgColor(code, isNight) {
-        if (isNight) return "#1e293b"; 
+        if (isNight) return "#1e293b";
         if (code === 0) return "#facc15"; // Jasno (silno žltá)
         if (code === 1) return "#fde047"; // Prevažne jasno (žltá)
         if (code === 2) return "#fef9c3"; // Polooblačno (jemná žltá)
@@ -2010,7 +2035,7 @@ function updateThemeLabels() {
         if (code === 45 || code === 48) return "#cbd5e1"; // Hmla (mliečna sivá)
         if (code >= 71 && code <= 77 || code === 85 || code === 86) return "#f472b6"; // Sneh (ružová)
         if (code >= 51 && code <= 99) return "#3b82f6"; // Dážď a búrky (modrá)
-        return "#facc15"; 
+        return "#facc15";
     }
 
     function interpolateColor(color1, color2, factor) {
@@ -2233,13 +2258,13 @@ function getTempBgColor(temp) {
             if (elevation === "?" && weatherData.elevation !== undefined) elevation = Math.round(weatherData.elevation);
 
 // --- OWM SPRACOVANIE PRE LIVE MODAL ---
+            // Tlačidlo zobrazíme VŽDY, aby používateľ vedel, že táto funkcia existuje
             let liveBtnHtml = `<button class="live-btn" onclick="document.getElementById('liveModal').style.display='flex'">LIVE</button>`;
-            
+
             if (!navigator.onLine) {
                 // Ak nie je internet, odmietneme ukázať staré dáta
                 document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">🚫</span><br><br><strong>Ste offline</strong><br>Aktuálne dáta zo stanice vyžadujú internetové pripojenie.</div>`;
             } else if (owmData && owmData.main) {
-                // Všetko ide, ukážeme reálne dáta zo stanice
                 let wSpd = Math.round(owmData.wind.speed * 3.6);
                 let wDeg = owmData.wind.deg !== undefined ? owmData.wind.deg : "?";
                 let wTemp = Math.round(owmData.main.temp);
@@ -2250,13 +2275,37 @@ function getTempBgColor(temp) {
                 let wDesc = owmData.weather[0] ? owmData.weather[0].description : "";
                 if (wDesc) wDesc = wDesc.charAt(0).toUpperCase() + wDesc.slice(1);
 
+                // Zistenie správnej ikonky počasia podľa kódov OpenWeatherMap
+                let owmCode = owmData.weather[0] ? owmData.weather[0].id : 800;
+                let owmIconStr = owmData.weather[0] ? owmData.weather[0].icon : '01d';
+                let isNightOWM = owmIconStr.includes('n');
+                let owmIcon = '❓';
+                if (owmCode >= 200 && owmCode < 300) owmIcon = '⛈️';
+                else if (owmCode >= 300 && owmCode < 600) owmIcon = '🌧️';
+                else if (owmCode >= 600 && owmCode < 700) owmIcon = '🌨️';
+                else if (owmCode >= 700 && owmCode < 800) owmIcon = '🌫️';
+                else if (owmCode === 800) owmIcon = isNightOWM ? '🌙' : '☀️';
+                else if (owmCode === 801 || owmCode === 802) owmIcon = isNightOWM ? '☁️' : '🌤️';
+                else if (owmCode >= 803) owmIcon = '☁️';
+
+                // Výpočet vzdialenosti stanice od hľadaného miesta
+                let stDistance = "?";
+                if (owmData.coord && owmData.coord.lat !== undefined && owmData.coord.lon !== undefined) {
+                    stDistance = getDistance(lat, lon, owmData.coord.lat, owmData.coord.lon).toFixed(1);
+                }
+
+                // Naplníme vyskakovacie okno dátami s novou hlavičkou a ikonkou
                 document.getElementById('live-modal-content').innerHTML = `
-                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                        ${t('owm_station')}: <strong style="color: var(--text-main);">${escapeHTML(stName)}</strong>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; text-align: center;">
+                        <span style="text-transform: uppercase; letter-spacing: 1px;">Meteostanica</span><br>
+                        <strong style="color: var(--text-main); font-size: 1.6rem; display: block; margin: 8px 0;">${escapeHTML(stName)}</strong>
+                        <span style="font-size: 13px;">(Vzdialenosť: <strong>${stDistance} km</strong>)</span>
                     </div>
                     <div style="text-align: center; margin-bottom: 25px;">
                         <div style="font-size: 3.5rem; font-weight: bold; color: var(--text-main); line-height: 1;">${wTemp}°C</div>
-                        <div style="font-size: 16px; color: var(--text-muted); margin-top: 5px; font-weight: bold;">${escapeHTML(wDesc)}</div>
+                        <div style="font-size: 16px; color: var(--text-muted); margin-top: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span style="font-size: 1.4rem;">${owmIcon}</span> ${escapeHTML(wDesc)}
+                        </div>
                     </div>
                     <div class="live-data-row"><span>${t('live_feels')}:</span> <strong>${wFeels} °C</strong></div>
                     <div class="live-data-row"><span>${t('wind_str')}:</span> <strong>${wSpd} km/h (${wDeg}°)</strong></div>
@@ -2273,16 +2322,20 @@ function getTempBgColor(temp) {
             let locationDetails = "";
             if (county || country) { const parts = []; if (county) parts.push(county); if (country) parts.push(country); locationDetails = `(${parts.join(', ')})`; }
 
+            // Vytiahneme si dáta (rýchlosť, teplota, kód počasia a či je deň/noc)
             let currentSpeedOM = weatherData.current_weather.windspeed;
             let currentDirectionOM = weatherData.current_weather.winddirection;
             let currentTempOM = Math.round(weatherData.current_weather.temperature);
+            let currentCodeOM = weatherData.current_weather.weathercode;
+            let isNightOM = weatherData.current_weather.is_day === 0;
+            let currentIconOM = getWeatherIcon(currentCodeOM, isNightOM);
 
             resultText.innerHTML = `
                 <span style="font-weight: bold; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; white-space: nowrap;">
                     📍 ${escapeHTML(foundName)} ${liveBtnHtml}
                 </span>
                 <span style="font-size: 0.85em; color: var(--text-muted);">${escapeHTML(locationDetails)}</span> | ⛰️ ${escapeHTML(elevation)} ${t('masl')}<br>
-                ${t('t_temp').split(' ')[0]}: <strong>${currentTempOM} °C</strong> | ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
+                <span style="font-size: 1.2em; vertical-align: middle; display: inline-block; transform: translateY(-1px); margin-right: 2px;">${currentIconOM}</span> ${t('t_temp').split(' ')[0]}: <strong>${currentTempOM} °C</strong> | ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
             `;
 
             let inputText = foundName; let subText = [];
