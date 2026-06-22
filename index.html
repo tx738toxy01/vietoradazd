@@ -347,6 +347,7 @@
 
         .compass { width: 45px; height: 45px; border: 2px solid var(--text-muted); border-radius: 50%; position: relative; display: none; flex-shrink: 0; background: var(--bg-solid); margin-right: 5px; }
         .compass::after { content: attr(data-north); position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-weight: bold; color: var(--text-muted); font-size: 11px; }
+        .compass::before { content: attr(data-south); position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-weight: bold; color: var(--text-muted); font-size: 11px; }
         .arrow { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 18px solid #ef4444; position: absolute; top: 5px; left: 18.5px; transform-origin: 4px 17px; transition: transform 1s ease-out; }
 
         .bottom-panel { 
@@ -458,6 +459,22 @@
         .legend-table { width: 100%; border-collapse: collapse; text-align: left; }
         .legend-table td { padding: 4px 5px; font-size: 13px; color: var(--text-main); }
         .color-box { width: 20px; height: 20px; border-radius: 4px; display: inline-block; border: 1px solid var(--border-color); }
+.live-btn {
+            background-color: #ef4444; color: white; border: none; border-radius: 6px;
+            padding: 3px 8px; font-size: 10px; font-weight: bold; margin-left: 10px;
+            cursor: pointer; box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+            animation: pulse-red 2s infinite; letter-spacing: 1px;
+        }
+        @keyframes pulse-red { 
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 
+            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
+        }
+        .live-data-row { 
+            display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); 
+            padding: 10px 0; font-size: 14px; color: var(--text-main);
+        }
+        .live-data-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -573,7 +590,7 @@
     <div class="panel-header" id="panel-header" style="display: none;">
         <div class="current-info" id="current-info">
             <div class="current-text" id="result-text"></div>
-            <div class="compass" id="compass" data-north="S">
+            <div class="compass" id="compass" data-north="S" data-south="J">
                 <div class="arrow" id="arrow"></div>
             </div>
         </div>
@@ -595,6 +612,18 @@
 </div>
 
 <div id="toast-msg"></div>
+
+<div id="liveModal" class="modal" onclick="if(event.target === this) this.style.display='none'">
+    <div class="modal-content" style="max-width: 320px;">
+        <span class="close-btn" onclick="document.getElementById('liveModal').style.display='none'">&times;</span>
+        <h3 style="margin-top: 0; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
+            <span class="live-btn" style="animation: none; cursor: default; margin:0;">LIVE</span> 
+            <span data-i18n="lbl_current_state">Aktuálny stav</span>
+        </h3>
+        <div id="live-modal-content" style="margin-top: 20px;">
+            </div>
+    </div>
+</div>
 
 <div id="settingsModal" class="modal" onclick="windowOnClick(event)">
     <div class="modal-content">
@@ -1070,6 +1099,7 @@ function updateThemeLabels() {
         document.querySelectorAll("[data-i18n-title]").forEach(el => { el.title = t(el.getAttribute("data-i18n-title")); });
         document.querySelectorAll("[data-i18n-label]").forEach(el => { el.label = t(el.getAttribute("data-i18n-label")); });
         document.getElementById('compass').setAttribute("data-north", t('compass_n'));
+        document.getElementById('compass').setAttribute("data-south", t('compass_s'));
         if (typeof updateClock === 'function') updateClock();
         updateThemeLabels();
     }
@@ -1229,6 +1259,39 @@ function updateThemeLabels() {
     Object.assign(i18n.hi, { owm_layers: "परतें", owm_clouds: "बादल", owm_rain: "बारिश", owm_opacity: "अस्पष्टता" });
     Object.assign(i18n.ja, { owm_layers: "レイヤー", owm_clouds: "雲", owm_rain: "雨", owm_opacity: "不透明度" });
     Object.assign(i18n.ko, { owm_layers: "레이어", owm_clouds: "구름", owm_rain: "비", owm_opacity: "불투명도" });
+// Preklady pre LIVE modálne okno
+    Object.assign(i18n.sk, { lbl_current_state: "Aktuálny stav", owm_station: "Stanica", live_feels: "Pocitovo", live_hum: "Vlhkosť", live_press: "Tlak", live_err: "Stanica momentálne neodpovedá." });
+    Object.assign(i18n.cs, { lbl_current_state: "Aktuální stav", owm_station: "Stanice", live_feels: "Pocitově", live_hum: "Vlhkost", live_press: "Tlak", live_err: "Stanice momentálně neodpovídá." });
+    Object.assign(i18n.en, { lbl_current_state: "Current Conditions", owm_station: "Station", live_feels: "Feels like", live_hum: "Humidity", live_press: "Pressure", live_err: "Station currently unresponsive." });
+    Object.assign(i18n.de, { lbl_current_state: "Aktuelles Wetter", owm_station: "Station", live_feels: "Gefühlt", live_hum: "Luftfeuchtigkeit", live_press: "Luftdruck", live_err: "Station antwortet nicht." });
+    Object.assign(i18n.fr, { lbl_current_state: "Conditions Actuelles", owm_station: "Station", live_feels: "Ressenti", live_hum: "Humidité", live_press: "Pression", live_err: "Station inactive." });
+    Object.assign(i18n.es, { lbl_current_state: "Condiciones Actuales", owm_station: "Estación", live_feels: "Sensación", live_hum: "Humedad", live_press: "Presión", live_err: "Estación inactiva." });
+    Object.assign(i18n.zh, { lbl_current_state: "当前状况", owm_station: "测量站", live_feels: "体感温度", live_hum: "湿度", live_press: "气压", live_err: "测量站未响应。" });
+    Object.assign(i18n.hi, { lbl_current_state: "वर्तमान स्थिति", owm_station: "स्टेशन", live_feels: "महसूस होता है", live_hum: "नमी", live_press: "दबाव", live_err: "स्टेशन अनुत्तरदायी है।" });
+    Object.assign(i18n.ja, { lbl_current_state: "現在の状況", owm_station: "観測地点", live_feels: "体感温度", live_hum: "湿度", live_press: "気圧", live_err: "ステーションが応答しません。" });
+    Object.assign(i18n.ko, { lbl_current_state: "현재 날씨", owm_station: "측정소", live_feels: "체감 온도", live_hum: "습도", live_press: "기압", live_err: "측정소가 응답하지 않습니다." });
+// Preklady pre Aktuálny stav zo staníc OWM
+    Object.assign(i18n.sk, { lbl_current_state: "Aktuálny stav", owm_station: "Stanica" });
+    Object.assign(i18n.cs, { lbl_current_state: "Aktuální stav", owm_station: "Stanice" });
+    Object.assign(i18n.en, { lbl_current_state: "Current Conditions", owm_station: "Station" });
+    Object.assign(i18n.de, { lbl_current_state: "Aktuelles Wetter", owm_station: "Station" });
+    Object.assign(i18n.fr, { lbl_current_state: "Conditions Actuelles", owm_station: "Station" });
+    Object.assign(i18n.es, { lbl_current_state: "Condiciones Actuales", owm_station: "Estación" });
+    Object.assign(i18n.zh, { lbl_current_state: "当前状况", owm_station: "测量站" });
+    Object.assign(i18n.hi, { lbl_current_state: "वर्तमान स्थिति", owm_station: "स्टेशन" });
+    Object.assign(i18n.ja, { lbl_current_state: "現在の状況", owm_station: "観測地点" });
+    Object.assign(i18n.ko, { lbl_current_state: "현재 날씨", owm_station: "측정소" });
+// Preklady pre JUH (spodné písmeno kompasu)
+    Object.assign(i18n.sk, { compass_s: "J" });
+    Object.assign(i18n.cs, { compass_s: "J" });
+    Object.assign(i18n.en, { compass_s: "S" });
+    Object.assign(i18n.de, { compass_s: "S" });
+    Object.assign(i18n.fr, { compass_s: "S" });
+    Object.assign(i18n.es, { compass_s: "S" });
+    Object.assign(i18n.zh, { compass_s: "南" });
+    Object.assign(i18n.hi, { compass_s: "द" });
+    Object.assign(i18n.ja, { compass_s: "南" });
+    Object.assign(i18n.ko, { compass_s: "남" });
 
     let lastBaseMap = (typeof appSettings !== 'undefined' && !['radar', 'clouds', 'wind'].includes(appSettings.map)) ? appSettings.map : 'osm';
     
@@ -2093,6 +2156,7 @@ function getTempBgColor(temp) {
             currentMarker = L.marker([lat, lon]).addTo(map);
 
             let weatherData;
+            let owmData = null; // NOVÁ PREMENNÁ PRE OWM STANICU
             try {
                 let fDays = 7;
                 if (modelSelect === 'best_match' || modelSelect === 'gfs_seamless') fDays = 16;
@@ -2109,13 +2173,20 @@ function getTempBgColor(temp) {
                 if (!weatherResponse.ok) throw new Error("API_ERROR");
                 weatherData = await weatherResponse.json();
                 
+                // STIAHNUTIE OWM DÁT ZO STANICE
+                try {
+                    let owmLang = currentLang === 'cs' ? 'cz' : currentLang;
+                    const owmRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5405cbe3a37f0d34116a9ff45d7b1e58&units=metric&lang=${owmLang}`);
+                    if (owmRes.ok) owmData = await owmRes.json();
+                } catch(e) {}
+
                 setNetworkState('online'); // Všetko je zelené a funguje
                 
                 if (modelSelect === 'best_match') {
                     try {
                         localStorage.setItem('weatherCache', JSON.stringify({
                             lat: lat, lon: lon, foundName: foundName, county: county, country: country, elevation: elevation,
-                            data: weatherData, time: Date.now()
+                            data: weatherData, owmData: owmData, time: Date.now()
                         }));
                     } catch(e) { }
                 }
@@ -2138,11 +2209,11 @@ function getTempBgColor(temp) {
                     let reason = isOffline ? t('reason_off') : t('reason_slow');
 
                     if (Math.abs(cached.lat - lat) < 0.05 && Math.abs(cached.lon - lon) < 0.05) {
-                        weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
+                        weatherData = cached.data; owmData = cached.owmData || null; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
                         showToast(`⚠️ ${reason}. ${t('msg_off_16d')}`);
                     } else {
                         let wantedName = foundName; 
-                        weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
+                        weatherData = cached.data; owmData = cached.owmData || null; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
                         lastSearchedCity = foundName; lastLat = lat; lastLon = lon; lastElevation = elevation; lastCounty = county; lastCountry = country;
                         renderQuickLocations();
                         if(currentMarker) map.removeLayer(currentMarker);
@@ -2161,16 +2232,57 @@ function getTempBgColor(temp) {
             
             if (elevation === "?" && weatherData.elevation !== undefined) elevation = Math.round(weatherData.elevation);
 
-            const currentSpeed = weatherData.current_weather.windspeed;
-            const currentDirection = weatherData.current_weather.winddirection;
+// --- OWM SPRACOVANIE PRE LIVE MODAL ---
+            let liveBtnHtml = `<button class="live-btn" onclick="document.getElementById('liveModal').style.display='flex'">LIVE</button>`;
+            
+            if (!navigator.onLine) {
+                // Ak nie je internet, odmietneme ukázať staré dáta
+                document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">🚫</span><br><br><strong>Ste offline</strong><br>Aktuálne dáta zo stanice vyžadujú internetové pripojenie.</div>`;
+            } else if (owmData && owmData.main) {
+                // Všetko ide, ukážeme reálne dáta zo stanice
+                let wSpd = Math.round(owmData.wind.speed * 3.6);
+                let wDeg = owmData.wind.deg !== undefined ? owmData.wind.deg : "?";
+                let wTemp = Math.round(owmData.main.temp);
+                let wFeels = Math.round(owmData.main.feels_like);
+                let wHum = owmData.main.humidity;
+                let wPress = owmData.main.pressure;
+                let stName = owmData.name || "Lokálna stanica";
+                let wDesc = owmData.weather[0] ? owmData.weather[0].description : "";
+                if (wDesc) wDesc = wDesc.charAt(0).toUpperCase() + wDesc.slice(1);
 
+                document.getElementById('live-modal-content').innerHTML = `
+                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                        ${t('owm_station')}: <strong style="color: var(--text-main);">${escapeHTML(stName)}</strong>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <div style="font-size: 3.5rem; font-weight: bold; color: var(--text-main); line-height: 1;">${wTemp}°C</div>
+                        <div style="font-size: 16px; color: var(--text-muted); margin-top: 5px; font-weight: bold;">${escapeHTML(wDesc)}</div>
+                    </div>
+                    <div class="live-data-row"><span>${t('live_feels')}:</span> <strong>${wFeels} °C</strong></div>
+                    <div class="live-data-row"><span>${t('wind_str')}:</span> <strong>${wSpd} km/h (${wDeg}°)</strong></div>
+                    <div class="live-data-row"><span>${t('live_hum')}:</span> <strong>${wHum} %</strong></div>
+                    <div class="live-data-row"><span>${t('live_press')}:</span> <strong>${wPress} hPa</strong></div>
+                    <div style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 15px;">Zdroj dát: OpenWeatherMap</div>
+                `;
+            } else {
+                // Stanica zlyhala alebo nemáme dáta (ale internet ide)
+                document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">⚠️</span><br><br><strong>Stanica neodpovedá</strong><br>Z najbližšej meteostanice sa nepodarilo stiahnuť aktuálne dáta.</div>`;
+            }
+
+            // --- HLAVNÉ ZOBRAZENIE Z PREDPOVEDE (Open-Meteo) ---
             let locationDetails = "";
             if (county || country) { const parts = []; if (county) parts.push(county); if (country) parts.push(country); locationDetails = `(${parts.join(', ')})`; }
 
+            let currentSpeedOM = weatherData.current_weather.windspeed;
+            let currentDirectionOM = weatherData.current_weather.winddirection;
+            let currentTempOM = Math.round(weatherData.current_weather.temperature);
+
             resultText.innerHTML = `
-                <span style="font-weight: bold; font-size: 1.1rem; color: var(--text-main);">📍 ${escapeHTML(foundName)}</span><br>
+                <span style="font-weight: bold; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; white-space: nowrap;">
+                    📍 ${escapeHTML(foundName)} ${liveBtnHtml}
+                </span>
                 <span style="font-size: 0.85em; color: var(--text-muted);">${escapeHTML(locationDetails)}</span> | ⛰️ ${escapeHTML(elevation)} ${t('masl')}<br>
-                ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeed)} km/h</strong> | ${escapeHTML(t('dir_str'))}: <strong>${escapeHTML(currentDirection)}°</strong>
+                ${t('t_temp').split(' ')[0]}: <strong>${currentTempOM} °C</strong> | ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
             `;
 
             let inputText = foundName; let subText = [];
@@ -2181,7 +2293,9 @@ function getTempBgColor(temp) {
             
             document.getElementById('cityInput').value = inputText;
             compass.style.display = 'block';
-            document.getElementById('arrow').style.transform = `rotate(${currentDirection}deg)`;
+            
+            // Pridávame + 180 stupňov, aby CSS šípka ukazovala kam vietor fúka (rovnako ako šípky v tabuľke)
+            document.getElementById('arrow').style.transform = `rotate(${currentDirectionOM + 180}deg)`;
 
             const hourly = weatherData.hourly;
             
