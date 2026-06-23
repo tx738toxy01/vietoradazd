@@ -1484,7 +1484,7 @@ function updateThemeLabels() {
 
         if (showClouds) {
             if (!owmCloudsLayer) {
-                owmCloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', { 
+                owmCloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=TVOJ_API_KLUC', { 
                     transparent: true, attribution: '&copy; OpenWeatherMap', zIndex: 10 
                 }).addTo(map);
             }
@@ -1495,7 +1495,7 @@ function updateThemeLabels() {
 
         if (showRain) {
             if (!owmRainLayer) {
-                owmRainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=5405cbe3a37f0d34116a9ff45d7b1e58', { 
+                owmRainLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=TVOJ_API_KLUC', { 
                     transparent: true, zIndex: 11 
                 }).addTo(map);
             }
