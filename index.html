@@ -336,8 +336,12 @@
             width: 100%; box-sizing: border-box; margin: 0;
         }
 
+        /* Tlačidlá zostávajú stabilne zafixované a pretlačené na pravý okraj okna */
         .current-actions-column {
-            display: flex; flex-direction: column; gap: 5px; margin-left: auto; align-self: stretch;
+            display: flex; flex-direction: column; gap: 5px; align-self: stretch;
+            flex-shrink: 0; /* Zabraňuje stlačeniu alebo deformácii tlačidiel */
+            min-width: 55px; /* Garantovaná minimálna šírka */
+            margin-left: auto; /* Kľúčový riadok: odsunie celý stĺpec na pravú stranu */
         }
 
         .current-actions-column > div {
@@ -345,7 +349,8 @@
         }
 
         .current-actions-column .settings-btn {
-            width: 55px; border-radius: 6px; font-size: 11px; font-weight: bold;
+            width: 100%;
+            border-radius: 6px; font-size: 11px; font-weight: bold;
             background-color: var(--accent-color); color: #ffffff; border: none;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.2s;
@@ -358,7 +363,11 @@
         .refresh-btn-new svg { transition: transform 0.3s; }
         .refresh-btn-new:hover svg { transform: rotate(180deg); }
 
-        .current-text { font-size: 0.9rem; line-height: 1.4; display: flex; flex-direction: column; justify-content: center; }
+        /* Zrušením flex: 1 zaistíme, že text uvoľní priestor ikone, aby sa nalepila hneď zaň */
+        .current-text { 
+            font-size: 0.9rem; line-height: 1.4; display: flex; flex-direction: column; justify-content: center; 
+            min-width: 0; /* Ak je text príliš dlhý, povolí zalomenie riadkov a nevytlačí ikonu */
+        }
         
         .model-selector-quick { 
             display: flex; flex-direction: column; gap: 6px; 
@@ -373,20 +382,20 @@
         .model-btn-q:hover { border-color: var(--accent-color); color: var(--accent-color); }
         .model-btn-q.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
 
+        /* Ikona už nemá margin-left: auto, takže sa okamžite zaradí vľavo hneď za text miesta */
         .current-large-weather {
-            display: none; align-items: center; gap: 12px; margin-left: 15px; margin-right: auto;
+            display: none; flex-direction: column; justify-content: center; align-items: center; gap: 2px; 
+            flex-shrink: 0; /* Ikona si uchováva pevnú štruktúru bez deformácie */
             user-select: none; -webkit-user-select: none; transition: opacity 0.2s;
         }
 
         .current-text:hover, .current-large-weather:hover {
-            opacity: 0.7; /* Po nabehnutí myšou jemne zbledne */
+            opacity: 0.7;
         }
-        .current-large-weather .large-icon { font-size: 2.6rem; line-height: 1; }
-        .current-large-weather .large-temp { font-size: 2.2rem; font-weight: bold; color: var(--text-main); line-height: 1; }
-
-        .current-actions-column {
-            display: flex; flex-direction: column; gap: 5px; align-self: stretch;
-        }
+        
+        /* Ikonka je veľká (2.8rem), teplota pod ňou je presne polovičná (1.4rem) */
+        .current-large-weather .large-icon { font-size: 2.8rem; line-height: 1; }
+        .current-large-weather .large-temp { font-size: 1.4rem; font-weight: bold; color: var(--text-main); line-height: 1; }
 
         .bottom-panel { 
             position: relative; 
@@ -628,9 +637,7 @@
 <div class="current-large-weather" id="current-large-weather" onclick="document.getElementById('liveModal').style.display='flex'" style="cursor: pointer;" data-i18n-title="btn_live_details" title="Zobraziť LIVE detaily"></div>
             
             <div class="current-actions-column">
-                <div style="flex: 1; display: flex;">
-                    <button class="settings-btn" id="active-model-btn" onclick="cycleModel()" data-i18n-title="btn_change_model" title="Zmeniť model" style="width: 100%;">Auto</button>
-                </div>
+                <button class="settings-btn" id="active-model-btn" onclick="cycleModel()" data-i18n-title="btn_change_model" title="Zmeniť model">Auto</button>
                 <button class="settings-btn refresh-btn-new" onclick="getWindData(true, true)" data-i18n-title="refresh_btn" title="Obnoviť dáta">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M23 4v6h-6"></path>
@@ -1063,6 +1070,9 @@ Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark:
     function saveSettings() { try { localStorage.setItem('weatherAppSettings', JSON.stringify(appSettings)); } catch(e) {} }
 
     function initSettings() {
+        // Vynútenie modelu "Auto" (best_match) pri každom načítaní aplikácie
+        appSettings.model = 'best_match';
+
         if (['radar', 'clouds', 'wind'].includes(appSettings.map)) {
             appSettings.map = 'osm';
             saveSettings();
