@@ -173,7 +173,11 @@
         .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
         .header-title-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .header-container h2 { margin: 0; font-size: 1.2rem; }
-        #live-clock { font-size: 0.9rem; color: var(--text-muted); font-weight: bold; white-space: nowrap; }
+        
+        #live-clock { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; white-space: nowrap; }
+        .clock-day { color: var(--text-muted); font-weight: normal; }
+        .clock-date { color: var(--text-main); font-weight: bold; }
+        .clock-time { background-color: var(--input-bg); color: var(--accent-color); font-weight: bold; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border-color); }
 
         .header-buttons { display: flex; gap: 4px; align-items: center; justify-content: flex-end; }
 
@@ -293,16 +297,17 @@
 
         /* RÝCHLE VOĽBY MIEST (10 TLAČIDIEL) */
         .quick-locations-bar {
-            display: flex; gap: 4px; padding: 0 15px 10px 15px; overflow-x: auto; /* Zmenšená medzera na 4px */
+            display: flex; gap: 4px; padding: 0 15px 10px 15px; overflow-x: auto;
             pointer-events: auto; scrollbar-width: none; -ms-overflow-style: none;
+            width: 100%; max-width: 930px; box-sizing: border-box; margin: 0;
         }
         .quick-locations-bar::-webkit-scrollbar { display: none; }
 
         .quick-btn {
-            width: 30px; height: 30px; flex-shrink: 0; border-radius: 6px; 
+            flex: 1; min-width: 30px; height: 30px; border-radius: 6px; 
             border: 2px solid var(--border-color); background: var(--bg-panel); color: var(--text-main);
             font-family: 'Arial Narrow', 'Segoe UI Condensed', sans-serif; font-stretch: extra-condensed;
-            font-size: 16px; font-weight: normal; letter-spacing: -0.5px; /* Zrušený bold, zväčšená výška na 16px */
+            font-size: 16px; font-weight: normal; letter-spacing: -0.5px;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; box-shadow: var(--shadow); backdrop-filter: blur(4px);
             text-transform: uppercase; user-select: none; -webkit-user-select: none;
@@ -320,6 +325,7 @@
         .panel-header {
             display: flex; justify-content: space-between; align-items: flex-end;
             padding: 0 15px 10px 15px; gap: 15px; pointer-events: none;
+            width: 100%; max-width: 930px; box-sizing: border-box; margin: 0;
         }
 
         .current-info {
@@ -327,10 +333,39 @@
             border: 1px solid var(--border-color); box-shadow: var(--shadow); 
             backdrop-filter: blur(4px); display: flex; align-items: center; gap: 15px;
             transition: background-color 0.3s, border-color 0.3s; pointer-events: auto;
-            margin-right: auto;
+            width: 100%; box-sizing: border-box; margin: 0;
         }
 
-        .current-text { font-size: 0.9rem; line-height: 1.4; flex-grow: 1; }
+        .current-actions-column {
+            display: flex; flex-direction: column; gap: 5px; margin-left: auto; align-self: stretch;
+        }
+
+        .current-actions-column > div {
+            flex: 1; display: flex; flex-direction: column;
+        }
+
+        .current-actions-column .settings-btn {
+            width: 55px; border-radius: 6px; font-size: 11px; font-weight: bold;
+            background-color: var(--accent-color); color: #ffffff; border: none;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.2s;
+            flex: 1; height: 100%; box-sizing: border-box;
+        }
+        .current-actions-column .settings-btn:hover {
+            transform: scale(1.05); filter: brightness(1.1); color: #ffffff; border: none;
+        }
+
+        .refresh-btn-new svg { transition: transform 0.3s; }
+        .refresh-btn-new:hover svg { transform: rotate(180deg); }
+
+        #model-dropdown-content {
+            position: absolute; top: auto !important; bottom: calc(100% + 5px); right: 0; left: auto;
+            width: 120px; z-index: 500; box-shadow: var(--shadow); display: none; padding: 4px;
+            margin-top: 0; background-color: var(--bg-solid); border: 1px solid var(--border-color); border-radius: 6px;
+        }
+        #model-dropdown-content .recent-item { padding: 6px 10px; font-weight: bold; }
+
+        .current-text { font-size: 0.9rem; line-height: 1.4; }
         
         .model-selector-quick { 
             display: flex; flex-direction: column; gap: 6px; 
@@ -345,10 +380,20 @@
         .model-btn-q:hover { border-color: var(--accent-color); color: var(--accent-color); }
         .model-btn-q.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
 
-        .compass { width: 45px; height: 45px; border: 2px solid var(--text-muted); border-radius: 50%; position: relative; display: none; flex-shrink: 0; background: var(--bg-solid); margin-right: 5px; }
-        .compass::after { content: attr(data-north); position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-weight: bold; color: var(--text-muted); font-size: 11px; }
-        .compass::before { content: attr(data-south); position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-weight: bold; color: var(--text-muted); font-size: 11px; }
-        .arrow { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 18px solid #ef4444; position: absolute; top: 5px; left: 18.5px; transform-origin: 4px 17px; transition: transform 1s ease-out; }
+        .current-large-weather {
+            display: none; align-items: center; gap: 12px; margin-left: 15px; margin-right: auto;
+            user-select: none; -webkit-user-select: none; transition: opacity 0.2s;
+        }
+
+        .current-text:hover, .current-large-weather:hover {
+            opacity: 0.7; /* Po nabehnutí myšou jemne zbledne */
+        }
+        .current-large-weather .large-icon { font-size: 2.6rem; line-height: 1; }
+        .current-large-weather .large-temp { font-size: 2.2rem; font-weight: bold; color: var(--text-main); line-height: 1; }
+
+        .current-actions-column {
+            display: flex; flex-direction: column; gap: 5px; align-self: stretch;
+        }
 
         .bottom-panel { 
             position: relative; 
@@ -571,16 +616,13 @@
         <div class="search-wrapper">
             <input type="text" id="cityInput" data-i18n-ph="search_ph" placeholder="Zadaj miesto (napr. Chopok)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                    onkeypress="handleKeyPress(event)" oninput="handleInput()" onfocus="this.value=''; showDropdown()" onblur="hideDropdown()">
-            <button class="geo-input-btn" onmousedown="event.preventDefault(); document.getElementById('cityInput').blur(); triggerGeolocation(false);" title="Moja poloha">📍</button>
+            <button class="geo-input-btn" onmousedown="event.preventDefault(); document.getElementById('cityInput').blur(); triggerGeolocation(false);" title="Moja poloha" style="display: flex; align-items: center; justify-content: center; right: 8px;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="#ef4444">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+            </button>
             <div id="dropdown-list" class="recent-dropdown"></div>
         </div>
-        
-        <button class="settings-btn refresh-btn" onclick="getWindData(true, true)" data-i18n-title="refresh_btn" title="Obnoviť dáta" style="flex-shrink: 0;">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 4v6h-6"></path>
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-            </svg>
-        </button>
         
         <button class="action-btn" onclick="getWindData(false, false)" data-i18n="search_btn">Hľadať</button>
     </div>
@@ -589,18 +631,27 @@
 <div class="bottom-panel-wrapper" id="bottom-wrapper">
     <div class="panel-header" id="panel-header" style="display: none;">
         <div class="current-info" id="current-info">
-            <div class="current-text" id="result-text"></div>
-            <div class="compass" id="compass" data-north="S" data-south="J">
-                <div class="arrow" id="arrow"></div>
+            <div class="current-text" id="result-text" onclick="document.getElementById('liveModal').style.display='flex'" style="cursor: pointer;" title="Zobraziť LIVE detaily"></div>
+            <div class="current-large-weather" id="current-large-weather" onclick="document.getElementById('liveModal').style.display='flex'" style="cursor: pointer;" title="Zobraziť LIVE detaily"></div>
+            
+            <div class="current-actions-column">
+                <div style="position: relative;">
+                    <button class="settings-btn" id="active-model-btn" onclick="toggleModelDropdown()" title="Zmeniť model">Auto</button>
+                    <div id="model-dropdown-content" class="recent-dropdown">
+                        <button class="recent-item" onclick="selectModel('best_match')">Auto</button>
+                        <button class="recent-item" onclick="selectModel('metno_seamless')">YR.NO</button>
+                        <button class="recent-item" onclick="selectModel('ukmo_seamless')">UKMO</button>
+                        <button class="recent-item" onclick="selectModel('gfs_seamless')">GFS</button>
+                        <button class="recent-item" onclick="selectModel('icon_seamless')">ICON</button>
+                    </div>
+                </div>
+                <button class="settings-btn refresh-btn-new" onclick="getWindData(true, true)" title="Obnoviť dáta">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                </button>
             </div>
-        </div>
-        
-        <div class="model-selector-quick" id="model-selector-quick">
-            <button class="model-btn-q" id="btn-mod-best_match" onclick="quickModelChange('best_match')">Auto</button>
-            <button class="model-btn-q" id="btn-mod-metno_seamless" onclick="quickModelChange('metno_seamless')">YR.NO</button>
-            <button class="model-btn-q" id="btn-mod-ukmo_seamless" onclick="quickModelChange('ukmo_seamless')">UKMO</button>
-            <button class="model-btn-q" id="btn-mod-gfs_seamless" onclick="quickModelChange('gfs_seamless')">GFS</button>
-            <button class="model-btn-q" id="btn-mod-icon_seamless" onclick="quickModelChange('icon_seamless')">ICON</button>
         </div>
     </div>
 
@@ -1098,8 +1149,6 @@ function updateThemeLabels() {
         document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.getAttribute("data-i18n-ph")); });
         document.querySelectorAll("[data-i18n-title]").forEach(el => { el.title = t(el.getAttribute("data-i18n-title")); });
         document.querySelectorAll("[data-i18n-label]").forEach(el => { el.label = t(el.getAttribute("data-i18n-label")); });
-        document.getElementById('compass').setAttribute("data-north", t('compass_n'));
-        document.getElementById('compass').setAttribute("data-south", t('compass_s'));
         if (typeof updateClock === 'function') updateClock();
         updateThemeLabels();
     }
@@ -1182,15 +1231,16 @@ function updateThemeLabels() {
                 else dayName = now.toLocaleDateString(localeStr, { weekday: 'short' });
             }
             dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-            dayPrefix = `${dayName} `; 
+            dayPrefix = `<span class="clock-day">${dayName}</span> `; 
         }
-
-        dateStr = dayPrefix + baseDateStr;
         
         const timeFormat = appSettings.timeFormat || '24h';
         const timeStr = now.toLocaleTimeString(localeStr, { hour12: timeFormat === '12h' });
         const clockEl = document.getElementById('live-clock');
-        if(clockEl) clockEl.textContent = `${dateStr} ${timeStr}`;
+        
+        if(clockEl) {
+            clockEl.innerHTML = `${dayPrefix}<span class="clock-date">${baseDateStr}</span><span class="clock-time">${timeStr}</span>`;
+        }
 
         const nowLabel = document.getElementById('live-now-label');
         if (nowLabel) {
@@ -1236,8 +1286,29 @@ function updateThemeLabels() {
         updateThemeLabels();
     }
     function modelChanged() { appSettings.model = document.getElementById('modelSelect').value; saveSettings(); updateQuickModelButtons(); if (lastSearchedCity !== "") { getWindData(true, false); } closeModal(); }
-    function quickModelChange(model) { document.getElementById('modelSelect').value = model; modelChanged(); }
-    function updateQuickModelButtons() { document.querySelectorAll('.model-btn-q').forEach(btn => btn.classList.remove('active')); let activeBtn = document.getElementById('btn-mod-' + (appSettings.model || 'best_match')); if(activeBtn) activeBtn.classList.add('active'); }
+    function toggleModelDropdown() {
+        let drp = document.getElementById('model-dropdown-content');
+        drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
+    }
+
+    function selectModel(model) {
+        document.getElementById('modelSelect').value = model; 
+        modelChanged();
+        document.getElementById('model-dropdown-content').style.display = 'none';
+    }
+
+    function updateQuickModelButtons() { 
+        let btn = document.getElementById('active-model-btn');
+        if (!btn) return;
+        const labels = {
+            'best_match': 'Auto',
+            'metno_seamless': 'YR.NO',
+            'ukmo_seamless': 'UKMO',
+            'gfs_seamless': 'GFS',
+            'icon_seamless': 'ICON'
+        };
+        btn.textContent = labels[appSettings.model || 'best_match'] || 'Auto';
+    }
 
     const mapLayers = {
         osm: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', maxZoom: 19, attribution: '© OSM, © CARTO' },
@@ -1676,7 +1747,7 @@ function updateThemeLabels() {
         document.getElementById('quick-locations-bar').style.display = 'flex';
         document.getElementById('panel-header').style.display = 'flex';
         document.getElementById('bottom-panel').style.display = 'block';
-        document.getElementById('compass').style.display = 'none';
+        document.getElementById('current-large-weather').style.display = 'none';
         if (appSettings.map !== 'radar') { document.getElementById('bottom-wrapper').style.display = 'flex'; }
         document.getElementById('result-text').innerHTML = `📍 ${t('msg_locating')}`;
         
@@ -1746,7 +1817,7 @@ function updateThemeLabels() {
             document.getElementById('quick-locations-bar').style.display = 'flex';
             document.getElementById('panel-header').style.display = 'flex';
             document.getElementById('bottom-panel').style.display = 'block';
-            document.getElementById('compass').style.display = 'none';
+            document.getElementById('current-large-weather').style.display = 'none';
             if (appSettings.map !== 'radar') { document.getElementById('bottom-wrapper').style.display = 'flex'; }
             document.getElementById('result-text').innerHTML = `📍 ${t('msg_closest')}`;
 
@@ -2109,7 +2180,6 @@ function getTempBgColor(temp) {
             document.getElementById('quick-locations-bar').style.display = 'flex';
             document.getElementById('panel-header').style.display = 'flex';
             document.getElementById('bottom-panel').style.display = 'block';
-            document.getElementById('compass').style.display = 'none';
             if (appSettings.map !== 'radar') { document.getElementById('bottom-wrapper').style.display = 'flex'; }
 
             document.getElementById('result-text').innerHTML = escapeHTML(t('msg_searching'));
@@ -2171,7 +2241,6 @@ function getTempBgColor(temp) {
 
         const modelSelect = appSettings.model || document.getElementById('modelSelect').value;
         const resultText = document.getElementById('result-text');
-        const compass = document.getElementById('compass');
 
         try {
             let targetZoom = isRefresh ? map.getZoom() : 13;
@@ -2181,7 +2250,6 @@ function getTempBgColor(temp) {
             currentMarker = L.marker([lat, lon]).addTo(map);
 
             let weatherData;
-            let owmData = null; // NOVÁ PREMENNÁ PRE OWM STANICU
             try {
                 let fDays = 7;
                 if (modelSelect === 'best_match' || modelSelect === 'gfs_seamless') fDays = 16;
@@ -2192,18 +2260,12 @@ function getTempBgColor(temp) {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`, { signal: controller.signal });
+                // UPRAVENÉ URL: Pridané premenné pre pocitovú teplotu, vlhkosť a tlak
+                const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`, { signal: controller.signal });
                 clearTimeout(timeoutId);
 
                 if (!weatherResponse.ok) throw new Error("API_ERROR");
                 weatherData = await weatherResponse.json();
-                
-                // STIAHNUTIE OWM DÁT ZO STANICE
-                try {
-                    let owmLang = currentLang === 'cs' ? 'cz' : currentLang;
-                    const owmRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5405cbe3a37f0d34116a9ff45d7b1e58&units=metric&lang=${owmLang}`);
-                    if (owmRes.ok) owmData = await owmRes.json();
-                } catch(e) {}
 
                 setNetworkState('online'); // Všetko je zelené a funguje
                 
@@ -2211,7 +2273,7 @@ function getTempBgColor(temp) {
                     try {
                         localStorage.setItem('weatherCache', JSON.stringify({
                             lat: lat, lon: lon, foundName: foundName, county: county, country: country, elevation: elevation,
-                            data: weatherData, owmData: owmData, time: Date.now()
+                            data: weatherData, time: Date.now()
                         }));
                     } catch(e) { }
                 }
@@ -2234,11 +2296,11 @@ function getTempBgColor(temp) {
                     let reason = isOffline ? t('reason_off') : t('reason_slow');
 
                     if (Math.abs(cached.lat - lat) < 0.05 && Math.abs(cached.lon - lon) < 0.05) {
-                        weatherData = cached.data; owmData = cached.owmData || null; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
+                        weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
                         showToast(`⚠️ ${reason}. ${t('msg_off_16d')}`);
                     } else {
                         let wantedName = foundName; 
-                        weatherData = cached.data; owmData = cached.owmData || null; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
+                        weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
                         lastSearchedCity = foundName; lastLat = lat; lastLon = lon; lastElevation = elevation; lastCounty = county; lastCountry = country;
                         renderQuickLocations();
                         if(currentMarker) map.removeLayer(currentMarker);
@@ -2257,65 +2319,56 @@ function getTempBgColor(temp) {
             
             if (elevation === "?" && weatherData.elevation !== undefined) elevation = Math.round(weatherData.elevation);
 
-// --- OWM SPRACOVANIE PRE LIVE MODAL ---
-            // Tlačidlo zobrazíme VŽDY, aby používateľ vedel, že táto funkcia existuje
+// --- OPEN-METEO SPRACOVANIE PRE LIVE MODAL ---
             let liveBtnHtml = `<button class="live-btn" onclick="document.getElementById('liveModal').style.display='flex'">LIVE</button>`;
 
-            if (!navigator.onLine) {
-                // Ak nie je internet, odmietneme ukázať staré dáta
-                document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">🚫</span><br><br><strong>Ste offline</strong><br>Aktuálne dáta zo stanice vyžadujú internetové pripojenie.</div>`;
-            } else if (owmData && owmData.main) {
-                let wSpd = Math.round(owmData.wind.speed * 3.6);
-                let wDeg = owmData.wind.deg !== undefined ? owmData.wind.deg : "?";
-                let wTemp = Math.round(owmData.main.temp);
-                let wFeels = Math.round(owmData.main.feels_like);
-                let wHum = owmData.main.humidity;
-                let wPress = owmData.main.pressure;
-                let stName = owmData.name || "Lokálna stanica";
-                let wDesc = owmData.weather[0] ? owmData.weather[0].description : "";
-                if (wDesc) wDesc = wDesc.charAt(0).toUpperCase() + wDesc.slice(1);
-
-                // Zistenie správnej ikonky počasia podľa kódov OpenWeatherMap
-                let owmCode = owmData.weather[0] ? owmData.weather[0].id : 800;
-                let owmIconStr = owmData.weather[0] ? owmData.weather[0].icon : '01d';
-                let isNightOWM = owmIconStr.includes('n');
-                let owmIcon = '❓';
-                if (owmCode >= 200 && owmCode < 300) owmIcon = '⛈️';
-                else if (owmCode >= 300 && owmCode < 600) owmIcon = '🌧️';
-                else if (owmCode >= 600 && owmCode < 700) owmIcon = '🌨️';
-                else if (owmCode >= 700 && owmCode < 800) owmIcon = '🌫️';
-                else if (owmCode === 800) owmIcon = isNightOWM ? '🌙' : '☀️';
-                else if (owmCode === 801 || owmCode === 802) owmIcon = isNightOWM ? '☁️' : '🌤️';
-                else if (owmCode >= 803) owmIcon = '☁️';
-
-                // Výpočet vzdialenosti stanice od hľadaného miesta
-                let stDistance = "?";
-                if (owmData.coord && owmData.coord.lat !== undefined && owmData.coord.lon !== undefined) {
-                    stDistance = getDistance(lat, lon, owmData.coord.lat, owmData.coord.lon).toFixed(1);
+            if (!weatherData || !weatherData.current_weather) {
+                document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">⚠️</span><br><br><strong>Dáta nedostupné</strong><br>Nepodarilo sa stiahnuť aktuálne dáta.</div>`;
+            } else {
+                let cw = weatherData.current_weather;
+                let wSpd = Math.round(cw.windspeed);
+                let wDeg = cw.winddirection !== undefined ? cw.winddirection : "?";
+                let wTemp = Math.round(cw.temperature);
+                
+                // Nájdeme aktuálnu hodinu v poli hourly pre pocitovú teplotu, vlhkosť a tlak
+                let currIdx = 0;
+                let minDiff = Infinity;
+                let nowMs = new Date().getTime();
+                if (weatherData.hourly && weatherData.hourly.time) {
+                    for(let i = 0; i < weatherData.hourly.time.length; i++) {
+                        let tDiff = Math.abs(new Date(weatherData.hourly.time[i]).getTime() - nowMs);
+                        if(tDiff < minDiff) { minDiff = tDiff; currIdx = i; }
+                    }
                 }
+                
+                let wFeels = weatherData.hourly && weatherData.hourly.apparent_temperature ? Math.round(weatherData.hourly.apparent_temperature[currIdx]) : wTemp;
+                let wHum = weatherData.hourly && weatherData.hourly.relative_humidity_2m ? weatherData.hourly.relative_humidity_2m[currIdx] : "?";
+                let wPress = weatherData.hourly && weatherData.hourly.surface_pressure ? Math.round(weatherData.hourly.surface_pressure[currIdx]) : "?";
+                
+                let wDesc = getWeatherText(cw.weathercode);
+                let isNightNow = cw.is_day === 0;
+                let omIcon = getWeatherIcon(cw.weathercode, isNightNow);
 
-                // Naplníme vyskakovacie okno dátami s novou hlavičkou a ikonkou
+                const labels = { 'best_match': 'Auto', 'metno_seamless': 'YR.NO', 'ukmo_seamless': 'UKMO', 'gfs_seamless': 'GFS', 'icon_seamless': 'ICON' };
+                let modelName = labels[appSettings.model || 'best_match'] || 'Auto';
+
                 document.getElementById('live-modal-content').innerHTML = `
                     <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; text-align: center;">
-                        <span style="text-transform: uppercase; letter-spacing: 1px;">Meteostanica</span><br>
-                        <strong style="color: var(--text-main); font-size: 1.6rem; display: block; margin: 8px 0;">${escapeHTML(stName)}</strong>
-                        <span style="font-size: 13px;">(Vzdialenosť: <strong>${stDistance} km</strong>)</span>
+                        <strong style="color: var(--text-main); font-size: 1.6rem; display: block; margin: 0 0 8px 0;">${escapeHTML(foundName)}</strong>
+                        <span style="font-size: 13px;">(Model: <strong>${modelName}</strong>)</span>
                     </div>
                     <div style="text-align: center; margin-bottom: 25px;">
                         <div style="font-size: 3.5rem; font-weight: bold; color: var(--text-main); line-height: 1;">${wTemp}°C</div>
                         <div style="font-size: 16px; color: var(--text-muted); margin-top: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                            <span style="font-size: 1.4rem;">${owmIcon}</span> ${escapeHTML(wDesc)}
+                            <span style="font-size: 1.4rem;">${omIcon}</span> ${escapeHTML(wDesc)}
                         </div>
                     </div>
                     <div class="live-data-row"><span>${t('live_feels')}:</span> <strong>${wFeels} °C</strong></div>
                     <div class="live-data-row"><span>${t('wind_str')}:</span> <strong>${wSpd} km/h (${wDeg}°)</strong></div>
                     <div class="live-data-row"><span>${t('live_hum')}:</span> <strong>${wHum} %</strong></div>
                     <div class="live-data-row"><span>${t('live_press')}:</span> <strong>${wPress} hPa</strong></div>
-                    <div style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 15px;">Zdroj dát: OpenWeatherMap</div>
+                    <div style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 15px;">Zdroj dát: Open-Meteo</div>
                 `;
-            } else {
-                // Stanica zlyhala alebo nemáme dáta (ale internet ide)
-                document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">⚠️</span><br><br><strong>Stanica neodpovedá</strong><br>Z najbližšej meteostanice sa nepodarilo stiahnuť aktuálne dáta.</div>`;
             }
 
             // --- HLAVNÉ ZOBRAZENIE Z PREDPOVEDE (Open-Meteo) ---
@@ -2330,12 +2383,14 @@ function getTempBgColor(temp) {
             let isNightOM = weatherData.current_weather.is_day === 0;
             let currentIconOM = getWeatherIcon(currentCodeOM, isNightOM);
 
+            const redPin = `<svg viewBox="0 0 24 24" width="18" height="18" fill="#ef4444" style="margin-right: 4px; flex-shrink: 0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`;
+
             resultText.innerHTML = `
                 <span style="font-weight: bold; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; white-space: nowrap;">
-                    📍 ${escapeHTML(foundName)} ${liveBtnHtml}
+                    ${redPin} ${escapeHTML(foundName)} ${liveBtnHtml}
                 </span>
                 <span style="font-size: 0.85em; color: var(--text-muted);">${escapeHTML(locationDetails)}</span> | ⛰️ ${escapeHTML(elevation)} ${t('masl')}<br>
-                <span style="font-size: 1.2em; vertical-align: middle; display: inline-block; transform: translateY(-1px); margin-right: 2px;">${currentIconOM}</span> ${t('t_temp').split(' ')[0]}: <strong>${currentTempOM} °C</strong> | ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
+                ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
             `;
 
             let inputText = foundName; let subText = [];
@@ -2345,10 +2400,12 @@ function getTempBgColor(temp) {
             if (subTextStr) inputText += " - " + subTextStr;
             
             document.getElementById('cityInput').value = inputText;
-            compass.style.display = 'block';
             
-            // Pridávame + 180 stupňov, aby CSS šípka ukazovala kam vietor fúka (rovnako ako šípky v tabuľke)
-            document.getElementById('arrow').style.transform = `rotate(${currentDirectionOM + 180}deg)`;
+            const largeWeather = document.getElementById('current-large-weather');
+            if (largeWeather) {
+                largeWeather.innerHTML = `<span class="large-icon">${currentIconOM}</span><span class="large-temp">${currentTempOM}°C</span>`;
+                largeWeather.style.display = 'flex';
+            }
 
             const hourly = weatherData.hourly;
             
@@ -2503,12 +2560,16 @@ function getTempBgColor(temp) {
     document.addEventListener('click', function(event) {
         const mapDrp = document.getElementById('map-dropdown-content');
         const windyDrp = document.getElementById('windy-dropdown-content');
+        const modelDrp = document.getElementById('model-dropdown-content');
 
         if (mapDrp && mapDrp.style.display === 'flex' && !mapDrp.contains(event.target) && !event.target.closest('#btn-map-base')) {
             mapDrp.style.display = 'none';
         }
         if (windyDrp && windyDrp.style.display === 'flex' && !windyDrp.contains(event.target) && !event.target.closest('#btn-windy-base')) {
             windyDrp.style.display = 'none';
+        }
+        if (modelDrp && modelDrp.style.display === 'flex' && !modelDrp.contains(event.target) && !event.target.closest('#active-model-btn')) {
+            modelDrp.style.display = 'none';
         }
     });
 </script>
