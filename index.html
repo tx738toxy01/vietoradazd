@@ -358,13 +358,6 @@
         .refresh-btn-new svg { transition: transform 0.3s; }
         .refresh-btn-new:hover svg { transform: rotate(180deg); }
 
-        #model-dropdown-content {
-            position: absolute; top: auto !important; bottom: calc(100% + 5px); right: 0; left: auto;
-            width: 120px; z-index: 500; box-shadow: var(--shadow); display: none; padding: 4px;
-            margin-top: 0; background-color: var(--bg-solid); border: 1px solid var(--border-color); border-radius: 6px;
-        }
-        #model-dropdown-content .recent-item { padding: 6px 10px; font-weight: bold; }
-
         .current-text { font-size: 0.9rem; line-height: 1.4; display: flex; flex-direction: column; justify-content: center; }
         
         .model-selector-quick { 
@@ -635,15 +628,8 @@
 <div class="current-large-weather" id="current-large-weather" onclick="document.getElementById('liveModal').style.display='flex'" style="cursor: pointer;" data-i18n-title="btn_live_details" title="Zobraziť LIVE detaily"></div>
             
             <div class="current-actions-column">
-                <div style="position: relative;">
-                    <button class="settings-btn" id="active-model-btn" onclick="toggleModelDropdown()" data-i18n-title="btn_change_model" title="Zmeniť model">Auto</button>
-                    <div id="model-dropdown-content" class="recent-dropdown">
-                        <button class="recent-item" onclick="selectModel('best_match')">Auto</button>
-                        <button class="recent-item" onclick="selectModel('metno_seamless')">YR.NO</button>
-                        <button class="recent-item" onclick="selectModel('ukmo_seamless')">UKMO</button>
-                        <button class="recent-item" onclick="selectModel('gfs_seamless')">GFS</button>
-                        <button class="recent-item" onclick="selectModel('icon_seamless')">ICON</button>
-                    </div>
+                <div style="flex: 1; display: flex;">
+                    <button class="settings-btn" id="active-model-btn" onclick="cycleModel()" data-i18n-title="btn_change_model" title="Zmeniť model" style="width: 100%;">Auto</button>
                 </div>
                 <button class="settings-btn refresh-btn-new" onclick="getWindData(true, true)" data-i18n-title="refresh_btn" title="Obnoviť dáta">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1286,15 +1272,13 @@ function updateThemeLabels() {
         updateThemeLabels();
     }
     function modelChanged() { appSettings.model = document.getElementById('modelSelect').value; saveSettings(); updateQuickModelButtons(); if (lastSearchedCity !== "") { getWindData(true, false); } closeModal(); }
-    function toggleModelDropdown() {
-        let drp = document.getElementById('model-dropdown-content');
-        drp.style.display = (drp.style.display === 'flex' ? 'none' : 'flex');
-    }
-
-    function selectModel(model) {
-        document.getElementById('modelSelect').value = model; 
+    function cycleModel() {
+        const models = ['best_match', 'metno_seamless', 'ukmo_seamless', 'gfs_seamless', 'icon_seamless'];
+        let current = appSettings.model || 'best_match';
+        let nextIndex = (models.indexOf(current) + 1) % models.length;
+        
+        document.getElementById('modelSelect').value = models[nextIndex];
         modelChanged();
-        document.getElementById('model-dropdown-content').style.display = 'none';
     }
 
     function updateQuickModelButtons() { 
@@ -2534,16 +2518,12 @@ function getTempBgColor(temp) {
     document.addEventListener('click', function(event) {
         const mapDrp = document.getElementById('map-dropdown-content');
         const windyDrp = document.getElementById('windy-dropdown-content');
-        const modelDrp = document.getElementById('model-dropdown-content');
 
         if (mapDrp && mapDrp.style.display === 'flex' && !mapDrp.contains(event.target) && !event.target.closest('#btn-map-base')) {
             mapDrp.style.display = 'none';
         }
         if (windyDrp && windyDrp.style.display === 'flex' && !windyDrp.contains(event.target) && !event.target.closest('#btn-windy-base')) {
             windyDrp.style.display = 'none';
-        }
-        if (modelDrp && modelDrp.style.display === 'flex' && !modelDrp.contains(event.target) && !event.target.closest('#active-model-btn')) {
-            modelDrp.style.display = 'none';
         }
     });
 </script>
