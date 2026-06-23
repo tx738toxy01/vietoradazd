@@ -294,6 +294,8 @@
         #btn-map-wind.active { border-color: #2dd4bf; background: #ccfbf1; }
         [data-theme="dark"] #btn-map-wind.active { background: #115e59; border-color: #14b8a6; }
         .map-dropdown-content { display: none; flex-direction: column; gap: 8px; position: absolute; top: 100%; left: 0; margin-top: 8px; }
+        #btn-map-forecast.active { border-color: #facc15; background: #fef9c3; }
+        [data-theme="dark"] #btn-map-forecast.active { background: #713f12; border-color: #eab308; }
 
         /* RÝCHLE VOĽBY MIEST (10 TLAČIDIEL) */
         .quick-locations-bar {
@@ -579,14 +581,17 @@
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 18 12 9 16 18 20 6"></polyline></svg>
         </button>
         <div id="windy-dropdown-content" class="map-dropdown-content">
+            <button class="map-btn" id="btn-map-forecast" onclick="changeMapLayerQuick('forecast'); this.parentElement.style.display='none'" title="Windy Predpoveď" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </button>
+            <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar'); this.parentElement.style.display='none'" title="Zrážkový radar (Windy)" style="display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
+            </button>
             <button class="map-btn" id="btn-map-clouds" onclick="changeMapLayerQuick('clouds'); this.parentElement.style.display='none'" title="Oblačnosť (Windy)" style="display:flex; align-items:center; justify-content:center;">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
             </button>
             <button class="map-btn" id="btn-map-wind" onclick="changeMapLayerQuick('wind'); this.parentElement.style.display='none'" title="Vietor (Windy)" style="display:flex; align-items:center; justify-content:center;">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
-            </button>
-            <button class="map-btn" id="btn-map-radar" onclick="changeMapLayerQuick('radar'); this.parentElement.style.display='none'" title="Zrážkový radar (Windy)" style="display:flex; align-items:center; justify-content:center;">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
             </button>
         </div>
     </div>
@@ -1460,7 +1465,7 @@ function updateThemeLabels() {
         saveSettings();
 
         let mapId = document.getElementById('mapLayerSelect') ? document.getElementById('mapLayerSelect').value : appSettings.map;
-        if (['radar', 'wind', 'clouds'].includes(mapId)) {
+        if (['radar', 'wind', 'clouds', 'forecast'].includes(mapId)) {
             if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
             if (owmRainLayer) { map.removeLayer(owmRainLayer); owmRainLayer = null; }
             return;
@@ -1495,7 +1500,7 @@ function updateThemeLabels() {
             changeMapLayer(false, layer);
             return;
         }
-        if (['clouds', 'wind', 'radar'].includes(layer)) {
+        if (['clouds', 'wind', 'radar', 'forecast'].includes(layer)) {
             changeMapLayer(false, layer);
         }
     }
@@ -1503,7 +1508,7 @@ function updateThemeLabels() {
     function changeMapLayer(fromUser = false, layer = null) {
         let mapId = layer || (document.getElementById('mapLayerSelect') ? document.getElementById('mapLayerSelect').value : appSettings.map);
         
-        if (!['radar', 'wind', 'clouds'].includes(mapId)) {
+        if (!['radar', 'wind', 'clouds', 'forecast'].includes(mapId)) {
             appSettings.map = mapId;
             saveSettings();
             if (document.getElementById('mapLayerSelect')) document.getElementById('mapLayerSelect').value = mapId;
@@ -1513,7 +1518,7 @@ function updateThemeLabels() {
         const bottomWrapper = document.getElementById('bottom-wrapper');
         const leafletControls = document.querySelector('.leaflet-control-container');
         
-        if (['radar', 'wind', 'clouds'].includes(mapId)) {
+        if (['radar', 'wind', 'clouds', 'forecast'].includes(mapId)) {
             windyIframe.style.display = 'block';
             const topHeight = document.querySelector('.top-panel').offsetHeight;
             windyIframe.style.top = topHeight + 'px';
@@ -1523,8 +1528,19 @@ function updateThemeLabels() {
             
             let lat = lastLat !== null ? lastLat : 48.1486;
             let lon = lastLon !== null ? lastLon : 17.1077;
-            let extraParams = (mapId === 'radar') ? '&radarRange=-1&play=1' : '';
-            windyIframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=${mapId}&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C${extraParams}`;
+            
+            // Pre forecast použijeme na pozadí vietor a vynútime rozbalenie panelu detail=true
+            let actualOverlay = (mapId === 'forecast') ? 'wind' : mapId;
+            let detailValue = (mapId === 'forecast') ? 'true' : '';
+            let extraParams = (actualOverlay === 'radar') ? '&radarRange=-1&play=1' : '';
+
+            // Trik: Posunieme stred mapy o 0.15 stupňa na juh, aby vlajočka "vyplávala" nad spodný panel
+            let centerLat = lat;
+            if (mapId === 'forecast') {
+                centerLat = parseFloat(lat) - 0.15;
+            }
+
+            windyIframe.src = `https://embed.windy.com/embed2.html?lat=${centerLat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=${actualOverlay}&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=${detailValue}&metricWind=km%2Fh&metricTemp=%C2%B0C${extraParams}`;
             
             // Pri prepnutí na Windy natvrdo vypneme OWM mraky z mapy
             if (owmCloudsLayer) { map.removeLayer(owmCloudsLayer); owmCloudsLayer = null; }
@@ -1570,7 +1586,7 @@ function updateThemeLabels() {
             baseBtn.innerHTML = baseIcons[lastBaseMap];
         }
         
-        if (!['radar', 'wind', 'clouds'].includes(currentLayer)) {
+        if (!['radar', 'wind', 'clouds', 'forecast'].includes(currentLayer)) {
             if (baseBtn) baseBtn.classList.add('active');
         } else {
             let windyBtn = document.getElementById('btn-windy-base');
