@@ -496,6 +496,9 @@
             z-index: 10000; pointer-events: none; opacity: 0; transition: opacity 0.3s;
         }
 
+        /* Animácia pre novú ikonu načítavania */
+        @keyframes spin-anim { 100% { transform: rotate(360deg); } }
+
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; }
         .modal-content { background-color: var(--bg-solid); color: var(--text-main); padding: 25px; border-radius: 12px; width: 90%; max-width: 420px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
@@ -758,7 +761,7 @@
         </div>
 
         <div class="settings-section">
-            <h4 data-i18n="set_model">Zdroj predpovede (Model)</h4>
+            <h4 data-i18n="set_startup_model">Predvolený model (po spustení)</h4>
             <select id="modelSelect" class="settings-select" onchange="modelChanged()">
                 <option value="best_match" data-i18n="mod_auto">Automaticky (Najlepší)</option>
                 <option value="metno_seamless">Yr.no (MET Norway)</option>
@@ -834,7 +837,7 @@
     const i18n = {
         sk: {
             app_title: "Vietor a dážď", search_ph: "Zadaj miesto (napr. Chopok)...", search_btn: "Hľadať",
-            settings_title: "Nastavenia", set_lang: "Jazyk", set_theme: "Vzhľad", set_model: "Zdroj predpovede",
+            settings_title: "Nastavenia", set_lang: "Jazyk", set_theme: "Vzhľad", set_startup_model: "Predvolený model (po spustení)",
             set_map: "Mapový podklad", set_legend: "Legenda sily vetra", refresh_btn: "Obnoviť dáta",
             set_startup: "Miesto pri spustení", start_last: "Posledné hľadané", start_geo: "Geolokácia (Moja poloha)", start_custom: "Vlastné miesto...",
             set_time_format: "Formát času", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -853,7 +856,7 @@
         },
         en: {
             app_title: "Wind & Rain", search_ph: "Enter location (e.g. London)...", search_btn: "Search",
-            settings_title: "Settings", set_lang: "Language", set_theme: "Theme", set_model: "Forecast Model",
+            settings_title: "Settings", set_lang: "Language", set_theme: "Theme", set_startup_model: "Default model (on startup)",
             set_map: "Map Layer", set_legend: "Wind Speed Legend", refresh_btn: "Refresh data",
             set_startup: "Startup Location", start_last: "Last searched", start_geo: "Geolocation", start_custom: "Custom city...",
             set_time_format: "Time Format", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -870,7 +873,7 @@
         },
         cs: {
             app_title: "Vítr a déšť", search_ph: "Zadej místo (např. Sněžka)...", search_btn: "Hledat",
-            settings_title: "Nastavení", set_lang: "Jazyk", set_theme: "Vzhled", set_model: "Zdroj předpovědi",
+            settings_title: "Nastavení", set_lang: "Jazyk", set_theme: "Vzhled", set_startup_model: "Výchozí model (po spuštění)",
             set_map: "Mapový podklad", set_legend: "Legenda síly větru", refresh_btn: "Obnovit data",
             set_startup: "Místo při spuštění", start_last: "Poslední hledané", start_geo: "Geolokace", start_custom: "Vlastní město...",
             set_time_format: "Formát času", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -889,7 +892,7 @@
         },
         de: {
             app_title: "Wind & Regen", search_ph: "Ort eingeben (z.B. Berlin)...", search_btn: "Suchen",
-            settings_title: "Einstellungen", set_lang: "Sprache", set_theme: "Design", set_model: "Wettermodell",
+            settings_title: "Einstellungen", set_lang: "Sprache", set_theme: "Design", set_startup_model: "Wettermodell",
             set_map: "Karte", set_legend: "Windstärken", refresh_btn: "Aktualisieren",
             set_startup: "Startort", start_last: "Zuletzt gesucht", start_geo: "Standort", start_custom: "Eigener Ort...",
             set_time_format: "Zeitformat", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -906,7 +909,7 @@
         },
         fr: {
             app_title: "Vent & Pluie", search_ph: "Entrer le lieu (ex: Paris)...", search_btn: "Rechercher",
-            settings_title: "Paramètres", set_lang: "Langue", set_theme: "Thème", set_model: "Modèle",
+            settings_title: "Paramètres", set_lang: "Langue", set_theme: "Thème", set_startup_model: "Modèle",
             set_map: "Carte", set_legend: "Légende du vent", refresh_btn: "Actualiser",
             set_startup: "Lieu de démarrage", start_last: "Dernier recherché", start_geo: "Ma position", start_custom: "Ville personnalisée...",
             set_time_format: "Format de l'heure", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -923,7 +926,7 @@
         },
         es: {
             app_title: "Viento y Lluvia", search_ph: "Lugar (ej: Madrid)...", search_btn: "Buscar",
-            settings_title: "Ajustes", set_lang: "Idioma", set_theme: "Tema", set_model: "Modelo",
+            settings_title: "Ajustes", set_lang: "Idioma", set_theme: "Tema", set_startup_model: "Modelo",
             set_map: "Mapa", set_legend: "Leyenda de Viento", refresh_btn: "Actualizar",
             set_startup: "Ubicación inicial", start_last: "Última búsqueda", start_geo: "Mi ubicación", start_custom: "Ciudad personalizada...",
             set_time_format: "Formato de hora", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -940,7 +943,7 @@
         },
         zh: {
             app_title: "风和雨", search_ph: "输入地点 (例如: 北京)...", search_btn: "搜索",
-            settings_title: "设置", set_lang: "语言", set_theme: "主题", set_model: "天气模型",
+            settings_title: "设置", set_lang: "语言", set_theme: "主题", set_startup_model: "天气模型",
             set_map: "地图", set_legend: "风力图例", refresh_btn: "刷新",
             set_startup: "启动位置", start_last: "最后搜索", start_geo: "定位", start_custom: "自定义城市...",
             set_time_format: "时间格式", tf_24: "24小时制", tf_12: "12小时制",
@@ -957,7 +960,7 @@
         },
         hi: {
             app_title: "हवा और बारिश", search_ph: "स्थान दर्ज करें (जैसे: दिल्ली)...", search_btn: "खोजें",
-            settings_title: "सेटिंग्स", set_lang: "भाषा", set_theme: "थीम", set_model: "पूर्वानुमान मॉडल",
+            settings_title: "सेटिंग्स", set_lang: "भाषा", set_theme: "थीम", set_startup_model: "पूर्वानुमान मॉडल",
             set_map: "नक्शा", set_legend: "हवा की गति किंवदंती", refresh_btn: "रीफ्रेश करें",
             set_startup: "स्टार्टअप स्थान", start_last: "अंतिम खोज", start_geo: "मेरा स्थान", start_custom: "कस्टम शहर...",
             set_time_format: "समय प्रारूप", tf_24: "24h (14:00)", tf_12: "12h (2 PM)",
@@ -1012,7 +1015,7 @@ Object.assign(i18n.de, {
     });
 i18n.ja = {
         app_title: "風と雨", search_ph: "場所を入力 (例: 東京)...", search_btn: "検索",
-        settings_title: "設定", set_lang: "言語 / Language", set_theme: "テーマ", set_model: "予報モデル",
+        settings_title: "設定", set_lang: "言語 / Language", set_theme: "テーマ", set_startup_model: "予報モデル",
         set_map: "マップ", set_legend: "風速の凡例", refresh_btn: "更新",
         set_startup: "起動時の場所", start_last: "最後に検索した場所", start_geo: "現在地", start_custom: "カスタム都市...",
         set_time_format: "時刻の形式", tf_24: "24時間制", tf_12: "12時間制",
@@ -1034,7 +1037,7 @@ i18n.ja = {
 
     i18n.ko = {
         app_title: "바람과 비", search_ph: "위치 입력 (예: 서울)...", search_btn: "검색",
-        settings_title: "설정", set_lang: "언어 / Language", set_theme: "테마", set_model: "예보 모델",
+        settings_title: "설정", set_lang: "언어 / Language", set_theme: "테마", set_startup_model: "예보 모델",
         set_map: "지도 레이어", set_legend: "풍속 범례", refresh_btn: "새로고침",
         set_startup: "시작 위치", start_last: "최근 검색", start_geo: "내 위치", start_custom: "사용자 지정 도시...",
         set_time_format: "시간 형식", tf_24: "24시간제", tf_12: "12시간제",
@@ -1064,8 +1067,20 @@ Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark:
     Object.assign(i18n.ja, { theme_group_light: "ライトテーマ", theme_group_dark: "ダークテーマ", theme_black: "アモレッドブラック", theme_p_blue: "パステルブルー", theme_p_green: "パステルグリーン", theme_p_pink: "パステルピンク", theme_p_yellow: "パステルイエロー", theme_p_purple: "パステルパープル" });
     Object.assign(i18n.ko, { theme_group_light: "라이트 테마", theme_group_dark: "다크 테마", theme_black: "아몰레드 블랙", theme_p_blue: "파스텔 블루", theme_p_green: "파스텔 그린", theme_p_pink: "파스텔 핑크", theme_p_yellow: "파스텔 옐로우", theme_p_purple: "파스텔 퍼플" });
 
+// Preklady pre nový kľúč (Predvolený model po spustení)
+    Object.assign(i18n.sk, { set_startup_model: "Predvolený model (po spustení)" });
+    Object.assign(i18n.cs, { set_startup_model: "Výchozí model (po spuštění)" });
+    Object.assign(i18n.en, { set_startup_model: "Default model (on startup)" });
+    Object.assign(i18n.de, { set_startup_model: "Standardmodell (beim Start)" });
+    Object.assign(i18n.fr, { set_startup_model: "Modèle par défaut (au démarrage)" });
+    Object.assign(i18n.es, { set_startup_model: "Modelo predeterminado (al inicio)" });
+    Object.assign(i18n.zh, { set_startup_model: "默认模型 (启动时)" });
+    Object.assign(i18n.hi, { set_startup_model: "डिफ़ॉल्ट मॉडल (स्टार्टअप पर)" });
+    Object.assign(i18n.ja, { set_startup_model: "デフォルトモデル (起動時)" });
+    Object.assign(i18n.ko, { set_startup_model: "기본 모델 (시작 시)" });
+
     // Pridali sme predvolené hodnoty pre OWM: oblaky ZAPNUTÉ, dážď ZAPNUTÝ, priehľadnosť 75%
-    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false, owmClouds: true, owmRain: true, owmOpacity: 75 };
+    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', liveModel: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false, owmClouds: true, owmRain: true, owmOpacity: 75 };
     
     // BEZPEČNÉ NAČÍTANIE PAMÄTE
     let appSettings;
@@ -1075,9 +1090,6 @@ Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark:
     function saveSettings() { try { localStorage.setItem('weatherAppSettings', JSON.stringify(appSettings)); } catch(e) {} }
 
     function initSettings() {
-        // Vynútenie modelu "Auto" (best_match) pri každom načítaní aplikácie
-        appSettings.model = 'best_match';
-
         if (['radar', 'clouds', 'wind'].includes(appSettings.map)) {
             appSettings.map = 'osm';
             saveSettings();
@@ -1286,14 +1298,40 @@ function updateThemeLabels() {
         applyTheme(val); 
         updateThemeLabels();
     }
-    function modelChanged() { appSettings.model = document.getElementById('modelSelect').value; saveSettings(); updateQuickModelButtons(); if (lastSearchedCity !== "") { getWindData(true, false); } closeModal(); }
+function liveModelChanged(val) { 
+        appSettings.liveModel = val; 
+        saveSettings(); 
+        if (lastSearchedCity !== "") { getWindData(true, false); } 
+    }
+    let currentActiveModel = null;
+
+    function getActiveModel() {
+        // Ak nebol model ešte v tomto sedení manuálne prepnutý, 
+        // vždy bezpečne vráť ten z nastavení.
+        if (currentActiveModel === null) {
+            return appSettings.model || 'best_match';
+        }
+        return currentActiveModel;
+    }
+
+    function modelChanged() { 
+        // Iba uloží nastavenie do pamäte pre ďalšie spustenie aplikácie
+        appSettings.model = document.getElementById('modelSelect').value; 
+        saveSettings(); 
+        
+        // Okno iba zatvoríme. Aktuálny model ani dáta sa teraz nemenia.
+        closeModal(); 
+    }
+
     function cycleModel() {
         const models = ['best_match', 'metno_seamless', 'ukmo_seamless', 'gfs_seamless', 'icon_seamless'];
-        let current = appSettings.model || 'best_match';
+        let current = getActiveModel();
         let nextIndex = (models.indexOf(current) + 1) % models.length;
         
-        document.getElementById('modelSelect').value = models[nextIndex];
-        modelChanged();
+        // Pri prepínaní cez tlačidlo sa zmení IBA dočasný model, neukladáme to do nastavení (saveSettings)
+        currentActiveModel = models[nextIndex];
+        updateQuickModelButtons();
+        if (lastSearchedCity !== "") { getWindData(true, false); }
     }
 
     function updateQuickModelButtons() { 
@@ -1306,7 +1344,9 @@ function updateThemeLabels() {
             'gfs_seamless': 'GFS',
             'icon_seamless': 'ICON'
         };
-        btn.textContent = labels[appSettings.model || 'best_match'] || 'Auto';
+        // Zistíme, ktorý model je teraz aktívny pre toto sedenie (z dočasnej pamäte)
+        let activeModelNow = typeof getActiveModel === 'function' ? getActiveModel() : (appSettings.model || 'best_match');
+        btn.textContent = labels[activeModelNow] || 'Auto';
     }
 
     const mapLayers = {
@@ -1771,7 +1811,10 @@ function updateThemeLabels() {
                     addToRecent(city, subtitleText, lat, lon, elev, data.address.county || "", data.address.country || "");
                     fetchAndRenderWeather(lat, lon, city, data.address.county || "", data.address.country || "", elev, false, forceAutoScroll);
                 } catch(e) { fetchAndRenderWeather(lat, lon, "Moja poloha", "", "", "?", false, forceAutoScroll); }
-            }, (err) => { document.getElementById('result-text').innerHTML = escapeHTML(t('err_gps')); });
+            }, (err) => { 
+                document.getElementById('result-text').innerHTML = escapeHTML(t('err_gps')); 
+                showToast(t('err_gps')); // Prepíše trvalý toast a nechá ho zhasnúť
+            });
         }
     }
 
@@ -1819,7 +1862,9 @@ function updateThemeLabels() {
             document.getElementById('bottom-panel').style.display = 'block';
             document.getElementById('current-large-weather').style.display = 'none';
             if (appSettings.map !== 'radar') { document.getElementById('bottom-wrapper').style.display = 'flex'; }
+            
             document.getElementById('result-text').innerHTML = `📍 ${t('msg_closest')}`;
+            showToast(t('msg_closest'), true); // Trvalý toast "Vyhľadávam najbližšie miesto..."
 
             try {
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=${currentLang}`);
@@ -1874,7 +1919,9 @@ function updateThemeLabels() {
             document.getElementById('panel-header').style.display = 'flex';
             document.getElementById('bottom-panel').style.display = 'block';
             if (appSettings.map !== 'radar') { document.getElementById('bottom-wrapper').style.display = 'flex'; }
-            document.getElementById('result-text').innerHTML = escapeHTML(t('msg_searching'));
+            
+            document.getElementById('result-text').innerHTML = `📍 ${t('msg_locating')}`;
+            showToast(t('msg_locating'), true); // Trvalý toast "Zisťujem polohu..."
 
             if (firstRecent.lat !== undefined && firstRecent.lon !== undefined) {
                 fetchAndRenderWeather(firstRecent.lat, firstRecent.lon, lastName, firstRecent.county || "", firstRecent.country || "", firstRecent.elevation !== undefined ? firstRecent.elevation : "?", false, true);
@@ -2051,9 +2098,33 @@ function updateThemeLabels() {
     function handleKeyPress(event) { if (event.key === 'Enter') { document.getElementById('cityInput').blur(); getWindData(false, false); } }
     
     let toastTimeout;
-    function showToast(msg) {
-        const t = document.getElementById('toast-msg'); t.textContent = msg; t.style.opacity = '1';
-        clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { t.style.opacity = '0'; }, 2000);
+    function showToast(msg, persistent = false) {
+        const t = document.getElementById('toast-msg'); 
+        
+        // Dynamicky nahradíme staré textové emoji za moderné a čisté SVG ikony.
+        // Regex \s* odstráni aj prebytočnú medzeru za ikonou, aby sa využil gap z Flexboxu.
+        let formattedMsg = msg
+            .replace(/🔄\s*/, `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation: spin-anim 1s linear infinite; flex-shrink: 0;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>`)
+            .replace(/✅\s*/, `<svg viewBox="0 0 24 24" width="20" height="20" stroke="#4ade80" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>`);
+        
+        // Ak ide o pretrvávajúci toast (napr. Hľadám miesto...) a nemá žiadnu ikonu, automaticky mu pridáme točiaci sa spinner.
+        if (persistent && !formattedMsg.includes('<svg')) {
+            formattedMsg = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation: spin-anim 1s linear infinite; flex-shrink: 0;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>` + formattedMsg;
+        }
+
+        // Vložíme obsah cez innerHTML do pekne zarovnaného flexbox riadku (ikona a text vedľa seba)
+        t.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; gap: 8px;">${formattedMsg}</div>`; 
+        t.style.opacity = '1';
+        
+        clearTimeout(toastTimeout); 
+        if (!persistent) {
+            toastTimeout = setTimeout(() => { t.style.opacity = '0'; }, 2000);
+        }
+    }
+    
+    // Pridáme aj pomocnú funkciu na tvrdé skrytie toastu v prípade chyby
+    function hideToast() {
+        document.getElementById('toast-msg').style.opacity = '0';
     }
 
     function getWeatherText(code) {
@@ -2151,7 +2222,8 @@ function getTempBgColor(temp) {
 
     async function getWindData(isRefresh = false, forceAutoScroll = false) {
 
-        if (isRefresh) { showToast(t('msg_refreshing')); }
+        // Zobrazí trvalý toast ("Obnovujem dáta..." alebo "Hľadám miesto...")
+        showToast(isRefresh ? t('msg_refreshing') : t('msg_searching'), true);
         
         let rawInput = document.getElementById('cityInput').value.trim();
         let cityInput = rawInput.includes(' - ') ? rawInput.split(' - ')[0].trim() : rawInput;
@@ -2178,7 +2250,11 @@ function getTempBgColor(temp) {
 
                 const geoData = await geoResponse.json();
                 let results = geoData.results || [];
-                if (results.length === 0) { document.getElementById('result-text').innerHTML = `<span style='color: #ef4444;'>${escapeHTML(t('err_notfound'))}</span>`; return; }
+                if (results.length === 0) { 
+                    document.getElementById('result-text').innerHTML = `<span style='color: #ef4444;'>${escapeHTML(t('err_notfound'))}</span>`; 
+                    showToast(t('err_notfound')); // Prepíše trvalý toast na chybovú hlášku a zhasne
+                    return; 
+                }
                 
                 if (lastLat !== null && lastLon !== null) { results.sort((a, b) => getDistance(lastLat, lastLon, a.latitude, a.longitude) - getDistance(lastLat, lastLon, b.latitude, b.longitude)); }
 
@@ -2205,10 +2281,10 @@ function getTempBgColor(temp) {
         }
     }
 
-    async function fetchAndRenderWeather(lat, lon, foundName, county, country, elevation, isRefresh = false, forceAutoScroll = false) {
+async function fetchAndRenderWeather(lat, lon, foundName, county, country, elevation, isRefresh = false, forceAutoScroll = false) {
         
         lastSearchedCity = foundName; lastLat = lat; lastLon = lon; lastElevation = elevation; lastCounty = county; lastCountry = country;
-        renderQuickLocations(); // Vyhodnotí a zvýrazní tlačidlo, na ktorom stojíme
+        renderQuickLocations();
 
         document.getElementById('quick-locations-bar').style.display = 'flex';
         document.getElementById('panel-header').style.display = 'flex';
@@ -2219,39 +2295,47 @@ function getTempBgColor(temp) {
         const bottomPanel = document.getElementById('bottom-panel');
         if (bottomPanel) { prevScroll = bottomPanel.scrollLeft; prevSticky = stickyOffset; }
 
-        if (appSettings.map === 'radar') {
-            document.getElementById('windy-iframe').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1&play=1`;
-        }
-
-        const modelSelect = appSettings.model || document.getElementById('modelSelect').value;
+        const modelSelect = getActiveModel();
+        const liveModelSelect = appSettings.liveModel || 'best_match';
         const resultText = document.getElementById('result-text');
 
+        let weatherData, liveData;
+        let targetZoom = isRefresh ? map.getZoom() : 13;
+        if (!isRefresh && targetZoom < 11) targetZoom = 13;
+
         try {
-            let targetZoom = isRefresh ? map.getZoom() : 13;
-            if (!isRefresh && targetZoom < 11) targetZoom = 13;
-            
             if(currentMarker) map.removeLayer(currentMarker);
             currentMarker = L.marker([lat, lon]).addTo(map);
 
-            let weatherData;
             try {
                 let fDays = 7;
                 if (modelSelect === 'best_match' || modelSelect === 'gfs_seamless') fDays = 16;
                 else if (modelSelect === 'metno_seamless') fDays = 10;
                 else if (modelSelect === 'icon_seamless' || modelSelect === 'ukmo_seamless') fDays = 7;
 
-                // STOPKY NA SŤAHOVANIE DÁT
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                // UPRAVENÉ URL: Pridané premenné pre pocitovú teplotu, vlhkosť a tlak
-                const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`, { signal: controller.signal });
+                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
+                
+                if (modelSelect === liveModelSelect) {
+                    const weatherResponse = await fetch(forecastUrl, { signal: controller.signal });
+                    if (!weatherResponse.ok) throw new Error("API_ERROR");
+                    weatherData = await weatherResponse.json();
+                    liveData = weatherData;
+                } else {
+                    const liveUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=apparent_temperature,relative_humidity_2m,surface_pressure&forecast_days=2&timezone=auto&models=${liveModelSelect}`;
+                    const [forecastRes, liveRes] = await Promise.all([
+                        fetch(forecastUrl, { signal: controller.signal }),
+                        fetch(liveUrl, { signal: controller.signal })
+                    ]);
+                    if (!forecastRes.ok || !liveRes.ok) throw new Error("API_ERROR");
+                    weatherData = await forecastRes.json();
+                    liveData = await liveRes.json();
+                }
                 clearTimeout(timeoutId);
 
-                if (!weatherResponse.ok) throw new Error("API_ERROR");
-                weatherData = await weatherResponse.json();
-
-                setNetworkState('online'); // Všetko je zelené a funguje
+                setNetworkState('online');
                 
                 if (modelSelect === 'best_match') {
                     try {
@@ -2276,15 +2360,16 @@ function getTempBgColor(temp) {
                 
                 if (cachedRaw) {
                     const cached = JSON.parse(cachedRaw);
-                    appSettings.model = 'best_match'; saveSettings(); document.getElementById('modelSelect').value = 'best_match'; updateQuickModelButtons();
+                    // Odstránili sme resetovanie nastavení, už ti nebude prepisovať startup model!
+                    updateQuickModelButtons();
                     let reason = isOffline ? t('reason_off') : t('reason_slow');
 
                     if (Math.abs(cached.lat - lat) < 0.05 && Math.abs(cached.lon - lon) < 0.05) {
-                        weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
+                        weatherData = cached.data; liveData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
                         showToast(`⚠️ ${reason}. ${t('msg_off_16d')}`);
                     } else {
                         let wantedName = foundName; 
-                        weatherData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
+                        weatherData = cached.data; liveData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
                         lastSearchedCity = foundName; lastLat = lat; lastLon = lon; lastElevation = elevation; lastCounty = county; lastCountry = country;
                         renderQuickLocations();
                         if(currentMarker) map.removeLayer(currentMarker);
@@ -2300,46 +2385,59 @@ function getTempBgColor(temp) {
                     throw networkError; 
                 }
             }
-            
+
+            if (appSettings.map === 'radar') {
+                document.getElementById('windy-iframe').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=11&level=surface&overlay=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1&play=1`;
+            }
+
             if (elevation === "?" && weatherData.elevation !== undefined) elevation = Math.round(weatherData.elevation);
 
-// --- OPEN-METEO SPRACOVANIE PRE LIVE MODAL ---
+            // --- OPEN-METEO SPRACOVANIE PRE LIVE MODAL ---
             let liveBtnHtml = `<button class="live-btn" onclick="document.getElementById('liveModal').style.display='flex'">LIVE</button>`;
 
-            if (!weatherData || !weatherData.current_weather) {
+            const labels = { 'best_match': 'Auto', 'metno_seamless': 'YR.NO', 'ukmo_seamless': 'UKMO', 'gfs_seamless': 'GFS', 'icon_seamless': 'ICON' };
+            let liveModelName = labels[liveModelSelect] || 'Auto';
+
+            if (!liveData || !liveData.current_weather) {
                 document.getElementById('live-modal-content').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted); line-height: 1.5;"><span style="font-size: 2rem;">⚠️</span><br><br><strong>Dáta nedostupné</strong><br>Nepodarilo sa stiahnuť aktuálne dáta.</div>`;
             } else {
-                let cw = weatherData.current_weather;
+                let cw = liveData.current_weather;
                 let wSpd = Math.round(cw.windspeed);
                 let wDeg = cw.winddirection !== undefined ? cw.winddirection : "?";
                 let wTemp = Math.round(cw.temperature);
                 
-                // Nájdeme aktuálnu hodinu v poli hourly pre pocitovú teplotu, vlhkosť a tlak
                 let currIdx = 0;
                 let minDiff = Infinity;
                 let nowMs = new Date().getTime();
-                if (weatherData.hourly && weatherData.hourly.time) {
-                    for(let i = 0; i < weatherData.hourly.time.length; i++) {
-                        let tDiff = Math.abs(new Date(weatherData.hourly.time[i]).getTime() - nowMs);
+                if (liveData.hourly && liveData.hourly.time) {
+                    for(let i = 0; i < liveData.hourly.time.length; i++) {
+                        let tDiff = Math.abs(new Date(liveData.hourly.time[i]).getTime() - nowMs);
                         if(tDiff < minDiff) { minDiff = tDiff; currIdx = i; }
                     }
                 }
                 
-                let wFeels = weatherData.hourly && weatherData.hourly.apparent_temperature ? Math.round(weatherData.hourly.apparent_temperature[currIdx]) : wTemp;
-                let wHum = weatherData.hourly && weatherData.hourly.relative_humidity_2m ? weatherData.hourly.relative_humidity_2m[currIdx] : "?";
-                let wPress = weatherData.hourly && weatherData.hourly.surface_pressure ? Math.round(weatherData.hourly.surface_pressure[currIdx]) : "?";
+                let wFeels = liveData.hourly && liveData.hourly.apparent_temperature ? Math.round(liveData.hourly.apparent_temperature[currIdx]) : wTemp;
+                let wHum = liveData.hourly && liveData.hourly.relative_humidity_2m ? liveData.hourly.relative_humidity_2m[currIdx] : "?";
+                let wPress = liveData.hourly && liveData.hourly.surface_pressure ? Math.round(liveData.hourly.surface_pressure[currIdx]) : "?";
                 
                 let wDesc = getWeatherText(cw.weathercode);
                 let isNightNow = cw.is_day === 0;
                 let omIcon = getWeatherIcon(cw.weathercode, isNightNow);
 
-                const labels = { 'best_match': 'Auto', 'metno_seamless': 'YR.NO', 'ukmo_seamless': 'UKMO', 'gfs_seamless': 'GFS', 'icon_seamless': 'ICON' };
-                let modelName = labels[appSettings.model || 'best_match'] || 'Auto';
+                let liveModelSelectHtml = `
+                    <select id="liveModelSelect" class="settings-select" style="width: auto; padding: 2px 6px; font-size: 12px; display: inline-block; cursor: pointer; border-radius: 4px;" onchange="liveModelChanged(this.value);">
+                        <option value="best_match" ${liveModelSelect === 'best_match' ? 'selected' : ''}>Auto</option>
+                        <option value="metno_seamless" ${liveModelSelect === 'metno_seamless' ? 'selected' : ''}>YR.NO</option>
+                        <option value="ukmo_seamless" ${liveModelSelect === 'ukmo_seamless' ? 'selected' : ''}>UKMO</option>
+                        <option value="gfs_seamless" ${liveModelSelect === 'gfs_seamless' ? 'selected' : ''}>GFS</option>
+                        <option value="icon_seamless" ${liveModelSelect === 'icon_seamless' ? 'selected' : ''}>ICON</option>
+                    </select>
+                `;
 
                 document.getElementById('live-modal-content').innerHTML = `
                     <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; text-align: center;">
                         <strong style="color: var(--text-main); font-size: 1.6rem; display: block; margin: 0 0 8px 0;">${escapeHTML(foundName)}</strong>
-                        <span style="font-size: 13px;">(Model: <strong>${modelName}</strong>)</span>
+                        <span style="font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px;">Model: ${liveModelSelectHtml}</span>
                     </div>
                     <div style="text-align: center; margin-bottom: 25px;">
                         <div style="font-size: 3.5rem; font-weight: bold; color: var(--text-main); line-height: 1;">${wTemp}°C</div>
@@ -2355,26 +2453,36 @@ function getTempBgColor(temp) {
                 `;
             }
 
-            // --- HLAVNÉ ZOBRAZENIE Z PREDPOVEDE (Open-Meteo) ---
+            // --- HLAVNÉ ZOBRAZENIE Z PREDPOVEDE ---
             let locationDetails = "";
             if (county || country) { const parts = []; if (county) parts.push(county); if (country) parts.push(country); locationDetails = `(${parts.join(', ')})`; }
 
-            // Vytiahneme si dáta (rýchlosť, teplota, kód počasia a či je deň/noc)
-            let currentSpeedOM = weatherData.current_weather.windspeed;
-            let currentDirectionOM = weatherData.current_weather.winddirection;
-            let currentTempOM = Math.round(weatherData.current_weather.temperature);
-            let currentCodeOM = weatherData.current_weather.weathercode;
-            let isNightOM = weatherData.current_weather.is_day === 0;
+            let currentSpeedOM = liveData.current_weather.windspeed;
+            let currentDirectionOM = liveData.current_weather.winddirection;
+            let currentTempOM = Math.round(liveData.current_weather.temperature);
+            let currentCodeOM = liveData.current_weather.weathercode;
+            let isNightOM = liveData.current_weather.is_day === 0;
             let currentIconOM = getWeatherIcon(currentCodeOM, isNightOM);
+            let currentDescOM = getWeatherText(currentCodeOM);
 
             const redPin = `<svg viewBox="0 0 24 24" width="18" height="18" fill="#ef4444" style="margin-right: 4px; flex-shrink: 0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`;
 
+            // Skryjeme zvislú čiaru, ak náhodou chýbajú detaily o okrese/štáte
+            let locationHtml = locationDetails ? `${escapeHTML(locationDetails)} | ` : '';
+
             resultText.innerHTML = `
-                <span style="font-weight: bold; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; white-space: nowrap;">
+                <div style="font-weight: bold; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; white-space: nowrap;">
                     ${redPin} ${escapeHTML(foundName)} ${liveBtnHtml}
-                </span>
-                <span style="font-size: 0.85em; color: var(--text-muted);">${escapeHTML(locationDetails)}</span> | ⛰️ ${escapeHTML(elevation)} ${t('masl')}<br>
-                ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
+                </div>
+                <div style="font-size: 0.85em; color: var(--text-muted); margin-top: 2px;">
+                    ${locationHtml}⛰️ ${escapeHTML(elevation)} ${t('masl')}
+                </div>
+                <div style="margin-top: 4px;">
+                    ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
+                </div>
+                <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 2px;">
+                    Model: <strong>${liveModelName}</strong>
+                </div>
             `;
 
             let inputText = foundName; let subText = [];
@@ -2387,7 +2495,11 @@ function getTempBgColor(temp) {
             
             const largeWeather = document.getElementById('current-large-weather');
             if (largeWeather) {
-                largeWeather.innerHTML = `<span class="large-icon">${currentIconOM}</span><span class="large-temp">${currentTempOM}°C</span>`;
+                largeWeather.innerHTML = `
+                    <span class="large-icon">${currentIconOM}</span>
+                    <span class="large-temp">${currentTempOM}°C</span>
+                    <span class="large-desc" style="font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-top: -2px; text-align: center;">${currentDescOM}</span>
+                `;
                 largeWeather.style.display = 'flex';
             }
 
@@ -2452,7 +2564,6 @@ function getTempBgColor(temp) {
                 const wTemp = Math.round(hourly.temperature_2m[i]); const wCode = hourly.weathercode[i];                
                 const isNight = (hourStrObj < 6 || hourStrObj >= 21);
                 
-                // Tieto 3 riadky chýbali:
                 const actualIcon = getWeatherIcon(wCode, isNight);
                 const actualText = getWeatherText(wCode);
                 const rainTextColor = getRainTextColor(wRain);
@@ -2470,17 +2581,14 @@ function getTempBgColor(temp) {
                 const isRaining = wRain > 0 || nextRain > 0;
                 const colorRain1 = wRain > 0 ? getRainColor(wRain) : "#ffffff"; const colorRain2 = nextRain > 0 ? getRainColor(nextRain) : "#ffffff";
 
-                // Pozadie pre Hodiny a Ikonu (oblačnosť, dážď, atď.)
                 const weatherBg1 = getWeatherBgColor(wCode, isNight); const weatherBg2 = getWeatherBgColor(nextCode, nextIsNight);
                 const weatherGradient = `background: linear-gradient(to right, ${weatherBg1}, ${weatherBg2});`;
                 
-                // Pozadie pre Teplotu
                 const tempBg1 = getTempBgColor(wTemp); const tempBg2 = getTempBgColor(nextTemp);
                 const tempGradient = `background: linear-gradient(to right, ${tempBg1}, ${tempBg2});`;
 
                 const isNightText = (hourStrObj >= 18 || hourStrObj <= 3); const textCol = isNightText ? '#ffffff' : '#000000';
 
-                // Návrat k dynamickej farbe čísiel teploty (modrá pre mráz, červená nad 31, inak čierna)
                 let tempCol;
                 if (wTemp <= 0) { tempCol = '#0284c7'; } else if (wTemp >= 31) { tempCol = '#dc2626'; } else { tempCol = '#000000'; }
                 let tempShadow = '-1px -1px 0 rgba(255,255,255,0.8), 1px -1px 0 rgba(255,255,255,0.8), -1px 1px 0 rgba(255,255,255,0.8), 1px 1px 0 rgba(255,255,255,0.8)';
@@ -2493,7 +2601,6 @@ function getTempBgColor(temp) {
 
                 hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: bold;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${lineTopHtml}${lineBotHtml}</td>`;
                 iconHtml += `<td class="icon-cell${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" title="${escapeHTML(actualText)}" onclick="showToast('${escapeHTML(actualText)}')"><span class="cell-content">${actualIcon}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                // TU SME ZMENILI weatherGradient NA tempGradient
                 tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; font-weight: bold; cursor: pointer;" onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: bold; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
                 
                 if (isRaining) { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorRain1}, ${colorRain2}); cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: ${wRain.toFixed(1)} cm')"><span class="cell-content" style="color: ${rainTextColor}; font-weight: bold;">${wRain > 0 ? wRain.toFixed(1) : ''}</span>${lineTopHtml}${lineBotHtml}</td>`; } 
@@ -2510,7 +2617,6 @@ function getTempBgColor(temp) {
             bottomPanel.innerHTML = `<table class="meteogram">${daysHtml}${hoursHtml}${iconHtml}${tempHtml}${rainHtml}${speedHtml}${gustsHtml}${dirHtml}</table>`;
 
             if (forceAutoScroll) {
-                // 1. Štart aplikácie alebo stlačenie tlačidla Reload -> Vrátiť na úplný začiatok
                 bottomPanel.style.setProperty('--sticky-offset', '0px'); 
                 lastScroll = 0; 
                 stickyOffset = 0;
@@ -2522,7 +2628,6 @@ function getTempBgColor(temp) {
                     setTimeout(() => { isAutoScrolling = false; lastScroll = 0; }, 500);
                 }, 100);
             } else {
-                // 2. Zmena modelu, mapy, nové miesto -> Zachovať súčasnú pozíciu rolovania presne tam, kde si ju nechal
                 bottomPanel.scrollLeft = prevScroll; 
                 stickyOffset = prevSticky; 
                 bottomPanel.style.setProperty('--sticky-offset', stickyOffset + 'px'); 
@@ -2531,13 +2636,10 @@ function getTempBgColor(temp) {
                 setTimeout(() => { customCenterMap(lat, lon, targetZoom, true); }, 100);
             }
 
-            // SPRÁVA O ÚSPECHU
-            if (isRefresh) {
-                showToast(t('msg_data_refr'));
-            }
+            showToast(t('msg_data_refr'));
 
         } catch (error) { 
-            // Tu to zostáva, v prípade ak úplne na konci po vykreslení spadne nejaký vnútorný vizuálny javascript
+            hideToast();
         }
     }
 // Kliknutie kdekoľvek mimo roletiek ich automaticky zavrie
