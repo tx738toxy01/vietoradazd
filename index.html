@@ -449,11 +449,9 @@
         .meteogram tr.hours-row td { padding-top: 1px !important; padding-bottom: 1px !important; }
 
 .meteogram tr.rain-row td { padding-top: 1px !important; padding-bottom: 1px !important; height: 18px; }
-
-/* Tu bol obrovský padding 16px, meníme na 6px */
-.meteogram tr.wind-row td { padding-top: 6px !important; padding-bottom: 6px !important; font-size: 12px; font-weight: bold; }
-
-.meteogram tr.gusts-row td { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 10px !important; height: 18px; line-height: 18px; }
+        .meteogram tr.wind-row td { padding-top: 6px !important; padding-bottom: 6px !important; font-size: 12px; font-weight: bold; }
+        
+        .meteogram tr.gusts-row td { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 10px !important; height: 18px; line-height: 18px; }
         .meteogram tr.gusts-row td:first-child { font-size: 9px !important; }
         
         .midnight-border { border-left: none !important; box-shadow: none !important; }
@@ -548,22 +546,30 @@
             box-sizing: border-box;
         }
         .daily-col {
-    background: var(--bg-panel);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 3px 0;
-    font-size: 10px;
-    height: 55px; /* bolo 50px */
-    box-sizing: border-box;
-}
+            background: var(--bg-panel);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 10px;
+            height: 65px;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .daily-col:hover { background-color: var(--hover-bg); }
         .daily-day { font-weight: bold; color: var(--text-main); font-size: 9px; }
         .daily-icon { 
-    font-size: 18px; /* bolo 12px */ 
-    line-height: 1; 
-    margin: 1px 0; 
-}
+            font-size: 24px; 
+            line-height: 1; 
+            margin: 2px 0;
+            /* Jemný, 1-pixelový polopriesvitný obrys okolo tvaru ikonky */
+            text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.25), 
+                          1px -1px 0 rgba(0, 0, 0, 0.25), 
+                         -1px  1px 0 rgba(0, 0, 0, 0.25), 
+                          1px  1px 0 rgba(0, 0, 0, 0.25);
+        }
         .daily-temp { font-weight: bold; color: var(--text-main); font-size: 10px; line-height: 1; }
         .daily-wind { 
             height: 8px; 
@@ -2560,6 +2566,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
             let dirHtml = `<tr><td>${t('t_dir')}</td>`;
 
             let currentDayStr = null, currentDayCount = 0;
+            let dayIndexCounter = 0;
             const locales = { sk: 'sk-SK', cs: 'cs-CZ', en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', zh: 'zh-CN', hi: 'hi-IN', ja: 'ja-JP', ko: 'ko-KR' };
             const localeStr = locales[currentLang] || 'en-US';
             const timeFormat = appSettings.timeFormat || '24h';
@@ -2600,7 +2607,10 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
 
                 if (dayStr !== currentDayStr) {
                     let borderClass = daysHtml.includes('colspan') ? ' midnight-border' : '';
-                    if (currentDayStr !== null) daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`;
+                    if (currentDayStr !== null) {
+                        daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`;
+                        dayIndexCounter++;
+                    }
                     currentDayStr = dayStr; currentDayCount = 1;
                 } else { currentDayCount++; }
 
@@ -2656,7 +2666,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 dirHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; cursor: pointer;" onclick="showToast('${t('t_dir').split(' ')[0]}: ${wDir}°')"><span class="cell-content" style="transform: rotate(${wDir}deg); display: inline-block; line-height: 1;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24l-8-9h6v-15h4v15h6z"/></svg></span>${lineTopHtml}${lineBotHtml}</td>`;
             }
             
-            if (currentDayStr !== null) { let borderClass = daysHtml.includes('colspan') ? ' midnight-border' : ''; daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`; }
+            if (currentDayStr !== null) { let borderClass = daysHtml.includes('colspan') ? ' midnight-border' : ''; daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`; }
             daysHtml += '</tr>'; hoursHtml += '</tr>'; iconHtml += '</tr>'; tempHtml += '</tr>'; rainHtml += '</tr>'; speedHtml += '</tr>'; gustsHtml += '</tr>'; dirHtml += '</tr>'; 
             
             bottomPanel.innerHTML = `<table class="meteogram">${daysHtml}${hoursHtml}${iconHtml}${tempHtml}${rainHtml}${speedHtml}${gustsHtml}${dirHtml}</table>`;
@@ -2674,8 +2684,8 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
                     }
 
                     let weekClass = isAlternateWeek ? " week-two" : ""; // Aplikujeme len zmenu pozadia
-                    // Automaticky vytiahne super-krátku skratku (1 písmeno) pre aktuálny jazyk
-                    let dDay = dDate.toLocaleDateString(localeStr, { weekday: 'narrow' }).toUpperCase();
+                    // Vytiahne číslo dňa v mesiaci (napr. 26)
+                    let dDay = dDate.getDate();
                     let dIcon = getWeatherIcon(dailyData.weathercode[i], false); // Ikonka vždy denná
                     let dTemp = Math.round(dailyData.temperature_2m_max[i]); // Max teplota
                     let dWind = Math.round(dailyData.windspeed_10m_max[i]); // Max vietor si necháme pre tooltip
@@ -2696,7 +2706,7 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
                     // CSS linear-gradient dokáže zobrať zoznam farieb a automaticky medzi nimi vytvoriť plynulé prechody!
                     let gradientBg = `background: linear-gradient(to right, ${dayColors.join(', ')});`;
 
-                    dailyHtml += `<div class="daily-col${weekClass}">
+                    dailyHtml += `<div class="daily-col${weekClass}" onclick="scrollToDay(${i})" title="Skočiť na tento deň">
                         <div class="daily-day">${dDay}</div>
                         <div class="daily-icon">${dIcon}</div>
                         <div class="daily-temp">${dTemp}°</div>
@@ -2756,6 +2766,19 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
             windyDrp.style.display = 'none';
         }
     });
+
+    window.scrollToDay = function(index) {
+        const bottomPanel = document.getElementById('bottom-panel');
+        const targetHeader = document.getElementById('scroll-day-' + index);
+        
+        if (targetHeader && bottomPanel) {
+            isAutoScrolling = true; 
+            bottomPanel.scrollTo({ left: targetHeader.offsetLeft, behavior: 'smooth' });
+            setTimeout(() => { isAutoScrolling = false; lastScroll = bottomPanel.scrollLeft; }, 600);
+        } else {
+            showToast('Pre tento deň nie sú k dispozícii hodinové detaily.');
+        }
+    };
 </script>
 
 </body>
