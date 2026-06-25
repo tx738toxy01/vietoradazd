@@ -527,6 +527,53 @@
             padding: 10px 0; font-size: 14px; color: var(--text-main);
         }
         .live-data-row:last-child { border-bottom: none; }
+        
+        /* 16-DŇOVÝ DENNÝ PREHĽAD AKO PEVNÁ SÚČASŤ SPODNÉHO PANELU */
+        .daily-summary-sticky-wrapper {
+            position: sticky;
+            left: 0;
+            width: 100%;
+            z-index: 40; /* Aby držal pevne nad posúvajúcou sa tabuľkou */
+            box-sizing: border-box;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .daily-summary-bar {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 1px;
+            width: 100%;
+            background: var(--border-color);
+            box-sizing: border-box;
+        }
+        .daily-col {
+            background: var(--bg-panel);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 10px;
+            height: 50px;
+            box-sizing: border-box;
+        }
+        .daily-day { font-weight: bold; color: var(--text-main); font-size: 9px; }
+        .daily-icon { font-size: 12px; line-height: 1; margin: 1px 0; }
+        .daily-temp { font-weight: bold; color: var(--text-main); font-size: 10px; line-height: 1; }
+        .daily-wind { 
+            height: 8px; 
+            width: 100%; 
+            margin-top: auto; 
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            box-sizing: border-box;
+            display: flex; /* Týmto dovolíme vložiť dovnútra 8 dielikov */
+        }
+        .daily-col.empty { background: var(--bg-solid); opacity: 0.4; }
+        .daily-col.empty .daily-day { color: var(--text-muted); }
+/* Zvýraznenie kalendárnych týždňov iba farebným skokom (bez čiary) */
+        .daily-col.week-two {
+            background: var(--sticky-bg); /* Výraznejší kontrastný skok, ktorý krásne reaguje na všetky tvoje témy */
+        }
     </style>
 </head>
 <body>
@@ -2316,7 +2363,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
+                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure&daily=weathercode,temperature_2m_max,windspeed_10m_max&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
                 
                 if (modelSelect === liveModelSelect) {
                     const weatherResponse = await fetch(forecastUrl, { signal: controller.signal });
@@ -2615,6 +2662,63 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
             daysHtml += '</tr>'; hoursHtml += '</tr>'; iconHtml += '</tr>'; tempHtml += '</tr>'; rainHtml += '</tr>'; speedHtml += '</tr>'; gustsHtml += '</tr>'; dirHtml += '</tr>'; 
             
             bottomPanel.innerHTML = `<table class="meteogram">${daysHtml}${hoursHtml}${iconHtml}${tempHtml}${rainHtml}${speedHtml}${gustsHtml}${dirHtml}</table>`;
+// --- VYTVORENIE 16-DŇOVÉHO DENNÉHO PANELU (INTEGROVANÝ A STICKY) ---
+            let dailyHtml = '<div class="daily-summary-sticky-wrapper"><div class="daily-summary-bar">';
+            let dailyData = weatherData.daily || { time: [], weathercode: [], temperature_2m_max: [], windspeed_10m_max: [] };
+let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
+            for (let i = 0; i < 16; i++) {
+                if (i < dailyData.time.length && dailyData.time[i] !== null) {
+                    let dDate = new Date(dailyData.time[i]);
+// Kalendárna logika: predel medzi nedeľou a pondelkom
+                    // Kalendárna logika: striedanie blokov týždňov
+                    if (dDate.getDay() === 1 && i > 0) {
+                        isAlternateWeek = !isAlternateWeek; // Prepneme vypínač farby vždy v pondelok
+                    }
+
+                    let weekClass = isAlternateWeek ? " week-two" : ""; // Aplikujeme len zmenu pozadia
+                    // Automaticky vytiahne super-krátku skratku (1 písmeno) pre aktuálny jazyk
+                    let dDay = dDate.toLocaleDateString(localeStr, { weekday: 'narrow' }).toUpperCase();
+                    let dIcon = getWeatherIcon(dailyData.weathercode[i], false); // Ikonka vždy denná
+                    let dTemp = Math.round(dailyData.temperature_2m_max[i]); // Max teplota
+                    let dWind = Math.round(dailyData.windspeed_10m_max[i]); // Max vietor si necháme pre tooltip
+                    
+                    // Pozbierame 8 farieb pre každé 3 hodiny v danom dni
+                    let dayColors = [];
+                    for (let step = 0; step < 24; step += 3) {
+                        let hIndex = (i * 24) + step;
+                        
+                        if (weatherData.hourly && weatherData.hourly.windspeed_10m && hIndex < weatherData.hourly.windspeed_10m.length && weatherData.hourly.windspeed_10m[hIndex] !== null) {
+                            let stepWind = Math.round(weatherData.hourly.windspeed_10m[hIndex]);
+                            dayColors.push(getWindColor(stepWind));
+                        } else {
+                            dayColors.push(getWindColor(dWind)); // Záloha, ak model nemá dáta
+                        }
+                    }
+
+                    // CSS linear-gradient dokáže zobrať zoznam farieb a automaticky medzi nimi vytvoriť plynulé prechody!
+                    let gradientBg = `background: linear-gradient(to right, ${dayColors.join(', ')});`;
+
+                    dailyHtml += `<div class="daily-col${weekClass}">
+                        <div class="daily-day">${dDay}</div>
+                        <div class="daily-icon">${dIcon}</div>
+                        <div class="daily-temp">${dTemp}°</div>
+                        <div class="daily-wind" style="${gradientBg}" title="Max: ${dWind} km/h"></div>
+                    </div>`;
+                } else {
+                    // Prázdny stĺpec, aby sme mali vždy presne 16 boxov
+                    dailyHtml += `<div class="daily-col empty">
+                        <div class="daily-day">-</div>
+                        <div class="daily-icon"></div>
+                        <div class="daily-temp"></div>
+                        <div class="daily-wind" style="background: transparent;"></div>
+                    </div>`;
+                }
+            }
+            dailyHtml += '</div></div>';
+
+            // Zapíšeme obidva prvky (celkový prehľad aj hodinovú tabuľku) spoločne priamo do jedného spodného panelu
+            bottomPanel.innerHTML = dailyHtml + `<table class="meteogram">${daysHtml}${hoursHtml}${iconHtml}${tempHtml}${rainHtml}${speedHtml}${gustsHtml}${dirHtml}</table>`;
+            // ------------------------------------------------------------------
 
             if (forceAutoScroll) {
                 bottomPanel.style.setProperty('--sticky-offset', '0px'); 
