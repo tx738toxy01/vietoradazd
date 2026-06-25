@@ -446,12 +446,14 @@
         }
         
         .meteogram tr.hours-row td:not(:first-child) { position: relative; }
-        .meteogram tr.hours-row td { padding-top: 2px !important; padding-bottom: 2px !important; }
-        
-        .meteogram tr.rain-row td { padding-top: 2px !important; padding-bottom: 2px !important; height: 24px; }
-        .meteogram tr.wind-row td { padding-top: 16px !important; padding-bottom: 16px !important; font-size: 13px; font-weight: bold; }
-        
-        .meteogram tr.gusts-row td { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 10px !important; height: 22px; line-height: 22px; }
+        .meteogram tr.hours-row td { padding-top: 1px !important; padding-bottom: 1px !important; }
+
+.meteogram tr.rain-row td { padding-top: 1px !important; padding-bottom: 1px !important; height: 18px; }
+
+/* Tu bol obrovský padding 16px, meníme na 6px */
+.meteogram tr.wind-row td { padding-top: 6px !important; padding-bottom: 6px !important; font-size: 12px; font-weight: bold; }
+
+.meteogram tr.gusts-row td { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 10px !important; height: 18px; line-height: 18px; }
         .meteogram tr.gusts-row td:first-child { font-size: 9px !important; }
         
         .midnight-border { border-left: none !important; box-shadow: none !important; }
@@ -546,18 +548,22 @@
             box-sizing: border-box;
         }
         .daily-col {
-            background: var(--bg-panel);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 3px 0;
-            font-size: 10px;
-            height: 50px;
-            box-sizing: border-box;
-        }
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 10px;
+    height: 55px; /* bolo 50px */
+    box-sizing: border-box;
+}
         .daily-day { font-weight: bold; color: var(--text-main); font-size: 9px; }
-        .daily-icon { font-size: 12px; line-height: 1; margin: 1px 0; }
+        .daily-icon { 
+    font-size: 18px; /* bolo 12px */ 
+    line-height: 1; 
+    margin: 1px 0; 
+}
         .daily-temp { font-weight: bold; color: var(--text-main); font-size: 10px; line-height: 1; }
         .daily-wind { 
             height: 8px; 
