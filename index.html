@@ -551,18 +551,18 @@
             box-sizing: border-box;
         }
         .daily-col {
-            background: var(--bg-panel);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4px 0;
-            height: 65px;
-            box-sizing: border-box;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            overflow: hidden; /* Uistí sa, že nič nepretečie zo stĺpca */
-        }
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0 0 0; /* ZMENA: Spodok je 0 */
+    height: 65px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    overflow: hidden;
+}
         .daily-col:hover { background-color: var(--hover-bg); }
         .daily-day { font-weight: bold; color: var(--text-main); font-size: clamp(8px, 2.5vw, 10px); } /* Auto-veľkosť textu */
         .daily-temp { font-weight: bold; color: var(--text-main); font-size: clamp(8px, 2.5vw, 10px); line-height: 1; }
@@ -576,14 +576,14 @@
                           1px  1px 0 rgba(0, 0, 0, 0.25);
         }
         .daily-wind { 
-            height: 8px; 
-            width: 100%; 
-            margin-top: auto; 
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            box-sizing: border-box;
-            display: flex; /* Týmto dovolíme vložiť dovnútra 8 dielikov */
-        }
+    height: 8px; 
+    width: 100%; 
+    margin-top: auto; 
+    border-top: 1px solid var(--border-color);
+    border-bottom: none; /* ZMENA: Čiara zrušená, pásik tvorí hranicu */
+    box-sizing: border-box;
+    display: flex;
+}
         .daily-col.empty { background: var(--bg-solid); opacity: 0.4; }
         .daily-col.empty .daily-day { color: var(--text-muted); }
 /* Zvýraznenie kalendárnych týždňov iba farebným skokom (bez čiary) */
@@ -594,7 +594,8 @@
 .daily-col.active-day {
     background-color: var(--accent-color) !important;
     transform: scale(1.02);
-    border-radius: 4px;
+    transform-origin: bottom center; /* ZMENA: Zväčšuje sa smerom hore */
+    border-radius: 4px 4px 0 0; /* ZMENA: Zaoblené rohy iba hore */
     transition: all 0.2s ease-in-out;
 }
 .daily-col.active-day .daily-day,
@@ -1845,6 +1846,9 @@ function liveModelChanged(val) {
                             
                             // 2. Zapíšeme mesto do histórie hľadaní
                             addToRecent(loc.name, subtitleText, loc.lat, loc.lon, loc.elevation, loc.county, loc.country);
+                            
+                            // --- NOVÉ: Zobrazenie toast notifikácie pred načítaním ---
+                            showToast(`🔄 Načítavam: ${loc.name}...`, true);
                             
                             // 3. Stiahneme a vykreslíme počasie
                             fetchAndRenderWeather(loc.lat, loc.lon, loc.name, loc.county, loc.country, loc.elevation, false, false); 
