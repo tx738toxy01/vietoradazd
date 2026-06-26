@@ -1733,26 +1733,47 @@ function liveModelChanged(val) {
     document.getElementById('bottom-panel').addEventListener('scroll', function() {
         let currentScroll = this.scrollLeft;
         if (isAutoScrolling) { lastScroll = currentScroll; return; }
-        if (currentScroll <= 0) { stickyOffset = 0; this.style.setProperty('--sticky-offset', '0px'); lastScroll = currentScroll; return; }
 
+        // Výpočet pre fixnú hlavičku (prvý stĺpec tabuľky)
         let diff = currentScroll - lastScroll;
         let firstTh = this.querySelector('.meteogram th:first-child');
         let maxHide = firstTh ? firstTh.offsetWidth : 80;
 
-        stickyOffset -= diff;
-        if (stickyOffset < -maxHide) stickyOffset = -maxHide; if (stickyOffset > 0) stickyOffset = 0;
-        this.style.setProperty('--sticky-offset', stickyOffset + 'px'); lastScroll = currentScroll;
+        if (currentScroll <= 0) {
+            stickyOffset = 0;
+        } else {
+            stickyOffset -= diff;
+            if (stickyOffset < -maxHide) stickyOffset = -maxHide; 
+            if (stickyOffset > 0) stickyOffset = 0;
+        }
+        this.style.setProperty('--sticky-offset', stickyOffset + 'px'); 
+        lastScroll = currentScroll;
 
-        // --- NOVÉ: Zisťovanie a zvýraznenie dňa v strede zobrazenia ---
-        let middlePosition = currentScroll + (this.clientWidth / 2);
+        // --- ZVÝRAZŇOVANIE DNÍ S KRAJNÝMI POISTKAMI ---
         let dayHeaders = this.querySelectorAll('th.day-header[id^="scroll-day-"]');
-        
+        if (dayHeaders.length === 0) return;
+
+        // 1. POISTKA PRE KRAJNÝ ĽAVÝ KONIEC: Ak sme na začiatku tabuľky
+        if (currentScroll <= 5) {
+            let index = parseInt(dayHeaders[0].id.replace('scroll-day-', ''));
+            window.updateActiveDayHighlight(index);
+            return;
+        }
+
+        // 2. POISTKA PRE KRAJNÝ PRAVÝ KONIEC: Ak sme na úplnom konci tabuľky (tolerancia 5px)
+        if (currentScroll + this.clientWidth >= this.scrollWidth - 5) {
+            let index = parseInt(dayHeaders[dayHeaders.length - 1].id.replace('scroll-day-', ''));
+            window.updateActiveDayHighlight(index);
+            return;
+        }
+
+        // 3. BEŽNÉ SKROLOVANIE: Hľadá sa deň, ktorý pretína presný stred displeja
+        let middlePosition = currentScroll + (this.clientWidth / 2);
         for (let i = 0; i < dayHeaders.length; i++) {
             let th = dayHeaders[i];
             let thStart = th.offsetLeft;
             let thEnd = thStart + th.offsetWidth;
             
-            // Ak sa stred displeja nachádza medzi začiatkom a koncom tohto dňa
             if (middlePosition >= thStart && middlePosition <= thEnd) {
                 let index = parseInt(th.id.replace('scroll-day-', ''));
                 window.updateActiveDayHighlight(index);
