@@ -605,6 +605,15 @@
 .daily-col.active-day .daily-wind {
     border-color: rgba(255, 255, 255, 0.3) !important;
 }
+/* --- Výraznejšie odlíšenie týždňov v tmavých režimoch --- */
+
+[data-theme="dark"] .daily-col.week-two {
+    background-color: #475569; /* Svetlejšia bridlicová sivá (výraznejší skok) */
+}
+
+[data-theme="black"] .daily-col.week-two {
+    background-color: #1e293b; /* Viditeľná tmavosivá na čiernom Amoled pozadí */
+}
     </style>
 </head>
 <body>
