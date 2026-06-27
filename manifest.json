@@ -2,7 +2,7 @@
   "name": "Vietor a dážď",
   "short_name": "Vietor a dážď",
   "start_url": "index.html",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#000000",
   "theme_color": "#333333",
   "icons": [
