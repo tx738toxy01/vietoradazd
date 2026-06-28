@@ -462,7 +462,7 @@
         .meteogram tr.hours-row td { padding-top: 1px !important; padding-bottom: 1px !important; }
 
 .meteogram tr.rain-row td { padding-top: 1px !important; padding-bottom: 1px !important; height: 18px; }
-        .meteogram tr.wind-row td { padding-top: 6px !important; padding-bottom: 6px !important; font-size: 12px; font-weight: bold; }
+        .meteogram tr.wind-row td { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 10px !important; height: 18px; line-height: 18px; }
         
         .meteogram tr.gusts-row td { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 10px !important; height: 18px; line-height: 18px; }
         .meteogram tr.gusts-row td:first-child { font-size: 9px !important; }
@@ -552,10 +552,10 @@
         }
         .daily-summary-bar {
             display: grid;
-            grid-template-columns: repeat(16, minmax(0, 1fr)); /* minmax(0, 1fr) dovolí stĺpcom maximálne sa prispôsobiť */
-            gap: 1px;
+            grid-template-columns: repeat(16, minmax(0, 1fr));
+            gap: 0;
             width: 100%;
-            background: var(--border-color);
+            background: transparent;
             box-sizing: border-box;
         }
         .daily-col {
@@ -822,10 +822,18 @@
         </div>
 
         <div class="settings-section">
-            <h4 data-i18n="set_time_format">Formát času</h4>
-            <select id="timeFormatSelect" class="settings-select" onchange="changeTimeFormat()">
+            <h4 data-i18n="set_time_format">Formát</h4>
+            <select id="timeFormatSelect" class="settings-select" onchange="changeTimeFormat()" style="margin-bottom: 6px;">
                 <option value="24h" data-i18n="tf_24">24h (14:00)</option>
                 <option value="12h" data-i18n="tf_12">12h (2 PM)</option>
+            </select>
+            <select id="tempUnitSelect" class="settings-select" onchange="appSettings.tempUnit=this.value; saveSettings(); if(lastSearchedCity) getWindData(true,false); closeModal();" style="margin-bottom: 6px;">
+                <option value="C">°C (Celsius)</option>
+                <option value="F">°F (Fahrenheit)</option>
+            </select>
+            <select id="windUnitSelect" class="settings-select" onchange="appSettings.windUnit=this.value; saveSettings(); if(lastSearchedCity) getWindData(true,false); closeModal();">
+                <option value="kmh">km/h</option>
+                <option value="mph">mph (míle)</option>
             </select>
         </div>
 
@@ -1167,8 +1175,20 @@ Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark:
     Object.assign(i18n.ja, { set_startup_model: "デフォルトモデル (起動時)" });
     Object.assign(i18n.ko, { set_startup_model: "기본 모델 (시작 시)" });
 
+// Preklady pre zlúčený kľúč (Formát - čas, teplota, vietor)
+    Object.assign(i18n.sk, { set_time_format: "Formát" });
+    Object.assign(i18n.cs, { set_time_format: "Formát" });
+    Object.assign(i18n.en, { set_time_format: "Format" });
+    Object.assign(i18n.de, { set_time_format: "Format" });
+    Object.assign(i18n.fr, { set_time_format: "Format" });
+    Object.assign(i18n.es, { set_time_format: "Formato" });
+    Object.assign(i18n.zh, { set_time_format: "格式" });
+    Object.assign(i18n.hi, { set_time_format: "प्रारूप" });
+    Object.assign(i18n.ja, { set_time_format: "フォーマット" });
+    Object.assign(i18n.ko, { set_time_format: "형식" });
+
     // Pridali sme predvolené hodnoty pre OWM: oblaky ZAPNUTÉ, dážď ZAPNUTÝ, priehľadnosť 75%
-    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', liveModel: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false, owmClouds: true, owmRain: true, owmOpacity: 75 };
+    const defaultSettings = { lang: 'en', theme: 'system', model: 'best_match', liveModel: 'best_match', map: 'osm', startupMode: 'geo', startupCustomCity: '', timeFormat: '24h', dateFormat: 'month_first', weekdayFull: true, weekdayShort: false, owmClouds: true, owmRain: true, owmOpacity: 75, tempUnit: 'C', windUnit: 'kmh' };
     
     // BEZPEČNÉ NAČÍTANIE PAMÄTE
     let appSettings;
@@ -1198,6 +1218,8 @@ Object.assign(i18n.sk, { theme_group_light: "Svetlé motívy", theme_group_dark:
         
         document.getElementById('timeFormatSelect').value = appSettings.timeFormat || '24h';
         document.getElementById('dateFormatSelect').value = appSettings.dateFormat || 'month_first';
+        document.getElementById('tempUnitSelect').value = appSettings.tempUnit || 'C';
+        document.getElementById('windUnitSelect').value = appSettings.windUnit || 'kmh';
         document.getElementById('weekdayFull').checked = appSettings.weekdayFull || false;
         document.getElementById('weekdayShort').checked = appSettings.weekdayShort || false;
         
@@ -1742,7 +1764,9 @@ function liveModelChanged(val) {
     let isAutoScrolling = false; let lastScroll = 0; let stickyOffset = 0;
     
     // Nová pomocná funkcia na prehadzovanie farieb
+    window.currentActiveDayIndex = 0; // Pamäť pre vybraný deň
     window.updateActiveDayHighlight = function(activeIndex) {
+        window.currentActiveDayIndex = activeIndex;
         document.querySelectorAll('.daily-col').forEach(col => col.classList.remove('active-day'));
         let activeCol = document.getElementById('daily-col-' + activeIndex);
         if (activeCol) activeCol.classList.add('active-day');
@@ -2589,6 +2613,18 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
             }
 
             // --- HLAVNÉ ZOBRAZENIE Z PREDPOVEDE ---
+            let windUnitLabel = appSettings.windUnit === 'mph' ? 'mph' : 'km/h';
+            if (appSettings.windUnit === 'mph') {
+                liveData.current_weather.windspeed = Math.round(liveData.current_weather.windspeed / 1.60934);
+                weatherData.hourly.windspeed_10m = weatherData.hourly.windspeed_10m.map(v => v !== null ? Math.round(v / 1.60934) : null);
+                weatherData.hourly.windgusts_10m = weatherData.hourly.windgusts_10m.map(v => v !== null ? Math.round(v / 1.60934) : null);
+                if(weatherData.daily) weatherData.daily.windspeed_10m_max = weatherData.daily.windspeed_10m_max.map(v => v !== null ? Math.round(v / 1.60934) : null);
+            }
+            if (appSettings.tempUnit === 'F') {
+                liveData.current_weather.temperature = Math.round((liveData.current_weather.temperature * 9/5) + 32);
+                weatherData.hourly.temperature_2m = weatherData.hourly.temperature_2m.map(v => v !== null ? Math.round((v * 9/5) + 32) : null);
+                if(weatherData.daily) weatherData.daily.temperature_2m_max = weatherData.daily.temperature_2m_max.map(v => v !== null ? Math.round((v * 9/5) + 32) : null);
+            }
             let locationDetails = "";
             if (county || country) { const parts = []; if (county) parts.push(county); if (country) parts.push(country); locationDetails = `(${parts.join(', ')})`; }
 
@@ -2613,7 +2649,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                     ${locationHtml}⛰️ ${escapeHTML(elevation)} ${t('masl')}
                 </div>
                 <div style="margin-top: 4px;">
-                    ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} km/h</strong>
+                    ${escapeHTML(t('wind_str'))}: <strong>${escapeHTML(currentSpeedOM)} ${windUnitLabel}</strong>
                 </div>
                 <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 2px;">
                     Model: <strong>${liveModelName}</strong>
@@ -2738,7 +2774,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
 
                 const windDesc = getWindDesc(wSpeed); const gustDesc = getWindDesc(wGust);
 
-                hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: bold;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${lineTopHtml}${lineBotHtml}</td>`;
+                hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: normal;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${lineTopHtml}${lineBotHtml}</td>`;
                 iconHtml += `<td class="icon-cell${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" title="${escapeHTML(actualText)}" onclick="showToast('${escapeHTML(actualText)}')"><span class="cell-content">${actualIcon}</span>${lineTopHtml}${lineBotHtml}</td>`;
                 tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; font-weight: bold; cursor: pointer;" onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: bold; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
                 
@@ -2747,7 +2783,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 
                 speedHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorSpeed1}, ${colorSpeed2}); color: #000; cursor: pointer;" onclick="showToast('${t('t_wind').split(' ')[0]}: ${wSpeed} km/h (${escapeHTML(windDesc)})')"><span class="cell-content">${wSpeed}</span>${lineTopHtml}${lineBotHtml}</td>`;
                 gustsHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorGust1}, ${colorGust2}); color: #000; cursor: pointer;" onclick="showToast('${t('t_gust').split(' ')[0]}: ${wGust} km/h (${escapeHTML(gustDesc)})')"><span class="cell-content">${wGust}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                dirHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; cursor: pointer;" onclick="showToast('${t('t_dir').split(' ')[0]}: ${wDir}°')"><span class="cell-content" style="transform: rotate(${wDir}deg); display: inline-block; line-height: 1;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24l-8-9h6v-15h4v15h6z"/></svg></span>${lineTopHtml}${lineBotHtml}</td>`;
+                dirHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; font-weight: normal; cursor: pointer;" onclick="showToast('${t('t_dir').split(' ')[0]}: ${wDir}°')"><span class="cell-content" style="transform: rotate(${wDir}deg); display: inline-block; line-height: 1;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"></line><polyline points="19 14 12 21 5 14"></polyline></svg></span>${lineTopHtml}${lineBotHtml}</td>`;
             }
             
             if (currentDayStr !== null) { let borderClass = daysHtml.includes('colspan') ? ' midnight-border' : ''; daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`; }
@@ -2812,7 +2848,13 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
             bottomPanel.innerHTML = dailyHtml + `<table class="meteogram">${daysHtml}${hoursHtml}${iconHtml}${tempHtml}${rainHtml}${speedHtml}${gustsHtml}${dirHtml}</table>`;
             // ------------------------------------------------------------------
 
-            if (typeof window.updateActiveDayHighlight === 'function') window.updateActiveDayHighlight(0);
+            if (typeof window.updateActiveDayHighlight === 'function') {
+                if (forceAutoScroll) {
+                    window.updateActiveDayHighlight(0);
+                } else {
+                    window.updateActiveDayHighlight(window.currentActiveDayIndex || 0);
+                }
+            }
 
             if (forceAutoScroll) {
                 bottomPanel.style.setProperty('--sticky-offset', '0px'); 
