@@ -2809,7 +2809,8 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
                     let dIcon = getWeatherIcon(dailyData.weathercode[i], false); // Ikonka vždy denná
                     let dTemp = Math.round(dailyData.temperature_2m_max[i]); // Max teplota
                     let dWind = Math.round(dailyData.windspeed_10m_max[i]); // Max vietor si necháme pre tooltip
-                    
+                    let dDesc = getWeatherText(dailyData.weathercode[i]);
+
                     // Pozbierame 8 farieb pre každé 3 hodiny v danom dni
                     let dayColors = [];
                     for (let step = 0; step < 24; step += 3) {
@@ -2826,7 +2827,7 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
                     // CSS linear-gradient dokáže zobrať zoznam farieb a automaticky medzi nimi vytvoriť plynulé prechody!
                     let gradientBg = `background: linear-gradient(to right, ${dayColors.join(', ')});`;
 
-                    dailyHtml += `<div id="daily-col-${i}" class="daily-col${weekClass}" onclick="scrollToDay(${i})" title="Skočiť na tento deň">
+                    dailyHtml += `<div id="daily-col-${i}" class="daily-col${weekClass}" onclick="scrollToDay(${i}, '${escapeHTML(dDesc)}')" title="Skočiť na tento deň">
                         <div class="daily-day">${dDay}</div>
                         <div class="daily-icon">${dIcon}</div>
                         <div class="daily-temp">${dTemp}°</div>
@@ -2895,28 +2896,34 @@ let isAlternateWeek = false; // Sledovanie striedania týždňov pre pozadie
         }
     });
 
-    window.scrollToDay = function(index) {
-    const bottomPanel = document.getElementById('bottom-panel');
-    const targetHeader = document.getElementById('scroll-day-' + index);
-    
-    if (targetHeader && bottomPanel) {
-        isAutoScrolling = true; 
-        
-        // Vypočítaj pozíciu tak, aby bol stĺpec presne v strede panelu
-        let centerPosition = targetHeader.offsetLeft - (bottomPanel.clientWidth / 2) + (targetHeader.offsetWidth / 2);
-        
-        bottomPanel.scrollTo({ left: centerPosition, behavior: 'smooth' });
-        
-        // Okamžité zvýraznenie dňa, na ktorý sme klikli
-        if (typeof window.updateActiveDayHighlight === 'function') {
-            window.updateActiveDayHighlight(index);
+    window.scrollToDay = function(index, description) {
+        // Pridaná logika pre druhý klik: Ak sme už na danom dni, ukáž toast a preskoč skrolovanie
+        if (window.currentActiveDayIndex === index && description) {
+            showToast(description);
+            return; 
         }
+
+        const bottomPanel = document.getElementById('bottom-panel');
+        const targetHeader = document.getElementById('scroll-day-' + index);
         
-        setTimeout(() => { isAutoScrolling = false; lastScroll = bottomPanel.scrollLeft; }, 600);
-    } else {
-        showToast('Pre tento deň nie sú k dispozícii hodinové detaily.');
-    }
-};
+        if (targetHeader && bottomPanel) {
+            isAutoScrolling = true; 
+            
+            // Vypočítaj pozíciu tak, aby bol stĺpec presne v strede panelu
+            let centerPosition = targetHeader.offsetLeft - (bottomPanel.clientWidth / 2) + (targetHeader.offsetWidth / 2);
+            
+            bottomPanel.scrollTo({ left: centerPosition, behavior: 'smooth' });
+            
+            // Okamžité zvýraznenie dňa, na ktorý sme klikli
+            if (typeof window.updateActiveDayHighlight === 'function') {
+                window.updateActiveDayHighlight(index);
+            }
+            
+            setTimeout(() => { isAutoScrolling = false; lastScroll = bottomPanel.scrollLeft; }, 600);
+        } else {
+            showToast('Pre tento deň nie sú k dispozícii hodinové detaily.');
+        }
+    };
 </script>
 
 </body>
