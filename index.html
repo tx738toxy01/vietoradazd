@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        /* CSS PREMENNÉ PRE TÉMY */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* CSS PREMENNÉ PRE TÉMY */
         :root {
             --bg-panel: rgba(255, 255, 255, 0.92);
             --bg-solid: #ffffff;
@@ -137,7 +139,9 @@
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             color: var(--text-main); display: flex; flex-direction: column;
             overflow-y: hidden; 
             overflow-x: hidden;
@@ -406,7 +410,7 @@
         
         /* Ikonka je veľká (2.8rem), teplota pod ňou je presne polovičná (1.4rem) */
         .current-large-weather .large-icon { font-size: 2.8rem; line-height: 1; }
-        .current-large-weather .large-temp { font-size: 1.4rem; font-weight: bold; color: var(--text-main); line-height: 1; }
+        .current-large-weather .large-temp { font-size: 1.4rem; font-weight: 600; color: var(--text-main); line-height: 1; }
 
         .bottom-panel { 
             position: relative; 
@@ -437,7 +441,7 @@
         .meteogram th.day-header { 
             background-color: var(--sticky-bg); 
             color: var(--text-main); 
-            font-weight: bold; 
+            font-weight: 600; 
             padding: 0 1px; 
             border: none; 
             height: 25px; 
@@ -450,7 +454,7 @@
         
         .meteogram td:first-child, .meteogram th:first-child { 
             background-color: var(--sticky-bg) !important; 
-            text-align: right; font-weight: bold; color: var(--text-muted); border: none; 
+            text-align: right; font-weight: 500; color: var(--text-muted); border: none; 
             font-size: 10px; text-transform: uppercase; padding-right: 4px; padding-left: 4px; white-space: nowrap; 
         }
         
