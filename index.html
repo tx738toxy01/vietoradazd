@@ -278,8 +278,15 @@
 
         /* RÝCHLE MAPY VĽAVO HORE */
         .map-controls {
-            position: fixed; left: 15px; top: 120px; z-index: 400;
-            display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px;
+            position: absolute;
+            left: 15px;         /* 15px od ľavého okraja */
+            top: 100%;          /* KĽÚČOVÁ ZMENA: Hovorí "zaves sa presne pod spodok panela" */
+            margin-top: 12px;   /* Presná medzera medzi panelom a tlačidlami */
+            z-index: 600;       /* Vyššie číslo, aby ich panel už nikdy neschoval */
+            display: flex; 
+            flex-direction: row; 
+            flex-wrap: wrap; 
+            gap: 8px;
         }
         .map-btn {
             background: var(--bg-panel); border: 1px solid var(--border-color); color: var(--text-main);
@@ -451,6 +458,10 @@
             overflow: hidden; 
             max-width: 10px; 
         }
+
+        .meteogram th.day-header.alt-bg { 
+    background-color: var(--table-header-bg); 
+} 
         
         .meteogram td:first-child, .meteogram th:first-child { 
             background-color: var(--sticky-bg) !important; 
@@ -626,7 +637,36 @@
 </head>
 <body>
 
-<div id="bg-map"></div>
+<div class="top-panel">
+    <div class="header-container">
+        <div class="header-title-wrapper">
+            <h2 data-i18n="app_title">Vietor a dážď</h2>
+            <span id="live-clock"></span>
+        </div>
+        <div class="header-buttons">
+            <span id="network-status" class="status-icon" onclick="showNetworkToast()"></span>
+            
+            <button class="settings-btn" onclick="toggleModal()" data-i18n-title="settings_title" title="Nastavenia">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>            
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="search-wrapper">
+            <input type="text" id="cityInput" data-i18n-ph="search_ph" placeholder="Zadaj miesto (napr. Chopok)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   onkeypress="handleKeyPress(event)" oninput="handleInput()" onfocus="this.value=''; showDropdown()" onblur="hideDropdown()">
+            <button class="geo-input-btn" onmousedown="event.preventDefault(); document.getElementById('cityInput').blur(); triggerGeolocation(false);" data-i18n-title="btn_my_loc" title="Moja poloha" style="display: flex; align-items: center; justify-content: center; right: 8px;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="#ef4444">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+            </button>
+            <div id="dropdown-list" class="recent-dropdown"></div>
+        </div>
+        
+        <button class="action-btn" onclick="getWindData(false, false)" data-i18n="search_btn">Hľadať</button>
+    </div>
+
 <iframe id="windy-iframe" src=""></iframe>
 
 <div class="map-controls">
@@ -695,36 +735,10 @@
     </div>
 </div>
 
-<div class="top-panel">
-    <div class="header-container">
-        <div class="header-title-wrapper">
-            <h2 data-i18n="app_title">Vietor a dážď</h2>
-            <span id="live-clock"></span>
-        </div>
-        <div class="header-buttons">
-            <span id="network-status" class="status-icon" onclick="showNetworkToast()"></span>
-            
-            <button class="settings-btn" onclick="toggleModal()" data-i18n-title="settings_title" title="Nastavenia">
-                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            </button>            
-        </div>
-    </div>
-    
-    <div class="controls">
-        <div class="search-wrapper">
-            <input type="text" id="cityInput" data-i18n-ph="search_ph" placeholder="Zadaj miesto (napr. Chopok)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                   onkeypress="handleKeyPress(event)" oninput="handleInput()" onfocus="this.value=''; showDropdown()" onblur="hideDropdown()">
-            <button class="geo-input-btn" onmousedown="event.preventDefault(); document.getElementById('cityInput').blur(); triggerGeolocation(false);" data-i18n-title="btn_my_loc" title="Moja poloha" style="display: flex; align-items: center; justify-content: center; right: 8px;">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="#ef4444">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
-            </button>
-            <div id="dropdown-list" class="recent-dropdown"></div>
-        </div>
-        
-        <button class="action-btn" onclick="getWindData(false, false)" data-i18n="search_btn">Hľadať</button>
-    </div>
 </div>
+
+<div id="bg-map"></div>
+
 
 <div class="bottom-panel-wrapper" id="bottom-wrapper">
     <div class="panel-header" id="panel-header" style="display: none;">
@@ -2726,9 +2740,9 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 const classStr = classes.length > 0 ? ' ' + classes.join(' ') : '';
 
                 if (dayStr !== currentDayStr) {
-                    let borderClass = daysHtml.includes('colspan') ? ' midnight-border' : '';
                     if (currentDayStr !== null) {
-                        daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`;
+                        let bgClass = (dayIndexCounter % 2 !== 0) ? ' alt-bg' : '';
+                        daysHtml += `<th class="day-header${bgClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`;
                         dayIndexCounter++;
                     }
                     currentDayStr = dayStr; currentDayCount = 1;
@@ -2789,7 +2803,10 @@ onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="ce
                 dirHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; font-weight: normal; cursor: pointer;" onclick="showToast('${t('t_dir').split(' ')[0]}: ${wDir}°')"><span class="cell-content" style="transform: rotate(${wDir}deg); display: inline-block; line-height: 1;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"></line><polyline points="19 14 12 21 5 14"></polyline></svg></span>${lineTopHtml}${lineBotHtml}</td>`;
             }
             
-            if (currentDayStr !== null) { let borderClass = daysHtml.includes('colspan') ? ' midnight-border' : ''; daysHtml += `<th class="day-header${borderClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`; }
+            if (currentDayStr !== null) { 
+                let bgClass = (dayIndexCounter % 2 !== 0) ? ' alt-bg' : ''; 
+                daysHtml += `<th class="day-header${bgClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`; 
+            }
             daysHtml += '</tr>'; hoursHtml += '</tr>'; iconHtml += '</tr>'; tempHtml += '</tr>'; rainHtml += '</tr>'; speedHtml += '</tr>'; gustsHtml += '</tr>'; dirHtml += '</tr>'; 
             
             bottomPanel.innerHTML = `<table class="meteogram">${daysHtml}${hoursHtml}${iconHtml}${tempHtml}${rainHtml}${speedHtml}${gustsHtml}${dirHtml}</table>`;
