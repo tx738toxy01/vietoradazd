@@ -488,16 +488,80 @@
             z-index: 25; pointer-events: none;
         }
 
-        .now-line-top, .now-line-bottom {
-            position: absolute; left: var(--offset, 50%); border-left: 2px solid #ef4444;
-            pointer-events: none; z-index: 35;
+        .now-line {
+            position: absolute; top: -1px; bottom: -1px; left: var(--offset, 50%);
+            border-left: 2px solid #ef4444; pointer-events: none; z-index: 15;
         }
-        .now-line-top { top: -1px; bottom: calc(50% + 8px); }
-        .now-line-bottom { top: calc(50% + 8px); bottom: -1px; }
+        tr.hours-row .now-line { top: -10px; }
         
-        tr.hours-row .now-line-top { top: -10px; }
-        .icon-cell .now-line-top { bottom: calc(50% + 12px); }
-        .icon-cell .now-line-bottom { top: calc(50% + 12px); }
+        /* 1. VYČISTENIE PREDCHÁDZAJÚCICH POKUSOV A MÁSK */
+        .current-now-cell .cell-content {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+        
+        /* Zrušíme "vymazanú dieru" (masku) z červenej čiary.
+           Teraz bude prechádzať ako plná čiara za textom. */
+        .current-now-cell .now-line {
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
+        }
+
+        /* 2. OUTLINY PRE ČÍSLA A TEXTY PRETATÉ ČIAROU (1px text-shadow) */
+        
+        /* HODINY A TEPLOTA (Podľa farby textu, HEX aj RGB pre istotu) */
+        .current-now-cell .cell-content[style*="#000000"],
+        .current-now-cell .cell-content[style*="rgb(0, 0, 0)"] {
+            text-shadow: 
+                -1px -1px 0 #fff, 1px -1px 0 #fff, 
+                -1px  1px 0 #fff, 1px  1px 0 #fff !important;
+        }
+
+        .current-now-cell .cell-content[style*="#ffffff"],
+        .current-now-cell .cell-content[style*="rgb(255, 255, 255)"] {
+            text-shadow: 
+                -1px -1px 0 #000, 1px -1px 0 #000, 
+                -1px  1px 0 #000, 1px  1px 0 #000 !important;
+        }
+
+        .current-now-cell .cell-content[style*="#0284c7"],
+        .current-now-cell .cell-content[style*="rgb(2, 132, 199)"] {
+            text-shadow: 
+                -1px -1px 0 #fff, 1px -1px 0 #fff, 
+                -1px  1px 0 #fff, 1px  1px 0 #fff !important;
+        }
+
+        /* VIETOR, NÁRAZY A ZRÁŽKY (Pevne definované riadky -> BIELY OUTLINE) */
+        tr.wind-row .current-now-cell .cell-content,
+        tr.gusts-row .current-now-cell .cell-content,
+        tr.rain-row .current-now-cell .cell-content {
+            text-shadow: 
+                -1px -1px 0 #fff, 1px -1px 0 #fff, 
+                -1px  1px 0 #fff, 1px  1px 0 #fff !important;
+        }
+
+        /* 3. ŠÍPKA VETRA (SVG) */
+        /* Namiesto text-shadow použijeme 4-smerový drop-shadow pre presný obrys vektora */
+        
+        /* Svetlý režim: Šípka je tmavá -> BIELY obrys */
+        .current-now-cell.dir-cell svg {
+            overflow: visible;
+            filter: drop-shadow(1px 0 0 #fff) 
+                    drop-shadow(-1px 0 0 #fff) 
+                    drop-shadow(0 1px 0 #fff) 
+                    drop-shadow(0 -1px 0 #fff);
+        }
+
+        /* Tmavý režim: Šípka je svetlá -> ČIERNY obrys */
+        [data-theme="dark"] .current-now-cell.dir-cell svg,
+        [data-theme="black"] .current-now-cell.dir-cell svg {
+            filter: drop-shadow(1px 0 0 #000) 
+                    drop-shadow(-1px 0 0 #000) 
+                    drop-shadow(0 1px 0 #000) 
+                    drop-shadow(0 -1px 0 #000);
+        }
 
         .now-label {
             position: absolute; top: -20px; left: var(--offset, 50%); transform: translateX(-50%);
@@ -2784,25 +2848,36 @@ if (wTemp <= 0) { tempCol = '#0284c7';
 }
                 let tempShadow = 'none';
 
-                let lineTopHtml = isCurrentBlock ? `<div class="now-line-top"></div>` : '';
-                let lineBotHtml = isCurrentBlock ? `<div class="now-line-bottom"></div>` : '';
+                let nowLineHtml = isCurrentBlock ? `<div class="now-line"></div>` : '';
                 let nowLabelHtml = isCurrentBlock ? `<div class="now-label" id="live-now-label" data-t1="${currentT1}" data-t2="${currentT2}">${escapeHTML(nowTimeText)}</div>` : '';
+                
+                let maskBgWeather = isCurrentBlock ? `--mask-bg: ${weatherBg1};` : '';
+                let maskBgTemp = isCurrentBlock ? `--mask-bg: ${tempBg1};` : '';
+                let maskBgRain = isCurrentBlock ? `--mask-bg: ${wRain > 0 ? colorRain1 : '#ffffff'};` : '';
+                let maskBgSpeed = isCurrentBlock ? `--mask-bg: ${colorSpeed1};` : '';
+                let maskBgGust = isCurrentBlock ? `--mask-bg: ${colorGust1};` : '';
+                let maskBgDir = isCurrentBlock ? `--mask-bg: var(--bg-solid);` : '';
 
                 const windDesc = getWindDesc(wSpeed); const gustDesc = getWindDesc(wGust);
 
-                hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: normal;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${lineTopHtml}${lineBotHtml}</td>`;
-                iconHtml += `<td class="icon-cell${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" title="${escapeHTML(actualText)}" onclick="showToast('${escapeHTML(actualText)}')"><span class="cell-content">${actualIcon}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; font-weight: normal; cursor: pointer;"
-onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: normal; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
+                hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; ${maskBgWeather} cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: normal;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${nowLineHtml}</td>`;
                 
-                if (isRaining) { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorRain1}, ${colorRain2}); cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: ${wRain.toFixed(1)} cm')"><span class="cell-content" style="color: ${rainTextColor}; font-weight: bold;">${wRain > 0 ? wRain.toFixed(1) : ''}</span>${lineTopHtml}${lineBotHtml}</td>`; } 
-                else { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background-color: #ffffff; cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: 0 cm')">${lineTopHtml}${lineBotHtml}</td>`; }
+                iconHtml += `<td class="icon-cell${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; ${maskBgWeather} cursor: pointer;" title="${escapeHTML(actualText)}" onclick="showToast('${escapeHTML(actualText)}')"><span class="cell-content">${actualIcon}</span>${nowLineHtml}</td>`;
                 
-                speedHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorSpeed1}, ${colorSpeed2}); color: #000; cursor: pointer;" onclick="showToast('${t('t_wind').split(' ')[0]}: ${wSpeed} km/h (${escapeHTML(windDesc)})')"><span class="cell-content">${wSpeed}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                gustsHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorGust1}, ${colorGust2}); color: #000; cursor: pointer;" onclick="showToast('${t('t_gust').split(' ')[0]}: ${wGust} km/h (${escapeHTML(gustDesc)})')"><span class="cell-content">${wGust}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                dirHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; font-weight: normal; cursor: pointer;" onclick="showToast('${t('t_dir').split(' ')[0]}: ${wDir}°')"><span class="cell-content" style="transform: rotate(${wDir}deg); display: inline-block; line-height: 1;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"></line><polyline points="19 14 12 21 5 14"></polyline></svg></span>${lineTopHtml}${lineBotHtml}</td>`;
-            }
-            
+                tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; ${maskBgTemp} font-weight: normal; cursor: pointer;" onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: normal;">${wTemp}°</span>${nowLineHtml}</td>`;
+                
+                if (isRaining) { 
+                    rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorRain1}, ${colorRain2}); ${maskBgRain} cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: ${wRain.toFixed(1)} cm')"><span class="cell-content" style="color: ${rainTextColor}; font-weight: bold;">${wRain > 0 ? wRain.toFixed(1) : ''}</span>${nowLineHtml}</td>`; 
+                } else { 
+                    rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background-color: #ffffff; ${maskBgRain} cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: 0 cm')">${nowLineHtml}</td>`; 
+                }
+                
+                speedHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorSpeed1}, ${colorSpeed2}); ${maskBgSpeed} color: #000; cursor: pointer;" onclick="showToast('${t('t_wind').split(' ')[0]}: ${wSpeed} km/h (${escapeHTML(windDesc)})')"><span class="cell-content">${wSpeed}</span>${nowLineHtml}</td>`;
+                
+                gustsHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorGust1}, ${colorGust2}); ${maskBgGust} color: #000; cursor: pointer;" onclick="showToast('${t('t_gust').split(' ')[0]}: ${wGust} km/h (${escapeHTML(gustDesc)})')"><span class="cell-content">${wGust}</span>${nowLineHtml}</td>`;
+                
+                dirHtml += `<td class="dir-cell ${classStr}" style="--offset: ${percentageOffset}%; ${maskBgDir} font-weight: normal; cursor: pointer;" onclick="showToast('${t('t_dir').split(' ')[0]}: ${wDir}°')"><span class="cell-content" style="transform: rotate(${wDir}deg); display: inline-block; line-height: 1;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"></line><polyline points="19 14 12 21 5 14"></polyline></svg></span>${nowLineHtml}</td>`;
+}            
             if (currentDayStr !== null) { 
                 let bgClass = (dayIndexCounter % 2 !== 0) ? ' alt-bg' : ''; 
                 daysHtml += `<th class="day-header${bgClass}" colspan="${currentDayCount}" id="scroll-day-${dayIndexCounter}"><span class="cell-content">${escapeHTML(currentDayStr)}</span></th>`; 
