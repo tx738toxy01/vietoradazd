@@ -2768,7 +2768,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
 if (wTemp <= 0) { tempCol = '#0284c7';
 } else { tempCol = '#000000'; 
 }
-                let tempShadow = '-1px -1px 0 rgba(255,255,255,0.8), 1px -1px 0 rgba(255,255,255,0.8), -1px 1px 0 rgba(255,255,255,0.8), 1px 1px 0 rgba(255,255,255,0.8)';
+                let tempShadow = 'none';
 
                 let lineTopHtml = isCurrentBlock ? `<div class="now-line-top"></div>` : '';
                 let lineBotHtml = isCurrentBlock ? `<div class="now-line-bottom"></div>` : '';
