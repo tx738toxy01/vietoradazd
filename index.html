@@ -2765,7 +2765,9 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 const isNightText = (hourStrObj >= 18 || hourStrObj <= 3); const textCol = isNightText ? '#ffffff' : '#000000';
 
                 let tempCol;
-                if (wTemp <= 0) { tempCol = '#0284c7'; } else if (wTemp >= 31) { tempCol = '#dc2626'; } else { tempCol = '#000000'; }
+if (wTemp <= 0) { tempCol = '#0284c7';
+} else { tempCol = '#000000'; 
+}
                 let tempShadow = '-1px -1px 0 rgba(255,255,255,0.8), 1px -1px 0 rgba(255,255,255,0.8), -1px 1px 0 rgba(255,255,255,0.8), 1px 1px 0 rgba(255,255,255,0.8)';
 
                 let lineTopHtml = isCurrentBlock ? `<div class="now-line-top"></div>` : '';
@@ -2776,7 +2778,8 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
 
                 hoursHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" onclick="showToast('${t('t_hour').split(' ')[0]}: ${escapeHTML(hourStrText)}')"><span class="cell-content" style="color: ${textCol}; font-weight: normal;">${escapeHTML(hourStrText)}</span>${nowLabelHtml}${lineTopHtml}${lineBotHtml}</td>`;
                 iconHtml += `<td class="icon-cell${classStr}" style="--offset: ${percentageOffset}%; ${weatherGradient}; cursor: pointer;" title="${escapeHTML(actualText)}" onclick="showToast('${escapeHTML(actualText)}')"><span class="cell-content">${actualIcon}</span>${lineTopHtml}${lineBotHtml}</td>`;
-                tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; font-weight: bold; cursor: pointer;" onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: bold; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
+                tempHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; ${tempGradient}; font-weight: normal; cursor: pointer;"
+onclick="showToast('${t('t_temp').split(' ')[0]}: ${wTemp}°C')"><span class="cell-content" style="color: ${tempCol}; font-weight: normal; text-shadow: ${tempShadow};">${wTemp}°</span>${lineTopHtml}${lineBotHtml}</td>`;
                 
                 if (isRaining) { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background: linear-gradient(to right, ${colorRain1}, ${colorRain2}); cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: ${wRain.toFixed(1)} cm')"><span class="cell-content" style="color: ${rainTextColor}; font-weight: bold;">${wRain > 0 ? wRain.toFixed(1) : ''}</span>${lineTopHtml}${lineBotHtml}</td>`; } 
                 else { rainHtml += `<td class="${classStr}" style="--offset: ${percentageOffset}%; background-color: #ffffff; cursor: pointer;" onclick="showToast('${t('t_rain').split(' ')[0]}: 0 cm')">${lineTopHtml}${lineBotHtml}</td>`; }
