@@ -2797,8 +2797,15 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 if (currentLang === 'sk' || currentLang === 'cs') { dayStr = `${i18n[currentLang].days[dateObj.getDay()]} ${dateObj.getDate()}. ${i18n[currentLang].months[dateObj.getMonth()]}`; } 
                 else { dayStr = dateObj.toLocaleDateString(localeStr, { weekday: 'short', day: 'numeric', month: 'short' }); }
                 
-                let hourStrObj = dateObj.getHours(); let hourStrText = hourStrObj;
-                if (timeFormat === '12h') { const ampm = hourStrObj >= 12 ? 'p' : 'a'; const h12 = hourStrObj % 12 || 12; hourStrText = `${h12}${ampm}`; }
+                let hourStrObj = dateObj.getHours(); 
+                
+                // VIZUÁLNY PREPIS: Iba pre text pridáme +1 hodinu (0->1, 3->4, 21->22)
+                let displayHour = hourStrObj + 1;
+                if (displayHour === 24) displayHour = 0; // Poistka, aby 23+1 nebolo 24
+                
+                let hourStrText = displayHour;
+                
+                if (timeFormat === '12h') { const ampm = displayHour >= 12 ? 'p' : 'a'; const h12 = displayHour % 12 || 12; hourStrText = `${h12}${ampm}`; }
                 
                 let classes = [];
                 if (hourStrObj === 0) classes.push('midnight-border');
