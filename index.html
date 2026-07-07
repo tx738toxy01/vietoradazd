@@ -835,7 +835,7 @@
 <div id="toast-msg"></div>
 
 <div id="liveModal" class="modal" onclick="if(event.target === this) this.style.display='none'">
-    <div class="modal-content" style="max-width: 320px;">
+    <div class="modal-content" style="max-width: 480px; width: 95%;">
         <span class="close-btn" onclick="document.getElementById('liveModal').style.display='none'">&times;</span>
         <h3 style="margin-top: 0; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
             <span class="live-btn" style="animation: none; cursor: default; margin:0;">LIVE</span> 
@@ -1561,9 +1561,9 @@ function liveModelChanged(val) {
     Object.assign(i18n.ja, { owm_layers: "レイヤー", owm_clouds: "雲", owm_rain: "雨", owm_opacity: "不透明度" });
     Object.assign(i18n.ko, { owm_layers: "레이어", owm_clouds: "구름", owm_rain: "비", owm_opacity: "불투명도" });
 // Preklady pre LIVE modálne okno
-    Object.assign(i18n.sk, { lbl_current_state: "Aktuálny stav", owm_station: "Stanica", live_feels: "Pocitovo", live_hum: "Vlhkosť", live_press: "Tlak", live_err: "Stanica momentálne neodpovedá." });
-    Object.assign(i18n.cs, { lbl_current_state: "Aktuální stav", owm_station: "Stanice", live_feels: "Pocitově", live_hum: "Vlhkost", live_press: "Tlak", live_err: "Stanice momentálně neodpovídá." });
-    Object.assign(i18n.en, { lbl_current_state: "Current Conditions", owm_station: "Station", live_feels: "Feels like", live_hum: "Humidity", live_press: "Pressure", live_err: "Station currently unresponsive." });
+    Object.assign(i18n.sk, { lbl_current_state: "Aktuálny stav", owm_station: "Stanica", live_feels: "Pocitovo", live_hum: "Vlhkosť", live_press: "Tlak", live_err: "Stanica momentálne neodpovedá.", live_gusts: "Nárazy vetra", live_rain: "Zrážky", live_cloud: "Oblačnosť", live_vis: "Viditeľnosť", live_uv: "UV Index", live_sunrise: "Východ", live_sunset: "Západ" });
+    Object.assign(i18n.cs, { lbl_current_state: "Aktuální stav", owm_station: "Stanice", live_feels: "Pocitově", live_hum: "Vlhkost", live_press: "Tlak", live_err: "Stanice momentálně neodpovídá.", live_gusts: "Nárazy větru", live_rain: "Srážky", live_cloud: "Oblačnost", live_vis: "Viditelnost", live_uv: "UV Index", live_sunrise: "Východ", live_sunset: "Západ" });
+    Object.assign(i18n.en, { lbl_current_state: "Current Conditions", owm_station: "Station", live_feels: "Feels like", live_hum: "Humidity", live_press: "Pressure", live_err: "Station currently unresponsive.", live_gusts: "Wind Gusts", live_rain: "Precipitation", live_cloud: "Cloud Cover", live_vis: "Visibility", live_uv: "UV Index", live_sunrise: "Sunrise", live_sunset: "Sunset" });
     Object.assign(i18n.de, { lbl_current_state: "Aktuelles Wetter", owm_station: "Station", live_feels: "Gefühlt", live_hum: "Luftfeuchtigkeit", live_press: "Luftdruck", live_err: "Station antwortet nicht." });
     Object.assign(i18n.fr, { lbl_current_state: "Conditions Actuelles", owm_station: "Station", live_feels: "Ressenti", live_hum: "Humidité", live_press: "Pression", live_err: "Station inactive." });
     Object.assign(i18n.es, { lbl_current_state: "Condiciones Actuales", owm_station: "Estación", live_feels: "Sensación", live_hum: "Humedad", live_press: "Presión", live_err: "Estación inactiva." });
@@ -2556,7 +2556,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure&daily=weathercode,temperature_2m_max,windspeed_10m_max&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
+                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure,cloudcover,visibility,uv_index&daily=weathercode,temperature_2m_max,windspeed_10m_max,sunrise,sunset,uv_index_max&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
                 
                 if (modelSelect === liveModelSelect) {
                     const weatherResponse = await fetch(forecastUrl, { signal: controller.signal });
@@ -2564,7 +2564,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                     weatherData = await weatherResponse.json();
                     liveData = weatherData;
                 } else {
-                    const liveUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=apparent_temperature,relative_humidity_2m,surface_pressure&forecast_days=2&timezone=auto&models=${liveModelSelect}`;
+                    const liveUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=apparent_temperature,relative_humidity_2m,surface_pressure,windgusts_10m,precipitation,cloudcover,visibility,uv_index&forecast_days=2&timezone=auto&models=${liveModelSelect}`;
                     const [forecastRes, liveRes] = await Promise.all([
                         fetch(forecastUrl, { signal: controller.signal }),
                         fetch(liveUrl, { signal: controller.signal })
@@ -2660,6 +2660,30 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 let wHum = liveData.hourly && liveData.hourly.relative_humidity_2m ? liveData.hourly.relative_humidity_2m[currIdx] : "?";
                 let wPress = liveData.hourly && liveData.hourly.surface_pressure ? Math.round(liveData.hourly.surface_pressure[currIdx]) : "?";
                 
+                // --- NOVÉ VYČERPÁVAJÚCE METRIKY ---
+                let wGusts = liveData.hourly && liveData.hourly.windgusts_10m ? Math.round(liveData.hourly.windgusts_10m[currIdx]) : "?";
+                let wRain = liveData.hourly && liveData.hourly.precipitation ? liveData.hourly.precipitation[currIdx] : 0;
+                let wCloud = liveData.hourly && liveData.hourly.cloudcover ? liveData.hourly.cloudcover[currIdx] : "?";
+                let wVis = liveData.hourly && liveData.hourly.visibility ? Math.round(liveData.hourly.visibility[currIdx] / 1000) : "?";
+                let wUV = liveData.hourly && liveData.hourly.uv_index ? liveData.hourly.uv_index[currIdx].toFixed(1) : "?";
+                
+                let wSunrise = weatherData.daily && weatherData.daily.sunrise ? new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
+                let wSunset = weatherData.daily && weatherData.daily.sunset ? new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
+
+                // Jednotky podľa nastavení
+                let tempUnitLabel = appSettings.tempUnit === 'F' ? '°F' : '°C';
+                let windUnitLabel = appSettings.windUnit === 'mph' ? 'mph' : 'km/h';
+                
+                let displayTemp = wTemp; let displayFeels = wFeels; let displaySpd = wSpd; let displayGusts = wGusts;
+                if (appSettings.tempUnit === 'F') {
+                    displayTemp = Math.round((wTemp * 9/5) + 32);
+                    displayFeels = wFeels !== "?" ? Math.round((wFeels * 9/5) + 32) : "?";
+                }
+                if (appSettings.windUnit === 'mph') {
+                    displaySpd = Math.round(wSpd / 1.60934);
+                    if (displayGusts !== "?") displayGusts = Math.round(displayGusts / 1.60934);
+                }
+
                 let wDesc = getWeatherText(cw.weathercode);
                 let isNightNow = cw.is_day === 0;
                 let omIcon = getWeatherIcon(cw.weathercode, isNightNow);
@@ -2679,16 +2703,26 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                         <strong style="color: var(--text-main); font-size: 1.6rem; display: block; margin: 0 0 8px 0;">${escapeHTML(foundName)}</strong>
                         <span style="font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px;">Model: ${liveModelSelectHtml}</span>
                     </div>
-                    <div style="text-align: center; margin-bottom: 25px;">
-                        <div style="font-size: 3.5rem; font-weight: bold; color: var(--text-main); line-height: 1;">${wTemp}°C</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 3.5rem; font-weight: bold; color: var(--text-main); line-height: 1;">${displayTemp}${tempUnitLabel}</div>
                         <div style="font-size: 16px; color: var(--text-muted); margin-top: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px;">
                             <span style="font-size: 1.4rem;">${omIcon}</span> ${escapeHTML(wDesc)}
                         </div>
                     </div>
-                    <div class="live-data-row"><span>${t('live_feels')}:</span> <strong>${wFeels} °C</strong></div>
-                    <div class="live-data-row"><span>${t('wind_str')}:</span> <strong>${wSpd} km/h (${wDeg}°)</strong></div>
-                    <div class="live-data-row"><span>${t('live_hum')}:</span> <strong>${wHum} %</strong></div>
-                    <div class="live-data-row"><span>${t('live_press')}:</span> <strong>${wPress} hPa</strong></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--hover-bg); padding: 12px; border-radius: 8px; font-size: 13px;">
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>🌡️ ${t('live_feels') || 'Pocitovo'}:</span> <strong>${displayFeels} ${tempUnitLabel}</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>💧 ${t('live_hum') || 'Vlhkosť'}:</span> <strong>${wHum} %</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>🌬️ ${t('wind_str') || 'Vietor'}:</span> <strong>${displaySpd} ${windUnitLabel}</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>🌪️ ${t('live_gusts') || 'Nárazy'}:</span> <strong>${displayGusts} ${windUnitLabel}</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>🧭 ${t('dir_str') || 'Smer'}:</span> <strong>${wDeg}°</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>⏲️ ${t('live_press') || 'Tlak'}:</span> <strong>${wPress} hPa</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>☔ ${t('live_rain') || 'Zrážky'}:</span> <strong>${wRain} mm</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>☁️ ${t('live_cloud') || 'Oblačnosť'}:</span> <strong>${wCloud} %</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>👁️ ${t('live_vis') || 'Viditeľnosť'}:</span> <strong>${wVis} km</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>☀️ ${t('live_uv') || 'UV Index'}:</span> <strong>${wUV}</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>🌅 ${t('live_sunrise') || 'Východ'}:</span> <strong>${wSunrise}</strong></div>
+                        <div class="live-data-row" style="border: none; padding: 4px 0;"><span>🌇 ${t('live_sunset') || 'Západ'}:</span> <strong>${wSunset}</strong></div>
+                    </div>
                     <div style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 15px;">${t('live_source')}: Open-Meteo</div>
                 `;
             }
