@@ -2539,7 +2539,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
         const liveModelSelect = appSettings.liveModel || 'best_match';
         const resultText = document.getElementById('result-text');
 
-        let weatherData, liveData;
+        let weatherData, liveData, extraData;
         let targetZoom = isRefresh ? map.getZoom() : 13;
         if (!isRefresh && targetZoom < 11) targetZoom = 13;
 
@@ -2563,8 +2563,6 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 
                 // Extra dopyt z 'best_match' (ten má vždy všetko), aby sme mali pre LIVE okno UV a Slnko bez ohľadu na vybraný model
                 const extraUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=visibility,uv_index&daily=sunrise,sunset&forecast_days=2&timezone=auto`;
-
-                let extraData;
 
                 if (modelSelect === liveModelSelect) {
                     const [weatherResponse, extraRes] = await Promise.all([
@@ -2594,7 +2592,7 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                     try {
                         localStorage.setItem('weatherCache', JSON.stringify({
                             lat: lat, lon: lon, foundName: foundName, county: county, country: country, elevation: elevation,
-                            data: weatherData, time: Date.now()
+                            data: weatherData, extraData: extraData, time: Date.now()
                         }));
                     } catch(e) { }
                 }
@@ -2613,16 +2611,15 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 
                 if (cachedRaw) {
                     const cached = JSON.parse(cachedRaw);
-                    // Odstránili sme resetovanie nastavení, už ti nebude prepisovať startup model!
                     updateQuickModelButtons();
                     let reason = isOffline ? t('reason_off') : t('reason_slow');
 
                     if (Math.abs(cached.lat - lat) < 0.05 && Math.abs(cached.lon - lon) < 0.05) {
-                        weatherData = cached.data; liveData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
+                        weatherData = cached.data; liveData = cached.data; extraData = cached.extraData || cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation;
                         showToast(`⚠️ ${reason}. ${t('msg_off_16d')}`);
                     } else {
                         let wantedName = foundName; 
-                        weatherData = cached.data; liveData = cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
+                        weatherData = cached.data; liveData = cached.data; extraData = cached.extraData || cached.data; foundName = cached.foundName; county = cached.county; country = cached.country; elevation = cached.elevation; lat = cached.lat; lon = cached.lon;
                         lastSearchedCity = foundName; lastLat = lat; lastLon = lon; lastElevation = elevation; lastCounty = county; lastCountry = country;
                         renderQuickLocations();
                         if(currentMarker) map.removeLayer(currentMarker);
@@ -2679,11 +2676,11 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 let wCloud = liveData.hourly && liveData.hourly.cloudcover && liveData.hourly.cloudcover[currIdx] !== null ? liveData.hourly.cloudcover[currIdx] : "?";
                 
                 // Viditeľnosť a UV ťaháme z 'extraData' (bezpečné proti zlyhaniu pri modeloch ako YR.NO a proti null hodnotám)
-                let wVis = extraData.hourly && extraData.hourly.visibility && extraData.hourly.visibility[currIdx] !== null ? Math.round(extraData.hourly.visibility[currIdx] / 1000) : "?";
-                let wUV = extraData.hourly && extraData.hourly.uv_index && extraData.hourly.uv_index[currIdx] !== null ? extraData.hourly.uv_index[currIdx].toFixed(1) : "?";
+                let wVis = extraData && extraData.hourly && extraData.hourly.visibility && extraData.hourly.visibility[currIdx] !== null ? Math.round(extraData.hourly.visibility[currIdx] / 1000) : "?";
+                let wUV = extraData && extraData.hourly && extraData.hourly.uv_index && extraData.hourly.uv_index[currIdx] !== null ? extraData.hourly.uv_index[currIdx].toFixed(1) : "?";
                 
-                let wSunrise = extraData.daily && extraData.daily.sunrise && extraData.daily.sunrise[0] ? new Date(extraData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
-                let wSunset = extraData.daily && extraData.daily.sunset && extraData.daily.sunset[0] ? new Date(extraData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
+                let wSunrise = extraData && extraData.daily && extraData.daily.sunrise && extraData.daily.sunrise[0] ? new Date(extraData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
+                let wSunset = extraData && extraData.daily && extraData.daily.sunset && extraData.daily.sunset[0] ? new Date(extraData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
 
                 // Jednotky podľa nastavení
                 let tempUnitLabel = appSettings.tempUnit === 'F' ? '°F' : '°C';
