@@ -2556,22 +2556,35 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure,cloudcover,visibility,uv_index&daily=weathercode,temperature_2m_max,windspeed_10m_max,sunrise,sunset,uv_index_max&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
+                // Z URL adries modelov odstraňujeme UV, Viditeľnosť a Slnko, pretože niektoré (napr. YR.NO) ich nepodporujú a hodia chybu (crash)
+                const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=windspeed_10m,winddirection_10m,windgusts_10m,precipitation,temperature_2m,weathercode,apparent_temperature,relative_humidity_2m,surface_pressure,cloudcover&daily=weathercode,temperature_2m_max,windspeed_10m_max&forecast_days=${fDays}&timezone=auto&models=${modelSelect}`;
                 
+                const liveUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=apparent_temperature,relative_humidity_2m,surface_pressure,windgusts_10m,precipitation,cloudcover&forecast_days=2&timezone=auto&models=${liveModelSelect}`;
+                
+                // Extra dopyt z 'best_match' (ten má vždy všetko), aby sme mali pre LIVE okno UV a Slnko bez ohľadu na vybraný model
+                const extraUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=visibility,uv_index&daily=sunrise,sunset&forecast_days=2&timezone=auto`;
+
+                let extraData;
+
                 if (modelSelect === liveModelSelect) {
-                    const weatherResponse = await fetch(forecastUrl, { signal: controller.signal });
-                    if (!weatherResponse.ok) throw new Error("API_ERROR");
+                    const [weatherResponse, extraRes] = await Promise.all([
+                        fetch(forecastUrl, { signal: controller.signal }),
+                        fetch(extraUrl, { signal: controller.signal })
+                    ]);
+                    if (!weatherResponse.ok || !extraRes.ok) throw new Error("API_ERROR");
                     weatherData = await weatherResponse.json();
+                    extraData = await extraRes.json();
                     liveData = weatherData;
                 } else {
-                    const liveUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=nan&current_weather=true&hourly=apparent_temperature,relative_humidity_2m,surface_pressure,windgusts_10m,precipitation,cloudcover,visibility,uv_index&forecast_days=2&timezone=auto&models=${liveModelSelect}`;
-                    const [forecastRes, liveRes] = await Promise.all([
+                    const [forecastRes, liveRes, extraRes] = await Promise.all([
                         fetch(forecastUrl, { signal: controller.signal }),
-                        fetch(liveUrl, { signal: controller.signal })
+                        fetch(liveUrl, { signal: controller.signal }),
+                        fetch(extraUrl, { signal: controller.signal })
                     ]);
-                    if (!forecastRes.ok || !liveRes.ok) throw new Error("API_ERROR");
+                    if (!forecastRes.ok || !liveRes.ok || !extraRes.ok) throw new Error("API_ERROR");
                     weatherData = await forecastRes.json();
                     liveData = await liveRes.json();
+                    extraData = await extraRes.json();
                 }
                 clearTimeout(timeoutId);
 
@@ -2660,15 +2673,17 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                 let wHum = liveData.hourly && liveData.hourly.relative_humidity_2m ? liveData.hourly.relative_humidity_2m[currIdx] : "?";
                 let wPress = liveData.hourly && liveData.hourly.surface_pressure ? Math.round(liveData.hourly.surface_pressure[currIdx]) : "?";
                 
-                // --- NOVÉ VYČERPÁVAJÚCE METRIKY ---
-                let wGusts = liveData.hourly && liveData.hourly.windgusts_10m ? Math.round(liveData.hourly.windgusts_10m[currIdx]) : "?";
-                let wRain = liveData.hourly && liveData.hourly.precipitation ? liveData.hourly.precipitation[currIdx] : 0;
-                let wCloud = liveData.hourly && liveData.hourly.cloudcover ? liveData.hourly.cloudcover[currIdx] : "?";
-                let wVis = liveData.hourly && liveData.hourly.visibility ? Math.round(liveData.hourly.visibility[currIdx] / 1000) : "?";
-                let wUV = liveData.hourly && liveData.hourly.uv_index ? liveData.hourly.uv_index[currIdx].toFixed(1) : "?";
+                // --- NOVÉ VYČERPÁVAJÚCE METRIKY (BEZPEČNÉ PARSOVANIE) ---
+                let wGusts = liveData.hourly && liveData.hourly.windgusts_10m && liveData.hourly.windgusts_10m[currIdx] !== null ? Math.round(liveData.hourly.windgusts_10m[currIdx]) : "?";
+                let wRain = liveData.hourly && liveData.hourly.precipitation && liveData.hourly.precipitation[currIdx] !== null ? liveData.hourly.precipitation[currIdx] : 0;
+                let wCloud = liveData.hourly && liveData.hourly.cloudcover && liveData.hourly.cloudcover[currIdx] !== null ? liveData.hourly.cloudcover[currIdx] : "?";
                 
-                let wSunrise = weatherData.daily && weatherData.daily.sunrise ? new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
-                let wSunset = weatherData.daily && weatherData.daily.sunset ? new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
+                // Viditeľnosť a UV ťaháme z 'extraData' (bezpečné proti zlyhaniu pri modeloch ako YR.NO a proti null hodnotám)
+                let wVis = extraData.hourly && extraData.hourly.visibility && extraData.hourly.visibility[currIdx] !== null ? Math.round(extraData.hourly.visibility[currIdx] / 1000) : "?";
+                let wUV = extraData.hourly && extraData.hourly.uv_index && extraData.hourly.uv_index[currIdx] !== null ? extraData.hourly.uv_index[currIdx].toFixed(1) : "?";
+                
+                let wSunrise = extraData.daily && extraData.daily.sunrise && extraData.daily.sunrise[0] ? new Date(extraData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
+                let wSunset = extraData.daily && extraData.daily.sunset && extraData.daily.sunset[0] ? new Date(extraData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "?";
 
                 // Jednotky podľa nastavení
                 let tempUnitLabel = appSettings.tempUnit === 'F' ? '°F' : '°C';
