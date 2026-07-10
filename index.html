@@ -2868,9 +2868,27 @@ async function fetchAndRenderWeather(lat, lon, foundName, county, country, eleva
                     currentDayStr = dayStr; currentDayCount = 1;
                 } else { currentDayCount++; }
 
-                const wSpeed = Math.round(hourly.windspeed_10m[i]); const wGust = Math.round(hourly.windgusts_10m[i]);
-                const wDir = hourly.winddirection_10m[i]; const wRain = hourly.precipitation[i]; 
-                const wTemp = Math.round(hourly.temperature_2m[i]); const wCode = hourly.weathercode[i];                
+                let maxSpeed = 0, maxGust = 0, totalRain = 0, sumTemp = 0, count = 0;
+                let blockCodes = [];
+                const wDir = hourly.winddirection_10m[i]; 
+
+                for (let j = 0; j < 3; j++) {
+                    let idx = i + j;
+                    if (idx < hourly.time.length && hourly.windspeed_10m[idx] !== null && hourly.windspeed_10m[idx] !== undefined) {
+                        if (hourly.windspeed_10m[idx] > maxSpeed) maxSpeed = hourly.windspeed_10m[idx];
+                        if (hourly.windgusts_10m[idx] > maxGust) maxGust = hourly.windgusts_10m[idx];
+                        totalRain += hourly.precipitation[idx] || 0;
+                        sumTemp += hourly.temperature_2m[idx];
+                        blockCodes.push(hourly.weathercode[idx]);
+                        count++;
+                    }
+                }
+
+                const wSpeed = Math.round(maxSpeed);
+                const wGust = Math.round(maxGust);
+                const wRain = totalRain;
+                const wTemp = count > 0 ? Math.round(sumTemp / count) : Math.round(hourly.temperature_2m[i]);
+                const wCode = blockCodes.length > 0 ? Math.max(...blockCodes) : hourly.weathercode[i];                
                 const isNight = (hourStrObj < 6 || hourStrObj >= 21);
                 
                 const actualIcon = getWeatherIcon(wCode, isNight);
